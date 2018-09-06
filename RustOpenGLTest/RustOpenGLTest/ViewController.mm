@@ -38,13 +38,10 @@
     
     
     
-    XheyView* view = nullptr;
-    XheyCamera* camera = nullptr;
-    xhey_init_camera(camera);
+    XheyView* view = xhey_init_view((__bridge void*)demoView);
+    XheyCamera* camera = xhey_init_camera();
 
-    xhey_init_view(view,(__bridge void*)demoView);
     xhey_add_target(camera, view);
-
     xhey_start_capture(camera);
     
     

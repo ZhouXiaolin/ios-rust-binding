@@ -1,5 +1,5 @@
 use core::{DataSource,DataConsumer};
-
+use std::mem::transmute;
 #[repr(C)]
 pub struct XheyCamera{}
 
@@ -17,8 +17,9 @@ impl DataSource for XheyCamera {
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_init_camera(camera: *mut XheyCamera) {
+pub extern "C" fn xhey_init_camera() -> *mut XheyCamera {
     println!("xhey_init_camera");
+    unsafe {transmute(Box::new(XheyCamera{}))}
 }
 
 #[allow(non_snake_case, unused_variables, dead_code)]

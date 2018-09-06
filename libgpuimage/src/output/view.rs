@@ -1,37 +1,71 @@
+
+
+
 use core::{DataConsumer,DataSource};
 use std::os::raw::c_void;
 use std::rc::Rc;
 use std::mem::transmute;
 use objc::Message;
-use objc_id::id::*;
+use objc_id::*;
 
 use objc::declare::ClassDecl;
 use objc::{Encode, Encoding};
 use objc::runtime::{BOOL, Class, NO, Object, Sel, YES};
 
 #[repr(C)]
-pub struct XHeyView{
-}
+pub struct XHeyView {}
 
 
-impl DataConsumer for XHeyView{
-    fn set_source<T : DataSource>(&self, _source: &T, _location: u32){
+impl DataConsumer for XHeyView {
+    fn set_source<T : DataSource>(&self, _source: &T, _location: u32) {
         println!("XheyView set_source");
 
     }
 }
 
+impl XHeyView {
+    fn new() -> Self{
+        XHeyView{}
+    }
+}
+
+#[cfg(not(target_arch = "aarch64"))]
+fn show_test(layer: ShareId<CALayer>){
+    if layer.is_eagl_layer() == 1 {
+        println!("HHHHHHHH");
+    }else{
+        println!("AAAAAAAAA");
+    }
+}
+#[cfg(target_arch = "aarch64")]
+fn show_test(layer: ShareId<CALayer>){
+    if layer.is_eagl_layer() {
+        println!("HHHHHHHH");
+    }else{
+        println!("AAAAAAAAA");
+    }
+}
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_init_view(view: *mut XHeyView, source: *mut c_void){
+pub extern "C" fn xhey_init_view(source: *mut c_void) -> *mut XHeyView{
 
     let _source = unsafe {transmute::<*mut c_void, Box<UIView>>(source)};
     let color = UIColor::from_rgba(1.0,0.0,0.0,1.0).share();
 
     _source.set_background_color(color);
 
-    println!("xhey_init_view");
+    let layer = _source.get_layer();
+    let bounds = layer.get_bounds();
+
+    println!("layer bounds :{} {}",bounds.size.width, bounds.size.height);
+
+    show_test(layer.share());
+
+
+
+
+    unsafe {transmute(Box::new(XHeyView::new()))}
 }
 
 pub type id = *mut Object;
@@ -85,6 +119,7 @@ pub struct CGSize {
 }
 
 
+
 struct UIView{
     _priv: ()
 }
@@ -104,13 +139,46 @@ impl UIView {
         }
     }
 
+    fn get_layer(&self) -> Id<CALayer> {
+        unsafe {
+            let obj: *mut CALayer = msg_send![self, layer];
+//            ShareId::from_ptr(obj)
+            Id::from_ptr(obj)
+        }
+
+    }
+
     fn set_background_color(&self, color: ShareId<UIColor>){
+
         unsafe {
             msg_send![self, setBackgroundColor:&*color];
         }
     }
+
+
 }
 
+struct CALayer {
+    _priv : ()
+}
+
+unsafe impl Message for CALayer {}
+impl CALayer {
+    fn get_bounds(&self) -> CGRect {
+        unsafe {
+            msg_send![self, bounds]
+        }
+    }
+
+    fn is_eagl_layer(&self) -> BOOL {
+        unsafe {
+            msg_send![self, isKindOfClass:class!(CAEAGLLayer)]
+        }
+    }
+
+
+
+}
 
 struct UIColor {
     _priv : ()
@@ -128,6 +196,8 @@ impl UIColor {
             let obj : *mut Self = msg_send![cls, alloc];
             let obj : *mut Self = msg_send![obj, initWithRed:red green:green blue:blue alpha:alpha];
             Id::from_retained_ptr(obj)
+
         }
+
     }
 }

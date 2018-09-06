@@ -8,13 +8,13 @@
 extern "C" {
 #endif
     struct XheyCamera;
-    void xhey_init_camera(XheyCamera* camera);
+    XheyCamera* xhey_init_camera();
     void xhey_start_capture(XheyCamera* camera);
     void xhey_stop_capture(XheyCamera* camera);
 
 
     struct XheyView;
-    void xhey_init_view(XheyView* view, void* source);
+    XheyView* xhey_init_view(void* source);
 
     struct XheyBasicFilter;
     struct XheyToneCurveFilter;

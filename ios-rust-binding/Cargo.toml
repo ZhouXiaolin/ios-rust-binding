@@ -1,0 +1,12 @@
+[package]
+name = "ios-rust-binding"
+version = "0.1.0"
+authors = ["周晓林 <zhouxiaolinux@163.com>"]
+
+[dependencies]
+objc = "0.2.5"
+objc_id = { git = "http://github.com/SSheldon/rust-objc-id"}
+
+[lib]
+name = "ios_rust_binding"
+path = "src/lib.rs"

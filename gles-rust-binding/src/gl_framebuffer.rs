@@ -1,4 +1,4 @@
-#![allow(unused_imports)]
+#![allow(unused_imports,)]
 
 use gles::consts::*;
 use gles::es20::ffi::*;

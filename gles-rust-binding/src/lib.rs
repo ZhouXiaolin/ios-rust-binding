@@ -1,3 +1,10 @@
+extern crate opengl_es_rs as gles;
+extern crate fnv;
+extern crate regex;
+pub use gles::es20::ffi::*;
+pub use gles::consts::*;
+pub use gles::types::*;
+
 mod gl_attribute;
 mod gl_buffer;
 mod gl_enums;

@@ -5,10 +5,8 @@ authors = ["周晓林 <zhouxiaolinux@163.com>"]
 
 [dependencies]
 libc = { version = "0.2.43", default-features = false }
-objc_id = { git = "http://github.com/SSheldon/rust-objc-id"}
-opengl_es_rs = { git = "https://github.com/Michael-Lfx/OpenGL_ES_Rust_Binding.git", branch = "master" }
-regex = "1.0.4"
-fnv = "1.0.6"
+gles-rust-binding = { path = "../gles-rust-binding", version = "0.1.0"}
+ios-rust-binding = { path = "../ios-rust-binding", version = "0.1.0"}
 
 [target.'cfg(target_os="ios")'.dependencies]
 objc = "0.2.5"

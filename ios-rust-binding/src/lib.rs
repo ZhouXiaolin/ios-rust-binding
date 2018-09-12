@@ -10,7 +10,6 @@ use objc::{Encode, Encoding,Message};
 use objc::runtime::{BOOL, Class, NO, Object, Sel, YES};
 
 
-
 pub type id = *mut Object;
 pub const UIViewAutoresizingFlexibleWidth: NSUInteger = 1 << 1;
 pub const UIViewAutoresizingFlexibleHeight: NSUInteger = 1 << 4;
@@ -83,7 +82,6 @@ impl UIView {
     pub fn get_layer(&self) -> Id<CALayer> {
         unsafe {
             let obj: *mut CALayer = msg_send![self, layer];
-//            ShareId::from_ptr(obj)
             Id::from_ptr(obj)
         }
 
@@ -144,6 +142,33 @@ impl UIColor {
     }
 }
 
+pub struct UIImage {
+    _priv: ()
+}
+unsafe impl Message for UIImage {}
+
+impl UIImage {
+    pub fn class() -> &'static Class {
+        Class::get("UIImage").unwrap()
+    }
+
+    pub fn get_image(name: &str) -> Id<Self> {
+
+        let cls = Self::class();
+        unsafe {
+            let ns_string = Class::get("NSString").unwrap();
+            let path = name.as_ptr();
+            let name: *mut Object = msg_send![ns_string, stringWithUTF8String:path];
+            let obj:*mut Self = msg_send![cls, imageNamed:name];
+            Id::from_retained_ptr(obj)
+
+        }
+
+    }
+
+}
+
+
 pub type EAGLRenderingAPI = std::os::raw::c_char;
 pub const kEAGLRenderingAPIOpenGLES1 : EAGLRenderingAPI = 1;
 pub const kEAGLRenderingAPIOpenGLES2 : EAGLRenderingAPI = 2;
@@ -156,7 +181,7 @@ unsafe impl Message for EAGLContext {}
 
 impl EAGLContext {
     pub fn class() -> &'static Class {
-        Class::get("EAGLContext").unwrap()
+        Class::get("EAGLContext").expect("Failed to get Class `EAGLContext`")
     }
 
     pub fn with_api(api: EAGLRenderingAPI) -> Id<Self> {

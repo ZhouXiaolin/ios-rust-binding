@@ -1,11 +1,27 @@
-use core::{DataConsumer,DataSource};
+use core::{Consumer,Source,Node,NodeType};
+
+
 
 #[repr(C)]
-pub struct XHeyBasicFilter{}
+pub struct XHeyBasicFilter{
+}
+impl XHeyBasicFilter {
+    pub fn new() -> Self {
+        XHeyBasicFilter{
+        }
+    }
+}
+
+impl Node for XHeyBasicFilter{
+    fn get_type_id() -> NodeType {
+        NodeType::BasicFilter
+    }
+}
 
 
-impl DataSource for XHeyBasicFilter {
-    fn add_target<T:DataConsumer>(&self, target: &T, _location: u32){
+
+impl Source for XHeyBasicFilter {
+    fn add_target<T:Consumer>(&self, target: &T, _location: u32){
         target.set_source(self,_location);
     }
 
@@ -13,8 +29,8 @@ impl DataSource for XHeyBasicFilter {
 
     }
 }
-impl DataConsumer for XHeyBasicFilter {
-    fn set_source<T : DataSource>(&self, _source: &T, _location: u32){
+impl Consumer for XHeyBasicFilter {
+    fn set_source<T : Source>(&self, _source: &T, _location: u32){
 
     }
 

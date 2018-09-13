@@ -130,7 +130,7 @@ impl UIColor {
         Class::get("UIColor").unwrap()
     }
 
-    pub fn from_rgba(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> Id<Self> {
+    pub fn fromRgba(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> Id<Self> {
         let cls = Self::class();
         unsafe {
             let obj : *mut Self = msg_send![cls, alloc];
@@ -184,7 +184,7 @@ impl EAGLContext {
         Class::get("EAGLContext").expect("Failed to get Class `EAGLContext`")
     }
 
-    pub fn with_api(api: EAGLRenderingAPI) -> Id<Self> {
+    pub fn withApi(api: EAGLRenderingAPI) -> Id<Self> {
         let cls = Self::class();
         unsafe {
             let obj: *mut Self = msg_send![cls, alloc];
@@ -193,13 +193,24 @@ impl EAGLContext {
         }
     }
 
-    pub fn set_current_context(context: &ShareId<Self>) -> BOOL {
+    pub fn setCurrentContext(context: &ShareId<Self>) -> BOOL {
         let cls = Self::class();
 
         unsafe { msg_send![cls, setCurrentContext:&*(*context)]}
     }
 
-    pub fn current_context() -> Id<Self> {
+    pub fn makeCurrentContext(context: &ShareId<Self>){
+        let cls = Self::class();
+        unsafe {
+            let current: *mut Self = msg_send![cls, currentContext];
+            let equal : BOOL = msg_send![current, isEqual:&*(*context)];
+            if equal == NO {
+                EAGLContext::setCurrentContext(context);
+            }
+        }
+    }
+
+    pub fn currentContext() -> Id<Self> {
         let cls = Self::class();
         unsafe {
             let obj :*mut Self = msg_send![cls, currentContext];
@@ -207,11 +218,11 @@ impl EAGLContext {
         }
     }
 
-    pub fn present_render_buffer(&self, target: NSUInteger) -> BOOL {
+    pub fn presentRenderBuffer(&self, target: NSUInteger) -> BOOL {
         unsafe {msg_send![self, presentRenderbuffer:target]}
     }
 
-    pub fn render_buffer_storage(&self, target: NSUInteger, drawable: &ShareId<CALayer>) -> BOOL {
+    pub fn renderBufferStorage(&self, target: NSUInteger, drawable: &ShareId<CALayer>) -> BOOL {
         let rect = drawable.get_bounds();
         println!("rect : width{} height{}",rect.size.width, rect.size.height);
         unsafe {msg_send![self, renderbufferStorage:target fromDrawable:&*(*drawable)]}

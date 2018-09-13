@@ -8,21 +8,21 @@
 
 /* Begin PBXBuildFile section */
 		9F817385214759C100030F46 /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817383214759C100030F46 /* GLESUtils.m */; };
-		9F817386214759C100030F46 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.m */; };
-		9F817389214770F900030F46 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F817388214770F900030F46 /* libgpuimage.a */; };
+		9F817386214759C100030F46 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.mm */; };
 		9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48DF213EC7F30026B7EF /* ViewController.mm */; };
 		9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F8D48E4213EC7F40026B7EF /* Assets.xcassets */; };
 		9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F8D48E6213EC7F40026B7EF /* LaunchScreen.storyboard */; };
 		9F8D48EB213EC7F40026B7EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48EA213EC7F40026B7EF /* main.m */; };
 		9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */; };
+		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
+		9FB2F4352149F79A00806A1E /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2F4342149F79A00806A1E /* libgpuimage.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9F817381214759C000030F46 /* GLESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESUtils.h; sourceTree = "<group>"; };
 		9F817382214759C000030F46 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		9F817383214759C100030F46 /* GLESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLESUtils.m; sourceTree = "<group>"; };
-		9F817384214759C100030F46 /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
-		9F817388214770F900030F46 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = "../libgpuimage/target/aarch64-apple-ios/release/libgpuimage.a"; sourceTree = "<group>"; };
+		9F817384214759C100030F46 /* OpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenGLView.mm; sourceTree = "<group>"; };
 		9F8D48D8213EC7F30026B7EF /* RustOpenGLTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RustOpenGLTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F8D48DE213EC7F30026B7EF /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		9F8D48DF213EC7F30026B7EF /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
@@ -33,6 +33,8 @@
 		9F8D4BCE213FBA220026B7EF /* gpuimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gpuimage.h; path = ../libgpuimage/src/gpuimage.h; sourceTree = "<group>"; };
 		9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		9FB2F4032148E65E00806A1E /* IMG_1592.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1592.JPG; sourceTree = "<group>"; };
+		9FB2F4342149F79A00806A1E /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = "../libgpuimage/target/aarch64-apple-ios/release/libgpuimage.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9F817389214770F900030F46 /* libgpuimage.a in Frameworks */,
+				9FB2F4352149F79A00806A1E /* libgpuimage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,10 +74,11 @@
 				9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */,
 				9F8D48DE213EC7F30026B7EF /* ViewController.h */,
 				9F8D48DF213EC7F30026B7EF /* ViewController.mm */,
+				9FB2F4032148E65E00806A1E /* IMG_1592.JPG */,
 				9F817381214759C000030F46 /* GLESUtils.h */,
 				9F817383214759C100030F46 /* GLESUtils.m */,
 				9F817382214759C000030F46 /* OpenGLView.h */,
-				9F817384214759C100030F46 /* OpenGLView.m */,
+				9F817384214759C100030F46 /* OpenGLView.mm */,
 				9F8D48E4213EC7F40026B7EF /* Assets.xcassets */,
 				9F8D48E6213EC7F40026B7EF /* LaunchScreen.storyboard */,
 				9F8D48E9213EC7F40026B7EF /* Info.plist */,
@@ -87,7 +90,7 @@
 		9F8D4904213ED8870026B7EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9F817388214770F900030F46 /* libgpuimage.a */,
+				9FB2F4342149F79A00806A1E /* libgpuimage.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -149,6 +152,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */,
 				9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */,
 				9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */,
 			);
@@ -165,7 +169,7 @@
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
 				9F817385214759C100030F46 /* GLESUtils.m in Sources */,
 				9F8D48EB213EC7F40026B7EF /* main.m in Sources */,
-				9F817386214759C100030F46 /* OpenGLView.m in Sources */,
+				9F817386214759C100030F46 /* OpenGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

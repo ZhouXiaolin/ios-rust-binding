@@ -19,5 +19,7 @@
     
     GLuint _programHandle;
     GLuint _positionSlot;
+    GLuint _inputTextureCoordinateSlot;
+    GLuint _inputImageTexture;
 }
 @end

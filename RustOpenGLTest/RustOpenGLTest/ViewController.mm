@@ -55,18 +55,18 @@
     self.view.backgroundColor = [UIColor blueColor];
     
 
-    
+//    OpenGLView* view = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    view.center = self.view.center;
+//    [self.view addSubview:view];
     
     DemoView* demoView = [[DemoView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     demoView.center = self.view.center;
     [self.view addSubview:demoView];
-////
-////
-////
-//////    const char* path = [@"IMG_1592" UTF8String];
-//////    UIImage* image = (__bridge UIImage*)test(path);
-//
-    UIImage* image = [UIImage imageNamed:@"IMG_1592"];
+
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+
+    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
     CGImage* newImageSource = [image CGImage];
     int width = (int)CGImageGetWidth(newImageSource);
     int height = (int)CGImageGetHeight(newImageSource);
@@ -78,15 +78,18 @@
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
 
-    XheyView* view = xhey_init_view((__bridge void*)demoView,(const void*)imageData, width, height);
+    
+//    XheyView* view = xhey_init_view((__bridge void*)demoView);
+    
+    XheyBasicFilter* basicFilter = xhey_init_basic_filter();
 
-    XheyPicture* picture = xhey_init_picture();
-    
-    xhey_add_target(picture, view);
-    
+    XheyPicture* picture = xhey_init_picture(imageData,width,height);
+    xhey_add_target(picture, basicFilter);
     xhey_process_picture(picture);
 //
-    free(imageData);
+//    xhey_process_picture(picture);
+//
+//    free(imageData);
     
     // Do any additional setup after loading the view, typically from a nib.
 }

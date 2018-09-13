@@ -3,7 +3,6 @@ use core::GlContext;
 use gles_rust_binding::GLuint;
 use gles_rust_binding::*;
 pub struct Framebuffer {
-    context : GlContext,
     size : GLSize,
     orientation: ImageOrientation,
     internalFormat: i32,
@@ -12,7 +11,7 @@ pub struct Framebuffer {
     hash: i64,
     textureOverride: bool,
     framebuffer: u32,
-    texture: u32
+    pub texture: u32
 
 }
 
@@ -63,14 +62,24 @@ impl ImageOrientation {
 
 #[derive(Copy,Clone)]
 pub struct GLSize {
-    width : i32,
-    height: i32
+    pub width : i32,
+    pub height: i32
+}
+impl GLSize {
+    pub fn new(width: i32, height: i32) -> Self {
+        GLSize{width:width,height:height}
+    }
+}
+impl Default for GLSize {
+    fn default() -> Self {
+        GLSize{width:0,height:0}
+    }
 }
 
 #[derive(Copy, Clone)]
 pub struct Size {
-    width: f32,
-    height: f32
+    pub width: f32,
+    pub height: f32
 }
 
 pub fn hashForFramebufferWithProperties(size:GLSize, textureOnly:bool, minFilter:i32, magFilter:i32, wrapS:i32 , wrapT:i32 , internalFormat:i32 , format:i32 , _type:i32 , stencil:bool ) -> i64 {
@@ -126,7 +135,12 @@ fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, i
 }
 
 impl Framebuffer {
-    fn new(context: GlContext, orientation: ImageOrientation, size: GLSize, textureOnly: bool, minFilter: i32, magFilter: i32, wrapS: i32, wrapT: i32, internalFormat: i32, format: i32, _type: i32, overriddenTexture: Option<GLuint>) -> Self {
+
+    pub fn new_default(orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Self {
+        Framebuffer::new(orientation,size,textureOnly,GL_LINEAR as i32,GL_LINEAR as i32,GL_CLAMP_TO_EDGE as i32,GL_CLAMP_TO_EDGE as i32,GL_RGBA as i32,GL_BGRA as i32,GL_UNSIGNED_BYTE as i32,Option::None)
+    }
+
+    pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, minFilter: i32, magFilter: i32, wrapS: i32, wrapT: i32, internalFormat: i32, format: i32, _type: i32, overriddenTexture: Option<GLuint>) -> Self {
         let hash = hashForFramebufferWithProperties(size,textureOnly,minFilter,magFilter,wrapS,wrapT,internalFormat,format,_type,false);
 
         let (textureOverride,texture) = match overriddenTexture {
@@ -144,7 +158,6 @@ impl Framebuffer {
         };
 
         Framebuffer{
-            context:context,
             size: size,
             orientation:orientation,
             internalFormat:internalFormat,

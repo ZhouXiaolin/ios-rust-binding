@@ -16,12 +16,16 @@
 
 NSString* const kVertexString = SHADER_STRING
 (
- attribute vec4 vPosition;
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
  
- void main(void)
-{
-    gl_Position = vPosition;
-}
+ varying vec2 textureCoordinate;
+ 
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
 
 );
 
@@ -29,10 +33,13 @@ NSString* const kFragmentString = SHADER_STRING
 (
  precision mediump float;
  
+ varying highp vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+ 
  void main()
-{
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-}
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
 
 );
 
@@ -84,7 +91,11 @@ NSString* const kFragmentString = SHADER_STRING
         NSLog(@"Failed to set current OpenGL context");
         exit(1);
     }
+    
+
 }
+
+
 
 - (void)setupBuffers
 {
@@ -120,7 +131,43 @@ NSString* const kFragmentString = SHADER_STRING
 - (void)render
 {
     
+    
+    
+    
     [EAGLContext setCurrentContext:_context];
+    
+    
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+    
+    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
+    CGImage* newImageSource = [image CGImage];
+    int width = (int)CGImageGetWidth(newImageSource);
+    int height = (int)CGImageGetHeight(newImageSource);
+    
+    GLubyte *imageData = (GLubyte*)calloc(1, width*height*4);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
+   
+    
+    
+    GLuint imageTexture = 0;
+    glGenTextures(1, &imageTexture);
+    glBindTexture(GL_TEXTURE_2D, imageTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    free(imageData);
+    newImageSource = nil;
+    image = nil;
+    path = nil;
+    
+    
     
     // Create program, attach shaders, compile and link program
     //
@@ -134,8 +181,9 @@ NSString* const kFragmentString = SHADER_STRING
 
     // Get attribute slot from program
     //
-    _positionSlot = glGetAttribLocation(_programHandle, "vPosition");
-
+    _positionSlot = glGetAttribLocation(_programHandle, "position");
+    _inputTextureCoordinateSlot = glGetAttribLocation(_programHandle, "inputTextureCoordinate");
+    _inputImageTexture = glGetUniformLocation(_programHandle, "inputImageTexture");
 
     glClearColor(0, 1.0, 0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -144,18 +192,33 @@ NSString* const kFragmentString = SHADER_STRING
     //
 
     GLfloat vertices[] = {
-       -0.5,-0.5,0.0, 0.5,-0.5,0.0, 0.0,0.5,0.0 };
+       -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
+    GLfloat textureCoordinates[] = {
+        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
+    };
 
     // Load the vertex data
     //
-    glVertexAttribPointer(_positionSlot, 3, GL_FLOAT, GL_FALSE, 0, vertices );
+    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
     glEnableVertexAttribArray(_positionSlot);
 
+    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glEnableVertexAttribArray(_inputTextureCoordinateSlot);
+    
+    
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,imageTexture);
+    glUniform1i(0,_inputImageTexture);
     // Draw triangle
     //
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
         
     [_context presentRenderbuffer:GL_RENDERBUFFER];
+    
+    
+    glDeleteTextures(1, &imageTexture);
+    
 }
 
 - (id)initWithFrame:(CGRect)frame

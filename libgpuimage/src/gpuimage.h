@@ -15,17 +15,16 @@ extern "C" {
     void xhey_stop_capture(struct XheyCamera* camera);
 
     struct XheyPicture;
-    struct XheyPicture* xhey_init_picture(void);
+    struct XheyPicture* xhey_init_picture(void* data, int width, int height);
     void xhey_process_picture(struct XheyPicture* picture);
 
     struct XheyView;
-    struct XheyView* xhey_init_view(void* source,const void* data, int width, int height);
+    struct XheyView* xhey_init_view(void* source);
 
     struct XheyBasicFilter;
+    struct XheyBasicFilter* xhey_init_basic_filter();
     struct XheyToneCurveFilter;
-    struct XHeyLookupTableFilter{
-
-    };
+    struct XHeyLookupTableFilter;
     struct XHeyGaussianBlurFilter;
     void xhey_add_target(void* source, void* consumer);
     void* test(const char* path);

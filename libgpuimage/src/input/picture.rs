@@ -1,51 +1,81 @@
 
-use core::{Source,Consumer};
+use core::{Source,Consumer,sharedImageProcessingContext,SerialDispatch};
+use core::framebuffer::{Framebuffer,ImageOrientation,GLSize};
 use std::mem::transmute;
-use core::{Node,NodeType};
+use core::{Node,NodeType,RenderNode};
+use gles_rust_binding::*;
+use std::cell::{RefCell,Cell};
 #[repr(C)]
-pub struct XheyPicture{
+pub struct XheyPicture<'a>{
+    _type: RenderNode,
+    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>
 }
 
-impl XheyPicture {
-    fn new() -> Self {
+
+
+impl<'a> XheyPicture<'a> {
+    pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
+
+
+
+        let size = GLSize::new(width,height);
+        let framebuffer = Framebuffer::new_default(ImageOrientation::portrait,size,true);
+
+        unsafe {
+            glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
+            glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA as i32,width,height,0,GL_BGRA,GL_UNSIGNED_BYTE,data as *const _);
+            glBindTexture(GL_TEXTURE_2D,0);
+        }
+
         XheyPicture{
+            _type: RenderNode::new(NodeType::Picture),
+            _targets: RefCell::new(Vec::new())
         }
     }
 
-    fn log(&self){
+    pub fn processImage() {
+
+    }
+
+
+    fn log(&self) {
+//        for _i in self._targets.borrow().iter() {
+//          println!("log AAAAA")
+//        }
+
         println!("Xhey Picture log");
     }
 }
 
-impl Node for XheyPicture {
-    fn get_type_id() -> NodeType {
-        NodeType::Picture
-    }
-}
 
-impl Source for XheyPicture {
-    fn add_target<T:Consumer>(&self, target: &T, _location: u32){
-        println!("XheyCamera add_target");
+
+
+impl<'a,'b:'a> Source<'b> for XheyPicture<'b> {
+    fn add_target(&self, target: &'b dyn Consumer, _location: u32){
+        println!("XheyPicture add_target");
+        let mut targets = self._targets.borrow_mut();
+        targets.push(Box::new(target));
         target.set_source(self,_location);
     }
 
-    fn remove_all_targets(){
+    fn remove_all_targets(&self){
 
     }
 }
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_init_picture() -> *mut XheyPicture {
+pub extern "C" fn xhey_init_picture<'a>(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture<'a> {
     println!("xhey_init_picture");
-    unsafe {transmute(Box::new(XheyPicture::new()))}
+    unsafe {transmute(Box::new(XheyPicture::new(data,width,height)))}
 }
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_process_picture(picture: *mut XheyPicture){
+pub extern "C" fn xhey_process_picture(picture: *const XheyPicture){
     let picture :Box<XheyPicture>  = unsafe{transmute(picture)};
     picture.log();
+
 }
 
 

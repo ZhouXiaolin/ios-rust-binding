@@ -19,14 +19,14 @@ impl SerialDispatch {
         where F: FnOnce() -> T
     {
         self.makeCurrentContext();
-        operation();
+        operation()
     }
 
 }
-
+use ios_rust_binding::{ShareId};
 pub struct GlContext{
-    context: EAGLContext,
-    standardImageVBO: GLuint
+    pub context: ShareId<EAGLContext>,
+    pub standardImageVBO: GLuint
 }
 
 
@@ -40,34 +40,43 @@ static verticallyInvertedImageVertices: [f32; 8] = [
 
 
 impl GlContext {
-    fn new(){
-        let gneratedContext = EAGLContext::with_api(2);
-        let vec = Vec::from(standardImageVertices);
-        let standardImageVBO = generateVBO(vec);
+    pub fn new() -> Self{
+        let generatedContext = EAGLContext::withApi(2);
+        let generatedContext = generatedContext.share();
+        EAGLContext::setCurrentContext(&generatedContext);
 
+        let standardImageVBO = generateVBO(standardImageVertices.as_ptr(),standardImageVertices.len());
+        GlContext{context:generatedContext,standardImageVBO:standardImageVBO}
+    }
+
+
+    pub fn presentBufferForDisplay(&self){
+        self.context.presentRenderBuffer(GL_RENDERBUFFER as u64);
     }
 }
 
 impl SerialDispatch for GlContext {
     fn makeCurrentContext(&self){
-
+        EAGLContext::makeCurrentContext(&self.context);
     }
 }
 
 
 
-fn generateVBO(vertices: Vec<GLfloat>) -> GLuint {
+fn generateVBO(vertices: *const f32, len: usize) -> GLuint {
     let mut newBuffer: GLuint = 0;
     unsafe {
         glGenBuffers(1,&mut newBuffer);
         glBindBuffer(GL_ARRAY_BUFFER,newBuffer);
-        glBufferData(GL_ARRAY_BUFFER,(mem::size_of::<GLfloat>() as usize) * vertices.len() as isize, vertices.as_ptr() as *const _,GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,(mem::size_of::<GLfloat>() as isize) * (len as isize) , vertices as *const _,GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER,0);
         newBuffer
     }
 }
 
 fn deleteVBO(vbo: GLuint){
-    glDeleteBuffers(1,&vbo);
+    unsafe {
+        glDeleteBuffers(1,&vbo);
+    }
 }
 

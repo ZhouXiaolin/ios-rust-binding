@@ -1,24 +1,19 @@
 use core::{Source,Consumer};
 use std::mem::transmute;
-use core::{Node,NodeType};
+use core::{Node,NodeType,RenderNode};
 #[repr(C)]
 pub struct XheyCamera{
-
+    _type:RenderNode
 }
 
-impl Node for XheyCamera {
-    fn get_type_id() -> NodeType {
-        NodeType::Camera
-    }
-}
 
-impl Source for XheyCamera {
-    fn add_target<T:Consumer>(&self, target: &T, _location: u32){
+impl<'a> Source<'a> for XheyCamera {
+    fn add_target(&self, target: &'a dyn Consumer, _location: u32){
         println!("XheyCamera add_target");
         target.set_source(self,_location);
     }
 
-    fn remove_all_targets(){
+    fn remove_all_targets(&self){
 
     }
 }
@@ -26,6 +21,7 @@ impl Source for XheyCamera {
 impl XheyCamera {
     fn new() -> Self {
         XheyCamera {
+            _type:RenderNode::new(NodeType::Camera)
         }
     }
 }

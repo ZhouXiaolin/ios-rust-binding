@@ -1,3 +1,5 @@
+use self::framebuffer::Framebuffer;
+
 #[repr(C)]
 #[derive(Copy,Clone)]
 pub enum NodeType{
@@ -49,10 +51,12 @@ impl Node for RenderNode {
 pub trait Source<'a>{
     fn add_target(&self, target: &'a dyn Consumer, _location: u32);
     fn remove_all_targets(&self);
+    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer);
 }
 
 pub trait Consumer {
     fn set_source(&self, _source: &dyn Source, _location: u32);
+    fn newFramebufferAvailable(&self,framebuffer: &Framebuffer,fromSourceIndex: usize);
 }
 
 

@@ -8,7 +8,8 @@ use std::cell::{RefCell,Cell};
 #[repr(C)]
 pub struct XheyPicture<'a>{
     _type: RenderNode,
-    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>
+    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
+    _framebuffer: Framebuffer
 }
 
 
@@ -18,6 +19,7 @@ impl<'a> XheyPicture<'a> {
 
 
 
+        sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
         let framebuffer = Framebuffer::new_default(ImageOrientation::portrait,size,true);
 
@@ -29,28 +31,22 @@ impl<'a> XheyPicture<'a> {
 
         XheyPicture{
             _type: RenderNode::new(NodeType::Picture),
-            _targets: RefCell::new(Vec::new())
+            _targets: RefCell::default(),
+            _framebuffer: framebuffer
         }
     }
 
-    pub fn processImage() {
-
+    pub fn processImage(&self) {
+        self.updateTargetsWithFramebuffer(&self._framebuffer);
     }
 
 
-    fn log(&self) {
-//        for _i in self._targets.borrow().iter() {
-//          println!("log AAAAA")
-//        }
-
-        println!("Xhey Picture log");
-    }
 }
 
 
 
 
-impl<'a,'b:'a> Source<'b> for XheyPicture<'b> {
+impl<'a,'b:'a> Source<'b> for XheyPicture<'a> {
     fn add_target(&self, target: &'b dyn Consumer, _location: u32){
         println!("XheyPicture add_target");
         let mut targets = self._targets.borrow_mut();
@@ -61,20 +57,29 @@ impl<'a,'b:'a> Source<'b> for XheyPicture<'b> {
     fn remove_all_targets(&self){
 
     }
+
+    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
+        for (index,target) in self._targets.borrow_mut().iter().enumerate() {
+            target.newFramebufferAvailable(framebuffer,index);
+        }
+    }
 }
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
 pub extern "C" fn xhey_init_picture<'a>(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture<'a> {
     println!("xhey_init_picture");
-    unsafe {transmute(Box::new(XheyPicture::new(data,width,height)))}
+    let picture = Box::new(XheyPicture::new(data,width,height));
+    Box::into_raw(picture)
+
 }
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
 pub extern "C" fn xhey_process_picture(picture: *const XheyPicture){
-    let picture :Box<XheyPicture>  = unsafe{transmute(picture)};
-    picture.log();
+    let p = unsafe{picture.as_ref().unwrap()};
+    p.processImage();
+
 
 }
 
@@ -92,3 +97,4 @@ pub extern "C" fn test(path: *const c_char) -> *mut c_void{
         transmute(image)
     }
 }
+

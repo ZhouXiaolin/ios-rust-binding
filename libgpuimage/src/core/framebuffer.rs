@@ -134,11 +134,18 @@ fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, i
     }
 }
 
+impl Default for Framebuffer {
+    fn default() -> Self{
+        Framebuffer::new_default(ImageOrientation::portrait,GLSize::default(),false)
+    }
+}
+
 impl Framebuffer {
 
     pub fn new_default(orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Self {
         Framebuffer::new(orientation,size,textureOnly,GL_LINEAR as i32,GL_LINEAR as i32,GL_CLAMP_TO_EDGE as i32,GL_CLAMP_TO_EDGE as i32,GL_RGBA as i32,GL_BGRA as i32,GL_UNSIGNED_BYTE as i32,Option::None)
     }
+
 
     pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, minFilter: i32, magFilter: i32, wrapS: i32, wrapT: i32, internalFormat: i32, format: i32, _type: i32, overriddenTexture: Option<GLuint>) -> Self {
         let hash = hashForFramebufferWithProperties(size,textureOnly,minFilter,magFilter,wrapS,wrapT,internalFormat,format,_type,false);
@@ -172,7 +179,7 @@ impl Framebuffer {
     }
 
 
-    fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
+    pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
         if self.orientation.rotationNeededForOrientation(targetOrientation).flipsDimensions() {
             GLSize{width:self.size.height,height:self.size.width}
         }else{
@@ -180,7 +187,7 @@ impl Framebuffer {
         }
     }
 
-    fn aspectRatioForRotation(&self, rotation: Rotation) -> f32 {
+    pub fn aspectRatioForRotation(&self, rotation: Rotation) -> f32 {
         if rotation.flipsDimensions() {
             (self.size.width as f32) / (self.size.height as f32)
         }else{
@@ -188,7 +195,7 @@ impl Framebuffer {
         }
     }
 
-    fn texelSize(&self, rotation: Rotation) -> Size {
+    pub fn texelSize(&self, rotation: Rotation) -> Size {
         if rotation.flipsDimensions() {
             Size{width:1.0/(self.size.height as f32), height: 1.0/(self.size.width as f32)}
         }else{
@@ -196,13 +203,22 @@ impl Framebuffer {
         }
     }
 
-    fn initialStageTexelSize(&self, rotation: Rotation) -> Size {
+    pub fn initialStageTexelSize(&self, rotation: Rotation) -> Size {
         if rotation.flipsDimensions() {
             Size{width:1.0/(self.size.height as f32), height:0.0}
         }else{
             Size{width:0.0, height:1.0/(self.size.height as f32)}
         }
     }
+
+    pub fn activateFramebufferForRendering(&self){
+        unsafe {
+            glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
+            glViewport(0,0,self.size.width,self.size.height);
+        }
+    }
+
+
 
 
 }

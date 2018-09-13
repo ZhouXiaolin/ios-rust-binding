@@ -1,13 +1,13 @@
 use super::basic::XHeyBasicFilter;
 use core::{Node,NodeType};
 #[repr(C)]
-pub struct XHeyGaussianBlurFilter{
-    basic : XHeyBasicFilter,
+pub struct XHeyGaussianBlurFilter<'a>{
+    basic : XHeyBasicFilter<'a>,
 }
 
 
 
-impl XHeyGaussianBlurFilter {
+impl<'a> XHeyGaussianBlurFilter<'a> {
     pub fn new() -> Self {
         XHeyGaussianBlurFilter{
             basic: XHeyBasicFilter::new()

@@ -79,18 +79,14 @@
     CGColorSpaceRelease(genericRGBColorspace);
 
     
-//    XheyView* view = xhey_init_view((__bridge void*)demoView);
+    XheyView* view = xhey_init_view((__bridge void*)demoView);
     
-    XheyBasicFilter* basicFilter = xhey_init_basic_filter();
 
     XheyPicture* picture = xhey_init_picture(imageData,width,height);
-    xhey_add_target(picture, basicFilter);
+    xhey_add_target(picture, view);
     xhey_process_picture(picture);
-//
-//    xhey_process_picture(picture);
-//
-//    free(imageData);
-    
+
+    free(imageData);
     // Do any additional setup after loading the view, typically from a nib.
 }
 

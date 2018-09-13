@@ -20,15 +20,8 @@ pub mod tonecurve;
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_add_target(source: *mut c_void, consumer: *mut c_void){
-
-    let box_source = unsafe {
-        mem::transmute::<*mut c_void,Box<XheyPicture>>(source)
-    };
-
-    let box_consumer = unsafe {
-        mem::transmute::<*mut c_void,Box<XHeyBasicFilter>>(consumer)
-    };
-
-//    box_source.add_target(&*box_consumer,0); //这里需要开启NLL特性
+pub extern "C" fn xhey_add_target(source: *mut XheyPicture, consumer: *mut XHeyView){
+    let box_source = unsafe{source.as_ref().unwrap()};
+    let box_consumer = unsafe{consumer.as_ref().unwrap()};
+    box_source.add_target(box_consumer,0);
 }

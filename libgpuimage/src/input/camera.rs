@@ -1,14 +1,17 @@
 use core::{Source,Consumer};
+use core::framebuffer::Framebuffer;
 use std::mem::transmute;
 use core::{Node,NodeType,RenderNode};
+use std::cell::RefCell;
 #[repr(C)]
-pub struct XheyCamera{
-    _type:RenderNode
+pub struct XheyCamera<'a>{
+    _type:RenderNode,
+    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
 }
 
 
-impl<'a> Source<'a> for XheyCamera {
-    fn add_target(&self, target: &'a dyn Consumer, _location: u32){
+impl<'a,'b:'a> Source<'b> for XheyCamera<'a> {
+    fn add_target(&self, target: &'b dyn Consumer, _location: u32){
         println!("XheyCamera add_target");
         target.set_source(self,_location);
     }
@@ -16,12 +19,18 @@ impl<'a> Source<'a> for XheyCamera {
     fn remove_all_targets(&self){
 
     }
+    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
+        for (index,target) in self._targets.borrow_mut().iter().enumerate() {
+            target.newFramebufferAvailable(framebuffer,index);
+        }
+    }
 }
 
-impl XheyCamera {
+impl<'a> XheyCamera<'a> {
     fn new() -> Self {
         XheyCamera {
-            _type:RenderNode::new(NodeType::Camera)
+            _type:RenderNode::new(NodeType::Camera),
+            _targets:RefCell::default()
         }
     }
 }
@@ -29,10 +38,12 @@ impl XheyCamera {
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_init_camera() -> *mut XheyCamera {
+pub extern "C" fn xhey_init_camera<'a>() -> *mut XheyCamera<'a> {
     println!("xhey_init_camera");
-    unsafe {transmute(Box::new(XheyCamera::new()))}
+    let camera = Box::new(XheyCamera::new());
+    Box::into_raw(camera)
 }
+
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]

@@ -1,12 +1,12 @@
 use super::basic::XHeyBasicFilter;
 use core::{Node, NodeType};
 #[repr(C)]
-pub struct XHeyToneCurveFilter{
-    base: XHeyBasicFilter,
+pub struct XHeyToneCurveFilter<'a>{
+    base: XHeyBasicFilter<'a>,
 }
 
 
-impl XHeyToneCurveFilter {
+impl<'a> XHeyToneCurveFilter<'a> {
     pub fn new() -> Self {
         XHeyToneCurveFilter {
             base: XHeyBasicFilter::new()

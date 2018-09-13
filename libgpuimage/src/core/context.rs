@@ -26,7 +26,8 @@ impl SerialDispatch {
 use ios_rust_binding::{ShareId};
 pub struct GlContext{
     pub context: ShareId<EAGLContext>,
-    pub standardImageVBO: GLuint
+    pub standardImageVBO: GLuint,
+    pub passthroughShader: GLProgram
 }
 
 
@@ -46,7 +47,37 @@ impl GlContext {
         EAGLContext::setCurrentContext(&generatedContext);
 
         let standardImageVBO = generateVBO(standardImageVertices.as_ptr(),standardImageVertices.len());
-        GlContext{context:generatedContext,standardImageVBO:standardImageVBO}
+
+
+        let vertexStr = r#"
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+
+ varying vec2 textureCoordinate;
+
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
+    "#;
+
+        let fragmentStr = r#"
+ precision mediump float;
+
+ varying highp vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+
+ void main()
+ {
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+ }
+    "#;
+        let program = GLProgram::new(vertexStr,fragmentStr);
+        GlContext{
+            context:generatedContext,
+            standardImageVBO:standardImageVBO,
+            passthroughShader:program}
     }
 
 

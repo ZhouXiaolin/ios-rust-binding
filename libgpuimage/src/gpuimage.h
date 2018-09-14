@@ -26,7 +26,7 @@ extern "C" {
     struct XheyToneCurveFilter;
     struct XHeyLookupTableFilter;
     struct XHeyGaussianBlurFilter;
-    void xhey_add_target(void * source, void* consumer);
+    void xhey_add_target(void * source, void* filter, void* consumer);
     void* test(const char* path);
     int init(void);
     void xhey_init_triangle(void);

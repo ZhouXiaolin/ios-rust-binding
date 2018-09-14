@@ -2,6 +2,7 @@
 
 use ios_rust_binding::EAGLContext;
 use gles_rust_binding::*;
+use core::framebuffercache::FramebufferCache;
 use std::mem;
 pub trait SerialDispatch {
     fn makeCurrentContext(&self);
@@ -27,7 +28,8 @@ use ios_rust_binding::{ShareId};
 pub struct GlContext{
     pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
-    pub passthroughShader: GLProgram
+    pub passthroughShader: GLProgram,
+    pub frameubfferCache: FramebufferCache
 }
 
 
@@ -77,7 +79,9 @@ impl GlContext {
         GlContext{
             context:generatedContext,
             standardImageVBO:standardImageVBO,
-            passthroughShader:program}
+            passthroughShader:program,
+            frameubfferCache: FramebufferCache::default()
+        }
     }
 
 

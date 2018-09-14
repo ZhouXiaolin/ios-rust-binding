@@ -1,17 +1,25 @@
 #![allow(snake_case_name)]
 use core::GlContext;
+use core::framebuffercache::FramebufferCache;
+use core::sharedImageProcessingContext;
 use gles_rust_binding::GLuint;
 use gles_rust_binding::*;
+use std::cell::Cell;
+use std::rc::{Weak,Rc};
+// framebuffer
+
+#[derive(Clone)]
 pub struct Framebuffer {
-    size : GLSize,
-    orientation: ImageOrientation,
+    pub size : GLSize,
+    pub orientation: Cell<ImageOrientation>,
     internalFormat: i32,
     format: i32,
     _type: i32,
-    hash: i64,
+    pub hash: i64,
     textureOverride: bool,
     framebuffer: u32,
-    pub texture: u32
+    pub texture: u32,
+    framebufferRetainCount: Cell<u32>
 
 }
 
@@ -34,7 +42,7 @@ impl Rotation {
         }
     }
 }
-
+#[derive(Copy, Clone)]
 pub enum ImageOrientation{
     portrait,
     portraitUpsideDown,
@@ -166,21 +174,44 @@ impl Framebuffer {
 
         Framebuffer{
             size: size,
-            orientation:orientation,
+            orientation:Cell::new(orientation),
             internalFormat:internalFormat,
             format:format,
             _type:_type,
             hash:hash,
             textureOverride:textureOverride,
             framebuffer:framebuffer,
-            texture: texture
+            texture: texture,
+            framebufferRetainCount: Cell::default()
         }
 
     }
 
+    fn lock(&self){
+        let newValue = self.framebufferRetainCount.get() + 1;
+        self.framebufferRetainCount.set(newValue);
+    }
+    fn unlock(&self){
+        let newValue = self.framebufferRetainCount.get() - 1;
+        self.framebufferRetainCount.set(newValue);
+        if newValue < 1 {
+            self.framebufferRetainCount.set(0);
+            sharedImageProcessingContext.frameubfferCache.returnToCache(self.clone())
+        }
+
+
+
+    }
+    fn resetRetainCount(&self){
+        self.framebufferRetainCount.set(0);
+    }
+
 
     pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
-        if self.orientation.rotationNeededForOrientation(targetOrientation).flipsDimensions() {
+
+        let mut orientation = self.orientation.get();
+
+        if orientation.rotationNeededForOrientation(targetOrientation).flipsDimensions() {
             GLSize{width:self.size.height,height:self.size.width}
         }else{
             self.size

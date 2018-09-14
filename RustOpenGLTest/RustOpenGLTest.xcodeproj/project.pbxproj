@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F187FE5214B64AC00D855F6 /* XLHelpClass.m */; };
 		9F817385214759C100030F46 /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817383214759C100030F46 /* GLESUtils.m */; };
 		9F817386214759C100030F46 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.mm */; };
 		9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48DF213EC7F30026B7EF /* ViewController.mm */; };
@@ -16,9 +17,12 @@
 		9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */; };
 		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
 		9FB2F4352149F79A00806A1E /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FB2F4342149F79A00806A1E /* libgpuimage.a */; };
+		9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9F187FE4214B64AC00D855F6 /* XLHelpClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLHelpClass.h; sourceTree = "<group>"; };
+		9F187FE5214B64AC00D855F6 /* XLHelpClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLHelpClass.m; sourceTree = "<group>"; };
 		9F817381214759C000030F46 /* GLESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESUtils.h; sourceTree = "<group>"; };
 		9F817382214759C000030F46 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		9F817383214759C100030F46 /* GLESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLESUtils.m; sourceTree = "<group>"; };
@@ -35,6 +39,8 @@
 		9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9FB2F4032148E65E00806A1E /* IMG_1592.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1592.JPG; sourceTree = "<group>"; };
 		9FB2F4342149F79A00806A1E /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = "../libgpuimage/target/aarch64-apple-ios/release/libgpuimage.a"; sourceTree = "<group>"; };
+		9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraEntry.m; sourceTree = "<group>"; };
+		9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraEntry.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +80,10 @@
 				9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */,
 				9F8D48DE213EC7F30026B7EF /* ViewController.h */,
 				9F8D48DF213EC7F30026B7EF /* ViewController.mm */,
+				9F187FE4214B64AC00D855F6 /* XLHelpClass.h */,
+				9F187FE5214B64AC00D855F6 /* XLHelpClass.m */,
+				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
+				9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */,
 				9FB2F4032148E65E00806A1E /* IMG_1592.JPG */,
 				9F817381214759C000030F46 /* GLESUtils.h */,
 				9F817383214759C100030F46 /* GLESUtils.m */,
@@ -166,6 +176,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */,
+				9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */,
+				9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */,
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
 				9F817385214759C100030F46 /* GLESUtils.m in Sources */,
 				9F8D48EB213EC7F40026B7EF /* main.m in Sources */,

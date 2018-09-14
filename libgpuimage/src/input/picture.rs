@@ -4,7 +4,7 @@ use core::framebuffer::{Framebuffer,ImageOrientation,GLSize};
 use std::mem::transmute;
 use core::{Node,NodeType,RenderNode};
 use gles_rust_binding::*;
-use std::cell::{RefCell,Cell};
+use std::cell::{RefCell};
 #[repr(C)]
 pub struct XheyPicture<'a>{
     _type: RenderNode,

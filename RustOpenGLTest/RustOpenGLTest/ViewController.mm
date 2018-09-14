@@ -81,9 +81,10 @@
     
     XheyView* view = xhey_init_view((__bridge void*)demoView);
     
-
+    XheyBasicFilter* filter = xhey_init_basic_filter();
+    
     XheyPicture* picture = xhey_init_picture(imageData,width,height);
-    xhey_add_target(picture, view);
+    xhey_add_target(picture, filter, view);
     xhey_process_picture(picture);
 
     free(imageData);

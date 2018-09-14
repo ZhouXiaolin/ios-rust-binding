@@ -5,9 +5,9 @@ extern crate objc_id;
 pub use objc::*;
 pub use objc_id::*;
 
-use objc::declare::ClassDecl;
+use objc::declare::{ClassDecl,ProtocolDecl};
 use objc::{Encode, Encoding,Message};
-use objc::runtime::{BOOL, Class, NO, Object, Sel, YES};
+use objc::runtime::{BOOL, Class, NO, Object, Sel, YES, Protocol};
 
 
 pub type id = *mut Object;
@@ -173,6 +173,7 @@ pub type EAGLRenderingAPI = std::os::raw::c_char;
 pub const kEAGLRenderingAPIOpenGLES1 : EAGLRenderingAPI = 1;
 pub const kEAGLRenderingAPIOpenGLES2 : EAGLRenderingAPI = 2;
 pub const kEAGLRenderingAPIOpenGLES3 : EAGLRenderingAPI = 3;
+
 
 pub struct EAGLContext {
     _priv:()

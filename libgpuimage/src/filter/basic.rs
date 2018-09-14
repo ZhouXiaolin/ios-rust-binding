@@ -1,6 +1,6 @@
-use core::{Consumer,Source,Node,NodeType,RenderNode};
+use core::*;
 use core::framebuffer::{Framebuffer,ImageOrientation,GLSize};
-use core::sharedImageProcessingContext;
+
 use std::mem;
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
@@ -11,7 +11,7 @@ pub struct XHeyBasicFilter<'a>{
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
     _shader : GLProgram,
     _maximumInputs : i32,
-    _inputFramebuffers:RefCell<Vec<&'a Framebuffer>>,
+    _inputFramebuffers:RefCell<Vec<Framebuffer>>,
     _renderFramebuffer: RefCell<Framebuffer>,
 
 }
@@ -20,6 +20,7 @@ pub struct XHeyBasicFilter<'a>{
 
 impl<'a> XHeyBasicFilter<'a> {
     pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: i32) -> Self {
+        sharedImageProcessingContext.makeCurrentContext();
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
             _node:RenderNode::new(NodeType::BasicFilter),
@@ -31,6 +32,7 @@ impl<'a> XHeyBasicFilter<'a> {
         }
     }
     pub fn new() -> Self {
+        sharedImageProcessingContext.makeCurrentContext();
         let vertexStr = r#"
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
@@ -52,10 +54,12 @@ impl<'a> XHeyBasicFilter<'a> {
 
  void main()
  {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+     vec4 color = texture2D(inputImageTexture, textureCoordinate);
+     gl_FragColor = vec4(color.r, 0.0, 0.0, 1.0);
  }
     "#;
         let shader = GLProgram::new(vertexStr,fragmentStr);
+
         XHeyBasicFilter{
             _node:RenderNode::new(NodeType::BasicFilter),
             _targets:RefCell::new(Vec::new()),
@@ -71,7 +75,10 @@ impl<'a> XHeyBasicFilter<'a> {
 
 
 
+    }
 
+    fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
+        inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
     }
 }
 
@@ -107,13 +114,44 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 
     fn newFramebufferAvailable(&self, framebuffer: &Framebuffer, fromSourceIndex: usize){
 
-        let mut inputFramebuffers = self._inputFramebuffers.borrow_mut();
-        inputFramebuffers.insert(fromSourceIndex,framebuffer);
 
-        if self._inputFramebuffers.borrow().len() >= self._maximumInputs as usize {
-            self.renderFrame();
-            let outputFramebuffer = self._renderFramebuffer.borrow();
-            self.updateTargetsWithFramebuffer(&outputFramebuffer)
+        let mut inputFramebuffers = self._inputFramebuffers.borrow_mut();
+
+
+        inputFramebuffers.insert(fromSourceIndex,framebuffer.clone());
+
+        let len = inputFramebuffers.len();
+
+        if len >= self._maximumInputs as usize {
+
+
+
+
+            println!("basicFilter newFramebufferAvailable  1");
+
+            let inputFramebuffer = inputFramebuffers.first().unwrap();
+            println!("basicFilter newFramebufferAvailable  2");
+
+            let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
+            println!("basicFilter newFramebufferAvailable  3");
+
+            let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+            println!("basicFilter newFramebufferAvailable  4");
+
+            renderFramebuffer.activateFramebufferForRendering();
+            println!("basicFilter newFramebufferAvailable  5");
+
+            clearFramebufferWithColor(Color::black());
+            println!("basicFilter newFramebufferAvailable  6");
+
+            renderQuadWithShader(&self._shader,inputFramebuffer);
+            println!("basicFilter newFramebufferAvailable  7");
+
+
+
+
+//            let outputFramebuffer = self._renderFramebuffer.borrow();
+            self.updateTargetsWithFramebuffer(&renderFramebuffer)
         }
 
     }

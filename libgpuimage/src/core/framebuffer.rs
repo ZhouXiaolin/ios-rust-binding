@@ -33,11 +33,12 @@ impl Default for GPUTextureOptions {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone)] // 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
 pub struct Framebuffer {
     pub size : GLSize,
     pub orientation: Cell<ImageOrientation>,
     pub texture: u32,
+    hashString: String,
     framebuffer: u32,
     framebufferRetainCount: Cell<u32>,
     textureOptions: GPUTextureOptions,
@@ -172,8 +173,13 @@ impl Framebuffer {
         Framebuffer::new(orientation,size,textureOnly,default,Option::None)
     }
 
+    pub fn hashString (&self) -> String {
+        self.hashString.clone()
+    }
 
     pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, textureOptions: GPUTextureOptions, overriddenTexture: Option<GLuint>) -> Self {
+
+        let hashString = hashStringForFramebuffer(size,textureOnly,textureOptions);
 
         let (textureOverride,texture) = match overriddenTexture {
             Some(newTexture) => (true,newTexture),
@@ -193,6 +199,7 @@ impl Framebuffer {
             size: size,
             orientation:Cell::new(orientation),
             textureOptions:textureOptions,
+            hashString:hashString,
             textureOverride:textureOverride,
             framebuffer:framebuffer,
             texture: texture,
@@ -201,13 +208,21 @@ impl Framebuffer {
 
     }
 
-    fn lock(&self){
+    pub fn lock(&self){
         let newValue = self.framebufferRetainCount.get() + 1;
         self.framebufferRetainCount.set(newValue);
     }
-    fn unlock(&self){
+    pub fn unlock(&self){
         let newValue = self.framebufferRetainCount.get() - 1;
         self.framebufferRetainCount.set(newValue);
+
+        if newValue < 1 {
+
+            println!("return To Cache");
+            self.resetRetainCount();
+
+            sharedImageProcessingContext.frameubfferCache.returnToCache(self);
+        }
 
     }
     fn resetRetainCount(&self){

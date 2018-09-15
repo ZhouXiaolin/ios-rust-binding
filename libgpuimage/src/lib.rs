@@ -1,4 +1,4 @@
-//#![feature(nll)]
+#![feature(nll)]
 #![allow(non_camel_case_types,non_upper_case_globals)]
 extern crate gles_rust_binding;
 extern crate fnv;

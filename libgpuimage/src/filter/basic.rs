@@ -126,21 +126,21 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 
 
 
-
-
             let inputFramebuffer = inputFramebuffers.first().unwrap();
 
             let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
             let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
+            renderFramebuffer.lock();
             renderFramebuffer.activateFramebufferForRendering();
 
             clearFramebufferWithColor(Color::black());
 
             renderQuadWithShader(&self._shader,inputFramebuffer);
 
-            self.updateTargetsWithFramebuffer(&renderFramebuffer)
+            self.updateTargetsWithFramebuffer(&renderFramebuffer);
+            renderFramebuffer.unlock();
         }
 
     }
@@ -152,5 +152,39 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 #[no_mangle]
 pub extern "C" fn xhey_init_basic_filter<'a>() -> *mut XHeyBasicFilter<'a> {
     let filter = Box::new(XHeyBasicFilter::new());
+    Box::into_raw(filter)
+}
+
+#[allow(non_snake_case, unused_variables, dead_code)]
+#[no_mangle]
+pub extern "C" fn xhey_init_basic_filter_2<'a>() -> *mut XHeyBasicFilter<'a> {
+
+    let vertexStr = r#"
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+
+ varying vec2 textureCoordinate;
+
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
+    "#;
+
+    let fragmentStr = r#"
+ precision mediump float;
+
+ varying highp vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+
+ void main()
+ {
+     vec4 color = texture2D(inputImageTexture, textureCoordinate);
+     gl_FragColor = vec4(0.0,color.r, 0.0, 1.0);
+ }
+    "#;
+
+    let filter = Box::new(XHeyBasicFilter::new_shader(vertexStr,fragmentStr,1));
     Box::into_raw(filter)
 }

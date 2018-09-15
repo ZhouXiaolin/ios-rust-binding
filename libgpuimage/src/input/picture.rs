@@ -21,7 +21,7 @@ impl<'a> XheyPicture<'a> {
 
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
-        let framebuffer = Framebuffer::new_default(ImageOrientation::portrait,size,true);
+        let framebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);

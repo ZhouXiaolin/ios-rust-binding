@@ -20,10 +20,13 @@ pub mod tonecurve;
 
 #[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
-pub extern "C" fn xhey_add_target<'a>(source: *mut XheyPicture<'a>, filter: *mut XHeyBasicFilter<'a>, consumer: *mut XHeyView){
+pub extern "C" fn xhey_add_target<'a>(source: *mut XheyPicture<'a>, filter: *mut XHeyBasicFilter<'a>, filter2: *mut XHeyBasicFilter<'a>, consumer: *mut XHeyView){
     let box_picture = unsafe{source.as_ref().unwrap()};
     let box_filter = unsafe{filter.as_ref().unwrap()};
+    let box_filter2 = unsafe{filter2.as_ref().unwrap()};
+
     let box_view = unsafe{consumer.as_ref().unwrap()};
     box_picture.add_target(box_filter,0);
-    box_filter.add_target(box_view,0);
+    box_filter.add_target(box_filter2,0);
+    box_filter2.add_target(box_view,0);
 }

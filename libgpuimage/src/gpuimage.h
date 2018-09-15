@@ -23,10 +23,12 @@ extern "C" {
 
     struct XheyBasicFilter;
     struct XheyBasicFilter* xhey_init_basic_filter();
+    struct XheyBasicFilter* xhey_init_basic_filter_2();
+
     struct XheyToneCurveFilter;
     struct XHeyLookupTableFilter;
     struct XHeyGaussianBlurFilter;
-    void xhey_add_target(void * source, void* filter, void* consumer);
+    void xhey_add_target(void * source, void* filter,void* filter2, void* consumer);
     void* test(const char* path);
     int init(void);
     void xhey_init_triangle(void);

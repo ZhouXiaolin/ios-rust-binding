@@ -127,30 +127,19 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 
 
 
-            println!("basicFilter newFramebufferAvailable  1");
 
             let inputFramebuffer = inputFramebuffers.first().unwrap();
-            println!("basicFilter newFramebufferAvailable  2");
 
             let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
-            println!("basicFilter newFramebufferAvailable  3");
 
             let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-            println!("basicFilter newFramebufferAvailable  4");
 
             renderFramebuffer.activateFramebufferForRendering();
-            println!("basicFilter newFramebufferAvailable  5");
 
             clearFramebufferWithColor(Color::black());
-            println!("basicFilter newFramebufferAvailable  6");
 
             renderQuadWithShader(&self._shader,inputFramebuffer);
-            println!("basicFilter newFramebufferAvailable  7");
 
-
-
-
-//            let outputFramebuffer = self._renderFramebuffer.borrow();
             self.updateTargetsWithFramebuffer(&renderFramebuffer)
         }
 

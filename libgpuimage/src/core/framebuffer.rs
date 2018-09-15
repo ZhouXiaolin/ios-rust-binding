@@ -37,7 +37,6 @@ impl Default for GPUTextureOptions {
 pub struct Framebuffer {
     pub size : GLSize,
     pub orientation: Cell<ImageOrientation>,
-    pub hash: i64,
     pub texture: u32,
     framebuffer: u32,
     framebufferRetainCount: Cell<u32>,
@@ -114,20 +113,14 @@ pub struct Size {
     pub height: f32
 }
 
-pub fn hashForFramebufferWithProperties(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions , stencil:bool ) -> i64 {
-    let mut result:i64 = 1;
-    let prime:i64 = 31;
-    let yesPrime:i64 = 1231;
-    let noPrime:i64 = 1237;
-
-    result = prime * result + (size.width as i64);
-    result = prime * result + (size.height as i64);
-    result = prime * result + (textureOptions.internalFormat as i64);
-    result = prime * result + (textureOptions.format as i64);
-    result = prime * result + (textureOptions._type as i64);
-    result = prime * result + (if textureOnly { yesPrime } else {noPrime});
-    result = prime * result + (if stencil {yesPrime} else{ noPrime});
-    return result
+pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
+    if textureOnly {
+       let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
+        string
+    }else{
+        let string = format!("FB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
+        string
+    }
 }
 
 fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
@@ -181,7 +174,6 @@ impl Framebuffer {
 
 
     pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, textureOptions: GPUTextureOptions, overriddenTexture: Option<GLuint>) -> Self {
-        let hash = hashForFramebufferWithProperties(size,textureOnly,textureOptions,false);
 
         let (textureOverride,texture) = match overriddenTexture {
             Some(newTexture) => (true,newTexture),
@@ -201,7 +193,6 @@ impl Framebuffer {
             size: size,
             orientation:Cell::new(orientation),
             textureOptions:textureOptions,
-            hash:hash,
             textureOverride:textureOverride,
             framebuffer:framebuffer,
             texture: texture,
@@ -217,12 +208,6 @@ impl Framebuffer {
     fn unlock(&self){
         let newValue = self.framebufferRetainCount.get() - 1;
         self.framebufferRetainCount.set(newValue);
-        if newValue < 1 {
-            self.framebufferRetainCount.set(0);
-            sharedImageProcessingContext.frameubfferCache.returnToCache(self.clone())
-        }
-
-
 
     }
     fn resetRetainCount(&self){

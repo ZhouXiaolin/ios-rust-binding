@@ -2,7 +2,7 @@
 use core::framebuffer::*;
 use core::context::GlContext;
 use core::sharedImageProcessingContext;
-use std::collections::BTreeMap;
+use fnv::FnvHashMap;
 use std::cell::{RefCell,Cell};
 use core::context::SerialDispatch;
 use gles_rust_binding::*;
@@ -11,9 +11,9 @@ use std::rc::Rc;
 use std::marker::Sync;
 
 
-// 这个缓存如何设计 内部可变 RefCell 字典 BTreeMap 以 i64 为key, 储存一个Framebuffer的数组,内部可变，每个Framebuffer是Rc 这里应该设计为struct()???
+// 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer的数组,内部可变，每个Framebuffer是Rc 这里应该设计为struct()???
 
-pub struct FramebufferCache(pub RefCell<BTreeMap<i64,RefCell<Vec<Rc<Framebuffer>>>>>);
+pub struct FramebufferCache(RefCell<FnvHashMap<String,RefCell<Vec<Rc<Framebuffer>>>>>);
 
 impl Default for FramebufferCache {
     fn default() -> Self {
@@ -35,7 +35,7 @@ impl FramebufferCache {
 
     pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> Rc<Framebuffer> {
 
-        let hash = hashForFramebufferWithProperties(size,textureOnly,textureOptions,false);
+        let hash = hashStringForFramebuffer(size,textureOnly,textureOptions);
 
         let mut framebufferCache = self.0.borrow_mut();
 
@@ -65,21 +65,5 @@ impl FramebufferCache {
         self.0.borrow_mut().clear();
     }
 
-    pub fn returnToCache(&self, framebuffer : Framebuffer){
 
-        sharedImageProcessingContext.makeCurrentContext();
-
-        match self.0.borrow_mut().get(&framebuffer.hash) {
-            Some(vec) => {
-                let mut v = vec.borrow_mut();
-                v.push(Rc::new(framebuffer));
-
-            },
-            None => {
-                let hash = framebuffer.hash;
-                let value = RefCell::new(vec![Rc::new(framebuffer)]);
-                self.0.borrow_mut().insert(hash,value);
-            }
-        }
-    }
 }

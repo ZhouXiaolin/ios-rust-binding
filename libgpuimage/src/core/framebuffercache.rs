@@ -29,12 +29,13 @@ unsafe impl Sync for FramebufferCache{}
 impl FramebufferCache {
 
     pub fn requestFramebufferWithDefault(&self, orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Rc<Framebuffer> {
-        self.requestFramebufferWithProperties(orientation,size,textureOnly,GL_LINEAR as i32,GL_LINEAR as i32,GL_CLAMP_TO_EDGE as i32,GL_CLAMP_TO_EDGE as i32,GL_RGBA as i32,GL_BGRA as i32,GL_UNSIGNED_BYTE as i32)
+        let default = GPUTextureOptions::default();
+        self.requestFramebufferWithProperties(orientation,size,textureOnly,default)
     }
 
-    pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, minFilter:i32, magFilter:i32 , wrapS:i32 , wrapT:i32 , internalFormat:i32 , format:i32 , _type:i32 ) -> Rc<Framebuffer> {
+    pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> Rc<Framebuffer> {
 
-        let hash = hashForFramebufferWithProperties(size,textureOnly,minFilter,magFilter,wrapS,wrapT,internalFormat,format,_type,false);
+        let hash = hashForFramebufferWithProperties(size,textureOnly,textureOptions,false);
 
         let mut framebufferCache = self.0.borrow_mut();
 
@@ -53,7 +54,7 @@ impl FramebufferCache {
 
             },
             None => {
-                let framebuffer = Rc::new(Framebuffer::new(orientation,size,textureOnly,minFilter,magFilter,wrapS,wrapT,internalFormat,format,_type,None));
+                let framebuffer = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
                 framebuffer
             }
         }

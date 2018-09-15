@@ -8,18 +8,42 @@ use std::cell::Cell;
 use std::rc::{Weak,Rc};
 // framebuffer
 
+#[derive(Copy, Clone)]
+pub struct GPUTextureOptions {
+    minFilter : GLenum,
+    magFilter : GLenum,
+    wrapS : GLenum,
+    wrapT : GLenum,
+    internalFormat : GLenum,
+    format : GLenum,
+    _type : GLenum
+}
+
+impl Default for GPUTextureOptions {
+    fn default() -> Self {
+        GPUTextureOptions {
+            minFilter: GL_LINEAR,
+            magFilter: GL_LINEAR,
+            wrapS: GL_CLAMP_TO_EDGE,
+            wrapT: GL_CLAMP_TO_EDGE,
+            internalFormat: GL_RGBA,
+            format: GL_BGRA,
+            _type: GL_UNSIGNED_BYTE
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct Framebuffer {
     pub size : GLSize,
     pub orientation: Cell<ImageOrientation>,
-    internalFormat: i32,
-    format: i32,
-    _type: i32,
     pub hash: i64,
-    textureOverride: bool,
-    framebuffer: u32,
     pub texture: u32,
-    framebufferRetainCount: Cell<u32>
+    framebuffer: u32,
+    framebufferRetainCount: Cell<u32>,
+    textureOptions: GPUTextureOptions,
+    textureOverride: bool,
+
 
 }
 
@@ -90,7 +114,7 @@ pub struct Size {
     pub height: f32
 }
 
-pub fn hashForFramebufferWithProperties(size:GLSize, textureOnly:bool, minFilter:i32, magFilter:i32, wrapS:i32 , wrapT:i32 , internalFormat:i32 , format:i32 , _type:i32 , stencil:bool ) -> i64 {
+pub fn hashForFramebufferWithProperties(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions , stencil:bool ) -> i64 {
     let mut result:i64 = 1;
     let prime:i64 = 31;
     let yesPrime:i64 = 1231;
@@ -98,25 +122,25 @@ pub fn hashForFramebufferWithProperties(size:GLSize, textureOnly:bool, minFilter
 
     result = prime * result + (size.width as i64);
     result = prime * result + (size.height as i64);
-    result = prime * result + (internalFormat as i64);
-    result = prime * result + (format as i64);
-    result = prime * result + (_type as i64);
+    result = prime * result + (textureOptions.internalFormat as i64);
+    result = prime * result + (textureOptions.format as i64);
+    result = prime * result + (textureOptions._type as i64);
     result = prime * result + (if textureOnly { yesPrime } else {noPrime});
     result = prime * result + (if stencil {yesPrime} else{ noPrime});
     return result
 }
 
-fn generateTexture(minFilter:i32, magFilter:i32, wrapS:i32, wrapT:i32) -> GLuint {
+fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
     let mut texture:GLuint = 0;
 
     unsafe {
         glActiveTexture(GL_TEXTURE1);
         glGenTextures(1, &mut texture);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magFilter);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapS);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureOptions.minFilter as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureOptions.magFilter as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureOptions.wrapS as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureOptions.wrapT as i32);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
@@ -124,14 +148,14 @@ fn generateTexture(minFilter:i32, magFilter:i32, wrapS:i32, wrapT:i32) -> GLuint
     texture
 }
 use std::ptr;
-fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, internalFormat: i32, format: i32, _type:i32) -> GLuint{
+fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
     let mut framebuffer : GLuint = 0;
     unsafe {
         glActiveTexture(GL_TEXTURE1);
         glGenFramebuffers(1,&mut framebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
         glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D,0,internalFormat,width,height,0,format as u32,_type as u32,ptr::null());
+        glTexImage2D(GL_TEXTURE_2D,0,textureOptions.internalFormat as i32,width,height,0,textureOptions.format,textureOptions._type,ptr::null());
         glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0);
 
         glBindTexture(GL_TEXTURE_2D,0);
@@ -151,23 +175,24 @@ impl Default for Framebuffer {
 impl Framebuffer {
 
     pub fn new_default(orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Self {
-        Framebuffer::new(orientation,size,textureOnly,GL_LINEAR as i32,GL_LINEAR as i32,GL_CLAMP_TO_EDGE as i32,GL_CLAMP_TO_EDGE as i32,GL_RGBA as i32,GL_BGRA as i32,GL_UNSIGNED_BYTE as i32,Option::None)
+        let default = GPUTextureOptions::default();
+        Framebuffer::new(orientation,size,textureOnly,default,Option::None)
     }
 
 
-    pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, minFilter: i32, magFilter: i32, wrapS: i32, wrapT: i32, internalFormat: i32, format: i32, _type: i32, overriddenTexture: Option<GLuint>) -> Self {
-        let hash = hashForFramebufferWithProperties(size,textureOnly,minFilter,magFilter,wrapS,wrapT,internalFormat,format,_type,false);
+    pub fn new(orientation: ImageOrientation, size: GLSize, textureOnly: bool, textureOptions: GPUTextureOptions, overriddenTexture: Option<GLuint>) -> Self {
+        let hash = hashForFramebufferWithProperties(size,textureOnly,textureOptions,false);
 
         let (textureOverride,texture) = match overriddenTexture {
             Some(newTexture) => (true,newTexture),
             None => {
-                let texture = generateTexture(minFilter,magFilter,wrapS,wrapT);
+                let texture = generateTexture(textureOptions);
                 (false, texture)
             }
         };
 
         let framebuffer = if !textureOnly {
-            generateFramebufferForTexture(texture, size.width, size.height, internalFormat, format,_type)
+            generateFramebufferForTexture(texture, size.width, size.height, textureOptions)
         }else{
             0
         };
@@ -175,9 +200,7 @@ impl Framebuffer {
         Framebuffer{
             size: size,
             orientation:Cell::new(orientation),
-            internalFormat:internalFormat,
-            format:format,
-            _type:_type,
+            textureOptions:textureOptions,
             hash:hash,
             textureOverride:textureOverride,
             framebuffer:framebuffer,

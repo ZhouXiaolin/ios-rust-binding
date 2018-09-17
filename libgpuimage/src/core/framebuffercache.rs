@@ -12,7 +12,6 @@ use std::marker::Sync;
 
 
 // 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
-
 pub struct FramebufferCache(RefCell<FnvHashMap<String,Framebuffer>>);
 
 impl Default for FramebufferCache {
@@ -39,29 +38,24 @@ impl FramebufferCache {
 
         let hash = hashStringForFramebuffer(size,textureOnly,textureOptions);
 
-        let framebufferCache = self.0.borrow();
+        let hashSet = self.0.borrow();
+        if hashSet.contains_key(&hash) {
+            println!("contains this hashString,find framebuffer from cache");
+            // 存在这个hashString 则进一步在framebufferCache中寻找
+            let frameBufferCache = self.0.borrow();
+            let fb = frameBufferCache.get(&hash).expect("Error, Cannot Find Framebuffer");
+            fb.orientation.set(orientation);
+            fb.clone()
 
 
-        let result = framebufferCache.get(&hash);
-
-        match result {
-            Some(framebuffer) => {
-
-                println!("framebufferCache count {}",framebufferCache.len());
-
-                let fb = framebuffer;
-
-                fb.orientation.set(orientation);
-                fb.clone()
-
-
-
-            },
-            None => {
-                let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
-                framebuffer
-            }
+        }else{
+            // 为什么不在这里直接存入，因为在使用RefCell时，不允许借用和可变可用同时存在，
+            println!("create a new framebuffer, hashString {}",hash);
+            let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
+            framebuffer
         }
+
+
 
     }
 
@@ -70,14 +64,11 @@ impl FramebufferCache {
     }
 
 
-    pub fn returnToCache(&self, framebuffer: &Framebuffer){
-        sharedImageProcessingContext.makeCurrentContext();
+    pub fn returnToCache(&self, framebuffer:&Framebuffer){
         let mut framebufferCache = self.0.borrow_mut();
         let hashString = framebuffer.hashString();
-
         framebufferCache.insert(hashString,framebuffer.clone());
 
-        println!("framebufferCache count {}",framebufferCache.len());
     }
 
 }

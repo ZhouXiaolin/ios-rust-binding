@@ -132,7 +132,6 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 
             let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
-            renderFramebuffer.lock();
             renderFramebuffer.activateFramebufferForRendering();
 
             clearFramebufferWithColor(Color::black());
@@ -140,7 +139,6 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
             renderQuadWithShader(&self._shader,inputFramebuffer);
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
-            renderFramebuffer.unlock();
         }
 
     }

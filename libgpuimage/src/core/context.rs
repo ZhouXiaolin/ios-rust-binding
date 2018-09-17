@@ -1,6 +1,8 @@
 use ios_rust_binding::EAGLContext;
 use gles_rust_binding::*;
 use super::FramebufferCache;
+use super::Rotation;
+use std::collections::BTreeMap;
 use std::mem;
 
 use ios_rust_binding::{ShareId};
@@ -8,17 +10,13 @@ pub struct GlContext{
     pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,
-    pub frameubfferCache: FramebufferCache
+    pub frameubfferCache: FramebufferCache,
+    pub textureVBOs: BTreeMap<u32,GLuint>
+
 }
 
 
-static standardImageVertices: [f32; 8] = [
-    -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0
-];
 
-static verticallyInvertedImageVertices: [f32; 8] = [
-    -1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0
-];
 
 
 impl GlContext {
@@ -26,6 +24,8 @@ impl GlContext {
         let generatedContext = EAGLContext::withApi(2);
         let generatedContext = generatedContext.share();
         EAGLContext::setCurrentContext(&generatedContext);
+
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
 
         let standardImageVBO = generateVBO(standardImageVertices.as_ptr(),standardImageVertices.len());
 
@@ -55,11 +55,25 @@ impl GlContext {
  }
     "#;
         let program = GLProgram::new(vertexStr,fragmentStr);
+
+        let mut textureVBOs = BTreeMap::new();
+
+        textureVBOs.insert(Rotation::noRotation.toRawValue(),generateVBO(Rotation::noRotation.textureCoordinates().as_ptr(),Rotation::noRotation.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::rotateCounterclockwise.toRawValue(),generateVBO(Rotation::rotateCounterclockwise.textureCoordinates().as_ptr(),Rotation::rotateCounterclockwise.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::rotateClockwise.toRawValue(),generateVBO(Rotation::rotateClockwise.textureCoordinates().as_ptr(),Rotation::rotateClockwise.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::rotate180.toRawValue(),generateVBO(Rotation::rotate180.textureCoordinates().as_ptr(),Rotation::rotate180.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::flipHorizontally.toRawValue(),generateVBO(Rotation::flipHorizontally.textureCoordinates().as_ptr(),Rotation::flipHorizontally.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::flipVertically.toRawValue(),generateVBO(Rotation::flipVertically.textureCoordinates().as_ptr(),Rotation::flipVertically.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::rotateClockwiseAndFlipVertically.toRawValue(),generateVBO(Rotation::rotateClockwiseAndFlipVertically.textureCoordinates().as_ptr(),Rotation::rotateClockwiseAndFlipVertically.textureCoordinates().len()));
+        textureVBOs.insert(Rotation::rotateClockwiseAndFlipHorizontally.toRawValue(),generateVBO(Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates().as_ptr(),Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates().len()));
+
+
         GlContext{
             context:generatedContext,
             standardImageVBO:standardImageVBO,
             passthroughShader:program,
-            frameubfferCache: FramebufferCache::default()
+            frameubfferCache: FramebufferCache::default(),
+            textureVBOs: textureVBOs
         }
     }
 
@@ -70,6 +84,13 @@ impl GlContext {
 
     pub fn makeCurrentContext(&self){
         EAGLContext::makeCurrentContext(&self.context);
+    }
+
+
+
+    pub fn textureVBO(&self, rotation: Rotation) -> GLuint {
+        let textureVBO = self.textureVBOs.get(&rotation.toRawValue()).expect("Error in context 95 line");
+        *textureVBO
     }
 }
 

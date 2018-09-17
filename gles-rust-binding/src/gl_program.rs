@@ -94,11 +94,13 @@ impl GLProgram {
     }
 
     #[inline(always)]
-    pub fn get_attribute(&self, name: &str) -> &GLAttribute {
-        match self.attributes.get(name) {
-            Some(ref attribute) => attribute,
-            None => panic!("No attribute named {:?} found", name),
-        }
+    pub fn get_attribute(&self, name: &str) ->Option<&GLAttribute> {
+        let attributes = self.attributes.get(name);
+        attributes
+//        match self.attributes.get(name) {
+//            Some(ref attribute) => attribute,
+//            None => panic!("No attribute named {:?} found", name),
+//        }
     }
 
     #[inline(always)]

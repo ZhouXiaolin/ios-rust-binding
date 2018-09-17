@@ -2,17 +2,21 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
 
-use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType};
+use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType,ImageOrientation,InputTextureProperties,InputTextureStorageFormat};
 use super::GLRender::*;
+use super::FillMode;
 use super::sharedImageProcessingContext;
+use super::GLRender::*;
 use std::cell::Cell;
+use std::ptr;
 #[repr(C)]
 pub struct XHeyView {
     _type: RenderNode,
     displayFramebuffer: Cell<GLuint>,
     displayRenderbuffer: Cell<GLuint>,
     backingSize: Cell<GLSize>,
-    layer: ShareId<CALayer>
+    layer: ShareId<CALayer>,
+    orientation: ImageOrientation
 }
 
 
@@ -36,7 +40,21 @@ impl Consumer for XHeyView {
         clearFramebufferWithColor(Color::black());
 
         let program = &sharedImageProcessingContext.passthroughShader;
-        renderQuadWithShader(program,framebuffer);
+
+        let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
+
+        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize.get());
+
+        println!("scaledVertices: {:?}",scaledVertices);
+
+        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
+
+
+
+//        Self::renderQuadWithShader(program,Some(scaledVertices),None,&vec![inputTexture]);
+
+
+        renderQuadWithShaderF(program,framebuffer,scaledVertices);
 
         unsafe {
             glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
@@ -44,6 +62,7 @@ impl Consumer for XHeyView {
         sharedImageProcessingContext.presentBufferForDisplay();
 
     }
+
 }
 
 
@@ -60,7 +79,8 @@ impl XHeyView {
             displayFramebuffer:Cell::default(),
             displayRenderbuffer:Cell::default(),
             backingSize:Cell::default(),
-            layer:layer
+            layer:layer,
+            orientation: ImageOrientation::portrait
         }
     }
 
@@ -102,6 +122,105 @@ impl XHeyView {
 
         }
     }
+
+
+    pub fn textureUnitForIndex(index: usize) -> GLenum {
+        match index {
+            0 => GL_TEXTURE0,
+            1 => GL_TEXTURE1,
+            2 => GL_TEXTURE2,
+            3 => GL_TEXTURE3,
+            4 => GL_TEXTURE4,
+            5 => GL_TEXTURE5,
+            6 => GL_TEXTURE6,
+            7 => GL_TEXTURE7,
+            8 => GL_TEXTURE8,
+            _ => panic!("Attempted to address too high a texture unit")
+        }
+    }
+
+    pub fn renderQuadWithShader(program: &GLProgram, vertices:Option<[f32;8]>, vertexBufferObject:Option<GLuint>, inputTextures: &Vec<InputTextureProperties>) {
+        sharedImageProcessingContext.makeCurrentContext();
+        unsafe {
+
+            program.bind();
+
+
+            let position = program.get_attribute("position").unwrap();
+            if let Some(boundVBO) = vertexBufferObject {
+                println!("render boundVBO");
+
+//                glBindBuffer(GL_ARRAY_BUFFER,boundVBO);
+//                glVertexAttribPointer(position.location() as u32,2,GL_FLOAT,0,0,ptr::null());
+//                glBindBuffer(GL_ARRAY_BUFFER,0);
+            }else{
+                println!("render vertices");
+
+                glVertexAttribPointer(position.location() as u32,2,GL_FLOAT,GL_FALSE,0,vertices.unwrap().as_ptr() as *const _);
+                glEnableVertexAttribArray(position.location() as u32);
+            }
+
+
+            for (index,inputTexture) in inputTextures.iter().enumerate() {
+
+                let (attribute,inputTextureUniform) = if index == 0 {
+                    (format!("inputTextureCoordinate"),format!("inputImageTexture"))
+                }else{
+                    (format!("inputTextureCoordinate{}",index),format!("inputImageTexture{}",index))
+                };
+
+                if let Some(textureCoordinateAttribute) = program.get_attribute(&attribute) {
+                    match inputTexture.textureStorage {
+                        InputTextureStorageFormat::textureCoordinate(textureCoordinates) => {
+                            println!("view texture coordinate");
+
+                            glVertexAttribPointer(textureCoordinateAttribute.location() as u32,2,GL_FLOAT,0,0,textureCoordinates.as_ptr() as *const _);
+                            glEnableVertexAttribArray(textureCoordinateAttribute.location() as u32);
+
+                        },
+                        InputTextureStorageFormat::textureVBO(textureVBO) => {
+                            println!("view texture vbo");
+                            glBindBuffer(GL_ARRAY_BUFFER,textureVBO);
+                            glVertexAttribPointer(textureCoordinateAttribute.location() as u32,2,GL_FLOAT,0,0,ptr::null());
+                            glEnableVertexAttribArray(textureCoordinateAttribute.location() as u32);
+
+                        }
+                    }
+
+                }else if index == 0 {
+                    panic!("The required attribute named inputTextureCoordinate was missing from the shader program during rendering.");
+
+                }
+
+
+                let inputImageTexture = program.get_uniform(&inputTextureUniform);
+                glActiveTexture(Self::textureUnitForIndex(index));
+                glBindTexture(GL_TEXTURE_2D,inputTexture.texture);
+                glUniform1i(0,inputImageTexture.location() as i32);
+
+            }
+
+
+
+
+
+
+
+            glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+
+            if let Some(_) = vertexBufferObject {
+                glBindBuffer(GL_ARRAY_BUFFER,0);
+            }
+
+            for (index,_) in inputTextures.iter().enumerate() {
+                glActiveTexture(Self::textureUnitForIndex(index));
+                glBindTexture(GL_TEXTURE_2D,0);
+            }
+        }
+    }
+
+
 }
 
 

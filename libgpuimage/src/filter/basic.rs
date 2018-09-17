@@ -133,11 +133,23 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
 
             let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
+            let textureProperties = {
+                let mut inputTextureProperties = vec![];
+                for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                    inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
+                }
+                inputTextureProperties
+            };
+
             renderFramebuffer.activateFramebufferForRendering();
 
             clearFramebufferWithColor(Color::black());
+            let vertices:[f32;8] = [-1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0];
 
-            renderQuadWithShader(&self._shader,inputFramebuffer);
+
+            renderQuadWithShaderF(&self._shader,inputFramebuffer,vertices);
+
+//            renderQuadWithShader(&self._shader,Some(vertices),None,&textureProperties);
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
         }

@@ -83,7 +83,6 @@ impl Position{
         Position::new(0.0,0.0,0.0)
     }
 }
-
 pub enum Rotation {
     noRotation,
     rotateCounterclockwise,
@@ -92,18 +91,34 @@ pub enum Rotation {
     flipHorizontally,
     flipVertically,
     rotateClockwiseAndFlipVertically,
-    rotateClockwiseAndFlipHorizontally
+    rotateClockwiseAndFlipHorizontally,
 }
 
+
+
 impl Rotation {
-    fn flipsDimensions(&self) -> bool {
+    pub fn toRawValue(&self) -> u32 {
+        match self {
+            Rotation::noRotation => 0,
+            Rotation::rotateCounterclockwise => 1,
+            Rotation::rotateClockwise => 2,
+            Rotation::rotate180 => 3,
+            Rotation::flipHorizontally => 4,
+            Rotation::flipVertically => 5,
+            Rotation::rotateClockwiseAndFlipVertically => 6,
+            Rotation::rotateClockwiseAndFlipHorizontally => 7
+        }
+    }
+    pub fn flipsDimensions(&self) -> bool {
+
         match self {
             Rotation::noRotation | Rotation::rotate180 | Rotation::flipHorizontally | Rotation::flipVertically => false,
             _ => true
         }
     }
 
-    fn textureCoordinates(&self) -> [f32;8] {
+    pub fn textureCoordinates(&self) -> [f32;8] {
+
         match self {
             Rotation::noRotation => [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0],
             Rotation::rotateCounterclockwise => [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0],
@@ -116,7 +131,7 @@ impl Rotation {
         }
     }
 
-    fn croppedTextureCoordinates(&self, offsetFromOrigin:Position, cropSize: Size) -> [f32;8] {
+    pub fn croppedTextureCoordinates(&self, offsetFromOrigin:Position, cropSize: Size) -> [f32;8] {
         let minX = offsetFromOrigin.x;
         let minY = offsetFromOrigin.y;
         let maxX = offsetFromOrigin.x + cropSize.width;
@@ -143,7 +158,7 @@ pub enum ImageOrientation{
 }
 
 impl ImageOrientation {
-    fn rotationNeededForOrientation(&self, targetOrientation: ImageOrientation) -> Rotation {
+    pub fn rotationNeededForOrientation(&self, targetOrientation: ImageOrientation) -> Rotation {
         match (self,targetOrientation) {
             (ImageOrientation::portrait, ImageOrientation::portrait) | (ImageOrientation::portraitUpsideDown, ImageOrientation::portraitUpsideDown)
             | (ImageOrientation::landscapeLeft,ImageOrientation::landscapeLeft) | (ImageOrientation::landscapeRight,ImageOrientation::landscapeRight) => Rotation::noRotation,
@@ -184,7 +199,7 @@ pub struct Size {
 
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
     if textureOnly {
-       let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
+        let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
         string
     }else{
         let string = format!("FB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
@@ -333,6 +348,15 @@ impl Framebuffer {
         }
     }
 
+    pub fn texturePropertiesForOutputRotation(&self, rotation:Rotation) -> InputTextureProperties {
+        let vbo = sharedImageProcessingContext.textureVBO(rotation);
+        InputTextureProperties::new(None,Some(vbo),self.texture as GLuint)
+    }
+
+    pub fn texturePropertiesForTargetOrientation(&self,targetOrientation: ImageOrientation) -> InputTextureProperties {
+
+        self.texturePropertiesForOutputRotation(self.orientation.get().rotationNeededForOrientation(targetOrientation))
+    }
     pub fn activateFramebufferForRendering(&self){
         unsafe {
             glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
@@ -345,18 +369,39 @@ impl Framebuffer {
 
 }
 
-enum InputTextureStorageFormat {
-    textureCoordinate(GLfloat),
+pub enum InputTextureStorageFormat {
+    textureCoordinate([GLfloat;8]),
     textureVBO(GLuint)
 }
 
-struct InputTextureProperties{
-    textureStorage: InputTextureStorageFormat,
-    texture: GLuint
+pub struct InputTextureProperties{
+    pub textureStorage: InputTextureStorageFormat,
+    pub texture: GLuint
 }
 
 impl InputTextureProperties {
-
+    pub fn new(textureCoordinates: Option<[GLfloat;8]>, textureVBO: Option<GLuint>, texture:GLuint) -> Self {
+        match (textureCoordinates,textureVBO) {
+            (Some(coordinates),None) => {
+                InputTextureProperties{
+                    texture:texture,
+                    textureStorage:InputTextureStorageFormat::textureCoordinate(coordinates)
+                }
+            },
+            (None,Some(vbo)) => {
+                InputTextureProperties{
+                    texture:texture,
+                    textureStorage: InputTextureStorageFormat::textureVBO(vbo)
+                }
+            },
+            (Some(_),Some(_)) => {
+                panic!("Need to specify either texture coordinates or a VBO to InputTextureProperties")
+            },
+            (None, None) => {
+                panic!("Can't specify both texture coordinates and a VBO to InputTextureProperties")
+            }
+        }
+    }
 }
 
 
@@ -370,5 +415,61 @@ impl Drop for Framebuffer {
         unsafe {
             glDeleteFramebuffers(1,&mut self.framebuffer);
         }
+    }
+}
+
+
+pub enum FillMode {
+    stretch,
+    preserveAspectRatio,
+    preserveAspectRatioAndFill
+}
+
+impl FillMode {
+    pub fn transformVertices(&self, vertices: [f32;8], fromInputSize : GLSize, toFitSize: GLSize) -> [f32;8] {
+
+
+        let aspectRatio = (fromInputSize.height as f32) / (fromInputSize.width as f32);
+        let targetAspectRatio = (toFitSize.height as f32) / (toFitSize.width as f32);
+
+        let (xRatio, yRatio) =  match self {
+            FillMode::stretch => {
+                (1.0,1.0)
+            },
+            FillMode::preserveAspectRatio => {
+                if aspectRatio > targetAspectRatio {
+                    let x = fromInputSize.width as f32 / toFitSize.width as f32 * ( toFitSize.height as f32 / fromInputSize.height as f32);
+                    (x,1.0)
+                }else{
+                    let y = fromInputSize.height as f32 / toFitSize.height as f32 * ( toFitSize.width as f32 / fromInputSize.width as f32);
+                    (1.0,y)
+                }
+            },
+            FillMode::preserveAspectRatioAndFill => {
+                if aspectRatio > targetAspectRatio {
+                    let y = fromInputSize.height as f32 / toFitSize.height as f32 * (toFitSize.width as f32 / fromInputSize.width as f32);
+                    (1.0,y)
+                }else {
+                    let x = toFitSize.height as f32 / fromInputSize.height as f32 * (fromInputSize.width as f32 / toFitSize.width as f32);
+                    (x,1.0)
+                }
+            }
+        };
+
+        let xConversionRatio = xRatio * (toFitSize.width as f32) / 2.0;
+        let xConversionDivisor = (toFitSize.width as f32) / 2.0;
+        let yConversionRatio = yRatio * (toFitSize.height as f32) / 2.0;
+        let yConversionDivisor = (toFitSize.height as f32) / 2.0;
+
+        let value1 = vertices[0] * xConversionRatio / xConversionDivisor;
+        let value2 = vertices[1] * yConversionRatio / yConversionDivisor;
+        let value3 = vertices[2] * xConversionRatio / xConversionDivisor;
+        let value4 = vertices[3] * yConversionRatio / yConversionDivisor;
+        let value5 = vertices[4] * xConversionRatio / xConversionDivisor;
+        let value6 = vertices[5] * yConversionRatio / yConversionDivisor;
+        let value7 = vertices[6] * xConversionRatio / xConversionDivisor;
+        let value8 = vertices[7] * yConversionRatio / yConversionDivisor;
+
+        return [value1, value2, value3, value4, value5, value6, value7, value8]
     }
 }

@@ -1,4 +1,3 @@
-#![allow(snake_case_name)]
 use gles_rust_binding::GLuint;
 use gles_rust_binding::*;
 use std::cell::Cell;
@@ -230,7 +229,7 @@ impl Framebuffer {
 
     pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
 
-        let mut orientation = self.orientation.get();
+        let orientation = self.orientation.get();
 
         if orientation.rotationNeededForOrientation(targetOrientation).flipsDimensions() {
             GLSize{width:self.size.height,height:self.size.width}

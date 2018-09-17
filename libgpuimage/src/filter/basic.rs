@@ -1,9 +1,10 @@
-use core::*;
-use core::framebuffer::{Framebuffer,ImageOrientation,GLSize};
-
 use std::mem;
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
+use super::{Consumer,Framebuffer,Source,Node,NodeType,ImageOrientation,GLSize,Color};
+use super::GLRender::*;
+use super::RenderNode;
+use super::sharedImageProcessingContext;
 
 #[repr(C)]
 pub struct XHeyBasicFilter<'a>{

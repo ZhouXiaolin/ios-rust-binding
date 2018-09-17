@@ -2,11 +2,9 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
 
-use core::{Consumer,Source,sharedImageProcessingContext};
-use core::context::SerialDispatch;
-use core::{NodeType, RenderNode};
-use core::framebuffer::{GLSize,Framebuffer};
-use core::*;
+use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType};
+use super::GLRender::*;
+use super::sharedImageProcessingContext;
 use std::cell::Cell;
 #[repr(C)]
 pub struct XHeyView {

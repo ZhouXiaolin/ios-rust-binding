@@ -1,15 +1,14 @@
 #![allow(dead_code)]
-use core::framebuffer::*;
-use core::context::GlContext;
-use core::sharedImageProcessingContext;
+
 use fnv::FnvHashMap;
 use std::cell::{RefCell,Cell};
-use core::context::SerialDispatch;
 use gles_rust_binding::*;
 use std::rc::Rc;
 
 use std::marker::Sync;
 
+use super::{Framebuffer,ImageOrientation,GLSize,GPUTextureOptions};
+use super::framebuffer::*;
 
 // 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
 pub struct FramebufferCache(RefCell<FnvHashMap<String,Framebuffer>>);

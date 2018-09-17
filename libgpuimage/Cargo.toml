@@ -2,6 +2,7 @@
 name = "libgpuimage"
 version = "0.1.0"
 authors = ["周晓林 <zhouxiaolinux@163.com>"]
+edition = "2018"
 
 [dependencies]
 libc = { version = "0.2.43", default-features = false }

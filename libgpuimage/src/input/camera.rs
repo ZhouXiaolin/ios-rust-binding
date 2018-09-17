@@ -1,7 +1,4 @@
-use core::{Source,Consumer};
-use core::framebuffer::Framebuffer;
-use std::mem::transmute;
-use core::{Node,NodeType,RenderNode};
+use super::{Source,Consumer,Framebuffer,NodeType,RenderNode};
 use std::cell::RefCell;
 #[repr(C)]
 pub struct XheyCamera<'a>{

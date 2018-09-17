@@ -1,5 +1,4 @@
 use super::basic::XHeyBasicFilter;
-use core::{Node,NodeType};
 #[repr(C)]
 pub struct XHeyGaussianBlurFilter<'a>{
     basic : XHeyBasicFilter<'a>,

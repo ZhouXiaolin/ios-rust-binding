@@ -1,8 +1,7 @@
 
-use core::{Source,Consumer,sharedImageProcessingContext,SerialDispatch};
-use core::framebuffer::{Framebuffer,ImageOrientation,GLSize};
+use super::{Source,Consumer,sharedImageProcessingContext,Framebuffer,ImageOrientation,GLSize,NodeType,RenderNode};
+
 use std::mem::transmute;
-use core::{Node,NodeType,RenderNode};
 use gles_rust_binding::*;
 use std::cell::{RefCell};
 #[repr(C)]

@@ -1,27 +1,8 @@
 use ios_rust_binding::EAGLContext;
 use gles_rust_binding::*;
-use core::framebuffercache::FramebufferCache;
+use super::FramebufferCache;
 use std::mem;
-pub trait SerialDispatch {
-    fn makeCurrentContext(&self);
-}
 
-impl SerialDispatch {
-    pub fn runOperationAsynchronously<F>(&self, operation: F)
-        where F : FnOnce() -> ()
-    {
-        self.makeCurrentContext();
-        operation();
-    }
-
-    pub fn runOperationSynchronously<T,F>(&self, operation: F) -> T
-        where F: FnOnce() -> T
-    {
-        self.makeCurrentContext();
-        operation()
-    }
-
-}
 use ios_rust_binding::{ShareId};
 pub struct GlContext{
     pub context: ShareId<EAGLContext>,
@@ -86,13 +67,13 @@ impl GlContext {
     pub fn presentBufferForDisplay(&self){
         self.context.presentRenderBuffer(GL_RENDERBUFFER as u64);
     }
-}
 
-impl SerialDispatch for GlContext {
-    fn makeCurrentContext(&self){
+    pub fn makeCurrentContext(&self){
         EAGLContext::makeCurrentContext(&self.context);
     }
 }
+
+
 
 
 

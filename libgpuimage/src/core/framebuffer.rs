@@ -1,11 +1,9 @@
 #![allow(snake_case_name)]
-use core::GlContext;
-use core::framebuffercache::FramebufferCache;
-use core::sharedImageProcessingContext;
 use gles_rust_binding::GLuint;
 use gles_rust_binding::*;
 use std::cell::Cell;
 use std::rc::{Weak,Rc};
+use super::sharedImageProcessingContext;
 // framebuffer
 
 #[derive(Copy, Clone)]

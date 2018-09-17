@@ -59,14 +59,16 @@ impl Node for RenderNode {
 
 // 这两个trait描述滤镜链图的关系
 // 更确切地说，滤镜关系是一张计算图，渲染方向就是前向计算Forward Compute， Graph = {Node Edge}
+
+
 pub trait Source<'a>{
-    fn add_target(&self, target: &'a dyn Consumer, _location: u32);
-    fn remove_all_targets(&self);
+    fn addTarget(&self, target: &'a dyn Consumer, _location: u32);
+    fn removeAllTargets(&self);
     fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer);
 }
 
 pub trait Consumer {
-    fn set_source(&self, _source: &dyn Source, _location: u32);
+    fn setSource(&self, _source: &dyn Source, _location: u32);
     fn newFramebufferAvailable(&self,framebuffer: &Framebuffer,fromSourceIndex: usize);
 }
 
@@ -167,6 +169,14 @@ impl Color{
         Color::new(0.0,0.0,0.0,0.0)
     }
 
+
+    pub fn toGLArray(&self) -> [GLfloat;3] {
+        [self.redComponent as GLfloat,self.greenComponent as GLfloat,self.blueComponent as GLfloat]
+    }
+
+    pub fn toGLArrayWithAlpha(&self) -> [GLfloat;4] {
+        [self.redComponent as GLfloat,self.greenComponent as GLfloat,self.blueComponent as GLfloat, self.alphaComponent as GLfloat]
+    }
 
 }
 

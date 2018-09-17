@@ -8,12 +8,12 @@ pub struct XheyCamera<'a>{
 
 
 impl<'a,'b:'a> Source<'b> for XheyCamera<'a> {
-    fn add_target(&self, target: &'b dyn Consumer, _location: u32){
+    fn addTarget(&self, target: &'b dyn Consumer, _location: u32){
         println!("XheyCamera add_target");
-        target.set_source(self,_location);
+        target.setSource(self,_location);
     }
 
-    fn remove_all_targets(&self){
+    fn removeAllTargets(&self){
 
     }
     fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){

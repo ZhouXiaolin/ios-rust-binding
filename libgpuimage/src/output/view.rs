@@ -19,7 +19,7 @@ pub struct XHeyView {
 
 
 impl Consumer for XHeyView {
-    fn set_source(&self, _source: &dyn Source, _location: u32) {
+    fn setSource(&self, _source: &dyn Source, _location: u32) {
         println!("XheyView set_source");
 
     }
@@ -105,8 +105,6 @@ impl XHeyView {
 }
 
 
-
-#[allow(non_snake_case, unused_variables, dead_code)]
 #[no_mangle]
 pub extern "C" fn xhey_init_view(source: *const UIView) -> *mut XHeyView{
     let _source = unsafe{source.as_ref().unwrap()};

@@ -1,8 +1,6 @@
-use gles_rust_binding::GLuint;
 use gles_rust_binding::*;
-use std::cell::Cell;
-use std::rc::{Weak,Rc};
 use super::sharedImageProcessingContext;
+use std::cell::Cell;
 // framebuffer
 
 #[derive(Copy, Clone)]
@@ -30,6 +28,30 @@ impl Default for GPUTextureOptions {
     }
 }
 
+bitflags!{
+    struct TimestampFlags : u32 {
+        const valid = 1 << 0;
+        const hasBeenRounded = 1 << 1;
+        const positiveInfinity = 1 << 2;
+        const negativeInfinity = 1 << 3;
+        const indefinite = 1 << 4;
+    }
+}
+
+pub struct Timestamp{
+    value: i64,
+    timescale: i64,
+    flag: TimestampFlags,
+    epoch: i64
+}
+
+
+
+pub enum FramebufferTimingStyle {
+    stillImage,
+    videoFrame()
+}
+
 #[derive(Clone)] // 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
 pub struct Framebuffer {
     pub size : GLSize,
@@ -42,6 +64,24 @@ pub struct Framebuffer {
     textureOverride: bool,
 
 
+}
+
+pub struct Position{
+    x: f32,
+    y: f32,
+    z: f32
+}
+
+impl Position{
+    fn new(x: f32, y: f32, z: f32) -> Self {
+        Position{x:x,y:y,z:z}
+    }
+    fn center() -> Self {
+        Position::new(0.5,0.5,0.0)
+    }
+    fn zero() -> Self {
+        Position::new(0.0,0.0,0.0)
+    }
 }
 
 pub enum Rotation {
@@ -60,6 +100,37 @@ impl Rotation {
         match self {
             Rotation::noRotation | Rotation::rotate180 | Rotation::flipHorizontally | Rotation::flipVertically => false,
             _ => true
+        }
+    }
+
+    fn textureCoordinates(&self) -> [f32;8] {
+        match self {
+            Rotation::noRotation => [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+            Rotation::rotateCounterclockwise => [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0],
+            Rotation::rotateClockwise =>[1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0],
+            Rotation::rotate180 => [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
+            Rotation::flipHorizontally => [1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0],
+            Rotation::flipVertically => [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
+            Rotation::rotateClockwiseAndFlipVertically => [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0],
+            Rotation::rotateClockwiseAndFlipHorizontally => [1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+        }
+    }
+
+    fn croppedTextureCoordinates(&self, offsetFromOrigin:Position, cropSize: Size) -> [f32;8] {
+        let minX = offsetFromOrigin.x;
+        let minY = offsetFromOrigin.y;
+        let maxX = offsetFromOrigin.x + cropSize.width;
+        let maxY = offsetFromOrigin.y + cropSize.height;
+
+        match self {
+            Rotation::noRotation => [minX, minY, maxX, minY, minX, maxY, maxX, maxY],
+            Rotation::rotateCounterclockwise => [minX, maxY, minX, minY, maxX, maxY, maxX, minY],
+            Rotation::rotateClockwise => [maxX, minY, maxX, maxY, minX, minY, minX, maxY],
+            Rotation::rotate180 => [maxX, maxY, minX, maxY, maxX, minY, minX, minY],
+            Rotation::flipHorizontally => [maxX, minY, minX, minY, maxX, maxY, minX, maxY],
+            Rotation::flipVertically => [minX, maxY, maxX, maxY, minX, minY, maxX, minY],
+            Rotation::rotateClockwiseAndFlipVertically => [minX, minY, minX, maxY, maxX, minY, maxX, maxY],
+            Rotation::rotateClockwiseAndFlipHorizontally => [maxX, maxY, maxX, minY, minX, maxY, minX, minY],
         }
     }
 }

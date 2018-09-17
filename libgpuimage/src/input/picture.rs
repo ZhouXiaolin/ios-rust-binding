@@ -46,15 +46,15 @@ impl<'a> XheyPicture<'a> {
 
 
 impl<'a,'b:'a> Source<'b> for XheyPicture<'a> {
-    fn add_target(&self, target: &'b dyn Consumer, _location: u32){
+    fn addTarget(&self, target: &'b dyn Consumer, _location: u32){
         println!("XheyPicture add_target");
         let mut targets = self._targets.borrow_mut();
         targets.push(Box::new(target));
-        target.set_source(self,_location);
+        target.setSource(self,_location);
     }
 
-    fn remove_all_targets(&self){
-
+    fn removeAllTargets(&self){
+        println!("XheyPicture remove")
     }
 
     fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){

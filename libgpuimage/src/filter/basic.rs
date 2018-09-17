@@ -92,13 +92,13 @@ impl<'a> Node for XHeyBasicFilter<'a>{
 
 
 impl<'a> Source<'a> for XHeyBasicFilter<'a> {
-    fn add_target(&self, target: &'a dyn Consumer, _location: u32) {
+    fn addTarget(&self, target: &'a dyn Consumer, _location: u32) {
         let mut targets = self._targets.borrow_mut();
         targets.push(Box::new(target));
-        target.set_source(self,_location);
+        target.setSource(self,_location);
     }
 
-    fn remove_all_targets(&self){
+    fn removeAllTargets(&self){
 
     }
     fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
@@ -109,7 +109,7 @@ impl<'a> Source<'a> for XHeyBasicFilter<'a> {
 }
 
 impl<'a> Consumer for XHeyBasicFilter<'a> {
-    fn set_source(&self, _source: &dyn Source, _location: u32) {
+    fn setSource(&self, _source: &dyn Source, _location: u32) {
 
     }
 

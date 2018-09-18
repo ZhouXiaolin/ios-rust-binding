@@ -88,7 +88,7 @@
         <counts>
           <entry key="Makefile" value="93" />
           <entry key="h" value="800" />
-          <entry key="rs" value="49854" />
+          <entry key="rs" value="49995" />
           <entry key="toml" value="494" />
           <entry key="txt" value="8" />
         </counts>
@@ -97,7 +97,7 @@
         <counts>
           <entry key="ObjectiveC" value="800" />
           <entry key="PLAIN_TEXT" value="8" />
-          <entry key="Rust" value="49854" />
+          <entry key="Rust" value="49995" />
           <entry key="TOML file" value="587" />
         </counts>
       </usages-collector>
@@ -122,11 +122,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/core/framebuffer.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="380" column="31" selection-start-line="380" selection-start-column="24" selection-end-line="380" selection-end-column="31" />
+            <state relative-caret-position="269">
+              <caret line="354" column="99" selection-start-line="354" selection-start-column="99" selection-end-line="354" selection-end-column="99" />
               <folding>
                 <element signature="e#10736#10737#0" expanded="true" />
                 <element signature="e#10789#10790#0" expanded="true" />
@@ -160,11 +160,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/core/mod.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1436">
-              <caret line="141" selection-start-line="141" selection-end-line="141" />
+            <state relative-caret-position="255">
+              <caret line="139" selection-start-line="139" selection-end-line="139" />
             </state>
           </provider>
         </entry>
@@ -256,6 +256,7 @@
       <find>framebuffer</find>
       <find>renderQuadWithShader</find>
       <find>generateVBO</find>
+      <find>frameubfferCache</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -299,9 +300,9 @@
         <option value="$PROJECT_DIR$/src/core/program.rs" />
         <option value="$PROJECT_DIR$/src/filter/basic.rs" />
         <option value="$PROJECT_DIR$/src/output/view.rs" />
-        <option value="$PROJECT_DIR$/src/core/mod.rs" />
         <option value="$PROJECT_DIR$/src/core/framebuffer.rs" />
         <option value="$PROJECT_DIR$/src/core/context.rs" />
+        <option value="$PROJECT_DIR$/src/core/mod.rs" />
       </list>
     </option>
   </component>
@@ -503,13 +504,12 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="189855000" />
+    <option name="totallyTimeSpent" value="190454000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-305" y="-1058" width="1920" height="1058" extended-state="6" />
-    <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1171459" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1171459" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -521,7 +521,7 @@
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="8" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49893504" visible="true" weight="0.27639753" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49893504" visible="true" weight="0.27639753" />
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50106496" side_tool="true" weight="0.29606625" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -863,8 +863,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/core/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1436">
-          <caret line="141" selection-start-line="141" selection-end-line="141" />
+        <state relative-caret-position="255">
+          <caret line="139" selection-start-line="139" selection-end-line="139" />
         </state>
       </provider>
     </entry>
@@ -900,8 +900,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/core/framebuffer.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="380" column="31" selection-start-line="380" selection-start-column="24" selection-end-line="380" selection-end-column="31" />
+        <state relative-caret-position="269">
+          <caret line="354" column="99" selection-start-line="354" selection-start-column="99" selection-end-line="354" selection-end-column="99" />
           <folding>
             <element signature="e#10736#10737#0" expanded="true" />
             <element signature="e#10789#10790#0" expanded="true" />

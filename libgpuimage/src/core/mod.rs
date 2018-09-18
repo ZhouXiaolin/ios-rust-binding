@@ -128,7 +128,7 @@ pub mod GLRender {
 
 
 
-            for (index,_) in inputTextures.iter().enumerate(){
+            for (index,inputTexture) in inputTextures.iter().enumerate(){
 
                 let (inputTextureCoordinateString,inputImageTextureString) = if index == 0 {
                     (format!("inputTextureCoordinate"),format!("inputImageTexture"))
@@ -136,19 +136,23 @@ pub mod GLRender {
                     (format!("inputTextureCoordinate{}",index),format!("inputImageTexture{}",index))
                 };
 
-                let framebuffer = &inputTextures[index];
-                let textureCoordinate = program.get_attribute(&inputTextureCoordinateString).unwrap();
-                let textureCoordinates:[f32;8] = framebuffer.textureStorage;
+                let textureCoordinates:[f32;8] = inputTexture.textureStorage;
+
+                if let Some(textureCoordinate) = program.get_attribute(&inputTextureCoordinateString) {
+
+                    glVertexAttribPointer(textureCoordinate.location() as u32,2,GL_FLOAT,GL_FALSE,0,textureCoordinates.as_ptr() as *const _);
+                    glEnableVertexAttribArray(textureCoordinate.location() as u32);
+
+                }else if index == 0{
+                    panic!("The required attribute named inputTextureCoordinate was missing from the shader program during rendering.");
+                }
 
 
-                glVertexAttribPointer(textureCoordinate.location() as u32,2,GL_FLOAT,GL_FALSE,0,textureCoordinates.as_ptr() as *const _);
-                glEnableVertexAttribArray(textureCoordinate.location() as u32);
 
-
-                let inputTexture = program.get_uniform(&inputImageTextureString);
+                let inputImageTexture = program.get_uniform(&inputImageTextureString);
                 glActiveTexture(textureUnitForIndex(index));
-                glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
-                glUniform1i(inputTexture.location() as i32,index as i32);
+                glBindTexture(GL_TEXTURE_2D,inputTexture.texture);
+                glUniform1i(inputImageTexture.location() as i32,index as i32);
             }
 
             glDrawArrays(GL_TRIANGLE_STRIP,0,4);

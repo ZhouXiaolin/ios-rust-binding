@@ -144,12 +144,10 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
             renderFramebuffer.activateFramebufferForRendering();
 
             clearFramebufferWithColor(Color::black());
-            let vertices:[f32;8] = [-1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0];
+            let vertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
 
 
-            renderQuadWithShaderF(&self._shader,inputFramebuffer,vertices);
-
-//            renderQuadWithShader(&self._shader,Some(vertices),None,&textureProperties);
+            renderQuadWithShader(&self._shader,&textureProperties,vertices);
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
         }

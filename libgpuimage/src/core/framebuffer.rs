@@ -351,6 +351,7 @@ impl Framebuffer {
     pub fn texturePropertiesForOutputRotation(&self, rotation:Rotation) -> InputTextureProperties {
         let vbo = sharedImageProcessingContext.textureVBO(rotation);
         InputTextureProperties::new(None,Some(vbo),self.texture as GLuint)
+//        InputTextureProperties::new(Some(rotation.textureCoordinates()),None,self.texture as GLuint)
     }
 
     pub fn texturePropertiesForTargetOrientation(&self,targetOrientation: ImageOrientation) -> InputTextureProperties {

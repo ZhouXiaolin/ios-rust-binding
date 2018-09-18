@@ -26,7 +26,6 @@ impl GlContext {
         EAGLContext::setCurrentContext(&generatedContext);
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-
         let standardImageVBO = generateVBO(standardImageVertices.as_ptr(),standardImageVertices.len());
 
 
@@ -103,7 +102,7 @@ fn generateVBO(vertices: *const f32, len: usize) -> GLuint {
     unsafe {
         glGenBuffers(1,&mut newBuffer);
         glBindBuffer(GL_ARRAY_BUFFER,newBuffer);
-        glBufferData(GL_ARRAY_BUFFER,(mem::size_of::<GLfloat>() as isize) * (len as isize) , vertices as *const _,GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,(mem::size_of::<f32>() as isize) * (len as isize) , vertices as *const _,GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER,0);
         newBuffer
     }

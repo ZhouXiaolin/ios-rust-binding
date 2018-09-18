@@ -1,6 +1,8 @@
 use gles_rust_binding::*;
 use super::sharedImageProcessingContext;
 use std::cell::Cell;
+use std::ptr;
+
 // framebuffer
 
 #[derive(Copy, Clone)]
@@ -55,7 +57,7 @@ pub enum FramebufferTimingStyle {
 #[derive(Clone)] // 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
 pub struct Framebuffer {
     pub size : GLSize,
-    pub orientation: Cell<ImageOrientation>,
+    pub orientation: Cell<ImageOrientation>, // Cell 在cache中可能修改
     pub texture: u32,
     hashString: String,
     framebuffer: u32,
@@ -97,7 +99,7 @@ pub enum Rotation {
 
 
 impl Rotation {
-    pub fn toRawValue(&self) -> u32 {
+    pub fn toRawValue(&self) -> usize {
         match self {
             Rotation::noRotation => 0,
             Rotation::rotateCounterclockwise => 1,
@@ -224,7 +226,6 @@ fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
 
     texture
 }
-use std::ptr;
 fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
     let mut framebuffer : GLuint = 0;
     unsafe {
@@ -312,6 +313,9 @@ impl Framebuffer {
         self.framebufferRetainCount.set(0);
     }
 
+    fn valid(&self) -> bool {
+        self.framebufferRetainCount.get() == 0
+    }
 
     pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
 

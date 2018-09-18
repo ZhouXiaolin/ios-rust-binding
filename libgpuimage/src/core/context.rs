@@ -11,25 +11,12 @@ pub struct GlContext{
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,
     pub frameubfferCache: FramebufferCache,
-    pub textureVBOs: BTreeMap<u32,GLuint>
+    pub textureVBOs: Vec<GLuint>
 
 }
 
 
-
-
-
-impl GlContext {
-    pub fn new() -> Self{
-        let generatedContext = EAGLContext::withApi(2);
-        let generatedContext = generatedContext.share();
-        EAGLContext::setCurrentContext(&generatedContext);
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let standardImageVBO = generateVBO(standardImageVertices.as_ptr(),standardImageVertices.len());
-
-
-        let vertexStr = r#"
+static vertexStr: &str = r#"
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
 
@@ -42,7 +29,7 @@ impl GlContext {
  }
     "#;
 
-        let fragmentStr = r#"
+static fragmentStr: &str = r#"
  precision mediump float;
 
  varying highp vec2 textureCoordinate;
@@ -53,19 +40,18 @@ impl GlContext {
      gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
  }
     "#;
+
+impl GlContext {
+    pub fn new() -> Self{
+        let generatedContext = EAGLContext::withApi(2);
+        let generatedContext = generatedContext.share();
+        EAGLContext::setCurrentContext(&generatedContext);
+
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let standardImageVBO = generateVBO(&standardImageVertices);
+
         let program = GLProgram::new(vertexStr,fragmentStr);
-
-        let mut textureVBOs = BTreeMap::new();
-
-        textureVBOs.insert(Rotation::noRotation.toRawValue(),generateVBO(Rotation::noRotation.textureCoordinates().as_ptr(),Rotation::noRotation.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::rotateCounterclockwise.toRawValue(),generateVBO(Rotation::rotateCounterclockwise.textureCoordinates().as_ptr(),Rotation::rotateCounterclockwise.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::rotateClockwise.toRawValue(),generateVBO(Rotation::rotateClockwise.textureCoordinates().as_ptr(),Rotation::rotateClockwise.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::rotate180.toRawValue(),generateVBO(Rotation::rotate180.textureCoordinates().as_ptr(),Rotation::rotate180.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::flipHorizontally.toRawValue(),generateVBO(Rotation::flipHorizontally.textureCoordinates().as_ptr(),Rotation::flipHorizontally.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::flipVertically.toRawValue(),generateVBO(Rotation::flipVertically.textureCoordinates().as_ptr(),Rotation::flipVertically.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::rotateClockwiseAndFlipVertically.toRawValue(),generateVBO(Rotation::rotateClockwiseAndFlipVertically.textureCoordinates().as_ptr(),Rotation::rotateClockwiseAndFlipVertically.textureCoordinates().len()));
-        textureVBOs.insert(Rotation::rotateClockwiseAndFlipHorizontally.toRawValue(),generateVBO(Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates().as_ptr(),Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates().len()));
-
+        let textureVBOs = Self::generateTextureVBOs();
 
         GlContext{
             context:generatedContext,
@@ -74,6 +60,23 @@ impl GlContext {
             frameubfferCache: FramebufferCache::default(),
             textureVBOs: textureVBOs
         }
+    }
+
+
+
+    fn generateTextureVBOs() -> Vec<GLuint> {
+        let mut textureVBOs = Vec::with_capacity(8);
+
+        textureVBOs.push(generateVBO(&Rotation::noRotation.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::rotateCounterclockwise.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::rotateClockwise.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::rotate180.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::flipHorizontally.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::flipVertically.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipVertically.textureCoordinates()));
+        textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates()));
+
+        textureVBOs
     }
 
 
@@ -88,8 +91,8 @@ impl GlContext {
 
 
     pub fn textureVBO(&self, rotation: Rotation) -> GLuint {
-        let textureVBO = self.textureVBOs.get(&rotation.toRawValue()).expect("Error in context 95 line");
-        *textureVBO
+        let textureVBO = self.textureVBOs[rotation.toRawValue()];
+        textureVBO
     }
 }
 
@@ -97,12 +100,18 @@ impl GlContext {
 
 
 
-fn generateVBO(vertices: *const f32, len: usize) -> GLuint {
+fn generateVBO<T>(vertices: &[T]) -> GLuint {
+
+
     let mut newBuffer: GLuint = 0;
+    let length = vertices.len();
+    let kind_size = mem::size_of::<T>();
+    let size = kind_size * length;
+
     unsafe {
         glGenBuffers(1,&mut newBuffer);
         glBindBuffer(GL_ARRAY_BUFFER,newBuffer);
-        glBufferData(GL_ARRAY_BUFFER,(mem::size_of::<f32>() as isize) * (len as isize) , vertices as *const _,GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,size as GLsizeiptr , vertices.as_ptr() as *const GLvoid,GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER,0);
         newBuffer
     }

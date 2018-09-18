@@ -138,7 +138,7 @@ pub mod GLRender {
 
                 let framebuffer = &inputTextures[index];
                 let textureCoordinate = program.get_attribute(&inputTextureCoordinateString).unwrap();
-                let textureCoordinates:[f32;8] = [1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0];
+                let textureCoordinates:[f32;8] = framebuffer.textureStorage;
 
 
                 glVertexAttribPointer(textureCoordinate.location() as u32,2,GL_FLOAT,GL_FALSE,0,textureCoordinates.as_ptr() as *const _);

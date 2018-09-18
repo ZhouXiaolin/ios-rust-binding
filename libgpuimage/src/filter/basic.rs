@@ -147,7 +147,7 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
             let vertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
 
 
-            renderQuadWithShader(&self._shader,&textureProperties,vertices);
+            renderQuadWithShader(&self._shader,&textureProperties,vertices,None);
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
         }

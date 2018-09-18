@@ -353,7 +353,7 @@ impl Framebuffer {
     }
 
     pub fn texturePropertiesForOutputRotation(&self, rotation:Rotation) -> InputTextureProperties {
-        let storage = InputTextureStorageFormat::textureCoordinate(rotation.textureCoordinates());
+        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(rotation));
         InputTextureProperties::new(storage,self.texture)
     }
 

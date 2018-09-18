@@ -163,6 +163,8 @@ pub mod GLRender {
                             glBindBuffer(GL_ARRAY_BUFFER,texVBO);
                             glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
                             glEnableVertexAttribArray(textureCoordinate.location() as u32);
+                            glBindBuffer(GL_ARRAY_BUFFER,0);
+
                         },
                         InputTextureStorageFormat::textureCoordinate(ref texCoord) => {
                             glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, GL_FALSE, 0, texCoord.as_ptr() as *const _);
@@ -184,6 +186,11 @@ pub mod GLRender {
 
             glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
+
+            for (index,_) in inputTextures.iter().enumerate() {
+                glActiveTexture(textureUnitForIndex(index));
+                glBindTexture(GL_TEXTURE_2D,0);
+            }
 
         }
     }

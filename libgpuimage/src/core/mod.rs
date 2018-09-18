@@ -116,7 +116,11 @@ pub mod GLRender {
     }
 
 
-    pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextureProperties>, vertices:[f32;8], vertexBufferObject:Option<GLuint>) {
+    pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
+
+
+
+
         sharedImageProcessingContext.makeCurrentContext();
         unsafe {
 
@@ -124,14 +128,22 @@ pub mod GLRender {
 
             let position = program.get_attribute("position").unwrap();
 
-            if let Some(boundVBO) = vertexBufferObject {
 
-            }else{
 
+            match vertex {
+                InputTextureStorageFormat::textureCoordinate(ref vertices) => {
+                    glVertexAttribPointer(position.location() as u32,2,GL_FLOAT,GL_FALSE,0,vertices.as_ptr() as *const _);
+                    glEnableVertexAttribArray(position.location() as u32);
+                },
+                InputTextureStorageFormat::textureVBO(boundVBO) => {
+                    glBindBuffer(GL_ARRAY_BUFFER,boundVBO);
+                    glVertexAttribPointer(position.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
+                    glEnableVertexAttribArray(position.location() as u32);
+                    glBindBuffer(GL_ARRAY_BUFFER,0);
+                }
             }
 
-            glVertexAttribPointer(position.location() as u32,2,GL_FLOAT,GL_FALSE,0,vertices.as_ptr() as *const _);
-            glEnableVertexAttribArray(position.location() as u32);
+
 
 
 
@@ -143,23 +155,20 @@ pub mod GLRender {
                     (format!("inputTextureCoordinate{}",index),format!("inputImageTexture{}",index))
                 };
 
-                let mut textureCoordinates:[f32;8] = mem::uninitialized() ;
 
                 if let Some(textureCoordinate) = program.get_attribute(&inputTextureCoordinateString) {
 
                     match inputTexture.textureStorage {
                         InputTextureStorageFormat::textureVBO(texVBO) => {
-
+                            glBindBuffer(GL_ARRAY_BUFFER,texVBO);
+                            glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
+                            glEnableVertexAttribArray(textureCoordinate.location() as u32);
                         },
-                        InputTextureStorageFormat::textureCoordinate(texCoord) => {
-                            textureCoordinates = texCoord;
-                            glVertexAttribPointer(textureCoordinate.location() as u32,2,GL_FLOAT,GL_FALSE,0,textureCoordinates.as_ptr() as *const _);
+                        InputTextureStorageFormat::textureCoordinate(ref texCoord) => {
+                            glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, GL_FALSE, 0, texCoord.as_ptr() as *const _);
                             glEnableVertexAttribArray(textureCoordinate.location() as u32);
                         }
                     }
-
-
-
 
                 }else if index == 0{
                     panic!("The required attribute named inputTextureCoordinate was missing from the shader program during rendering.");

@@ -1,7 +1,7 @@
 use std::mem;
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
-use super::{Consumer,Framebuffer,Source,Node,NodeType,ImageOrientation,GLSize,Color};
+use super::{Consumer,Framebuffer,Source,Node,NodeType,ImageOrientation,GLSize,Color,InputTextureStorageFormat};
 use super::GLRender::*;
 use super::RenderNode;
 use super::sharedImageProcessingContext;
@@ -144,10 +144,10 @@ impl<'a> Consumer for XHeyBasicFilter<'a> {
             renderFramebuffer.activateFramebufferForRendering();
 
             clearFramebufferWithColor(Color::black());
-            let vertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
 
+            let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 
-            renderQuadWithShader(&self._shader,&textureProperties,vertices,None);
+            renderQuadWithShader(&self._shader,&textureProperties,vertex);
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
         }

@@ -353,9 +353,8 @@ impl Framebuffer {
     }
 
     pub fn texturePropertiesForOutputRotation(&self, rotation:Rotation) -> InputTextureProperties {
-        InputTextureProperties::new(Some(rotation.textureCoordinates()),None,self.texture as GLuint)
-//        let vbo = sharedImageProcessingContext.textureVBO(rotation);
-//        InputTextureProperties::new(None,Some(vbo),self.texture)
+        let storage = InputTextureStorageFormat::textureCoordinate(rotation.textureCoordinates());
+        InputTextureProperties::new(storage,self.texture)
     }
 
     pub fn texturePropertiesForTargetOrientation(&self,targetOrientation: ImageOrientation) -> InputTextureProperties {
@@ -385,27 +384,10 @@ pub struct InputTextureProperties{
 }
 
 impl InputTextureProperties {
-    pub fn new(textureCoordinates: Option<[GLfloat;8]>, textureVBO:Option<GLuint>, texture:GLuint) -> Self {
-
-        match (textureCoordinates, textureVBO) {
-            (Some(coordinates),None) => {
-                InputTextureProperties{
-                    textureStorage:InputTextureStorageFormat::textureCoordinate(coordinates),
-                    texture:texture
-                }
-            },
-            (None,Some(vbo)) => {
-                InputTextureProperties{
-                    textureStorage:InputTextureStorageFormat::textureVBO(vbo),
-                    texture:texture
-                }
-            },
-            (None,None) => {
-                panic!("Need to specify either texture coordinates or a VBO to InputTextureProperties");
-            },
-            (Some(_),Some(_)) => {
-                panic!("Can't specify both texture coordinates and a VBO to InputTextureProperties");
-            }
+    pub fn new(textureStorageFormat: InputTextureStorageFormat, texture:GLuint) -> Self {
+        InputTextureProperties{
+            textureStorage: textureStorageFormat,
+            texture: texture
         }
     }
 }

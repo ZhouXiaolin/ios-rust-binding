@@ -49,8 +49,9 @@ impl Consumer for XHeyView {
 
         let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
 
+        let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
-        renderQuadWithShader(program,&vec![inputTexture],scaledVertices,None);
+        renderQuadWithShader(program,&vec![inputTexture],vertex);
 
         unsafe {
             glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());

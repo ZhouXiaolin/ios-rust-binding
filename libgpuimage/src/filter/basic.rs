@@ -1,14 +1,12 @@
 use std::mem;
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
-use super::{Consumer,Framebuffer,Source,Node,NodeType,ImageOrientation,GLSize,Color,InputTextureStorageFormat};
-use super::GLRender::*;
-use super::RenderNode;
+use super::{Consumer,Framebuffer,Source,ImageOrientation,GLSize,Color,InputTextureStorageFormat};
+use super::gl_render::*;
 use super::sharedImageProcessingContext;
 
 #[repr(C)]
 pub struct XHeyBasicFilter<'a>{
-    _node : RenderNode,
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
     _shader : GLProgram,
     _maximumInputs : i32,
@@ -24,7 +22,6 @@ impl<'a> XHeyBasicFilter<'a> {
         sharedImageProcessingContext.makeCurrentContext();
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
-            _node:RenderNode::new(NodeType::BasicFilter),
             _targets:RefCell::new(Vec::new()),
             _maximumInputs:numberOfInputs,
             _shader: shader,
@@ -62,7 +59,6 @@ impl<'a> XHeyBasicFilter<'a> {
         let shader = GLProgram::new(vertexStr,fragmentStr);
 
         XHeyBasicFilter{
-            _node:RenderNode::new(NodeType::BasicFilter),
             _targets:RefCell::new(Vec::new()),
             _maximumInputs:1,
             _shader: shader,
@@ -83,11 +79,6 @@ impl<'a> XHeyBasicFilter<'a> {
     }
 }
 
-impl<'a> Node for XHeyBasicFilter<'a>{
-    fn get_type_name(&self) -> NodeType {
-        NodeType::BasicFilter
-    }
-}
 
 
 

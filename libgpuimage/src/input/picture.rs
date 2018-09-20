@@ -1,5 +1,5 @@
 
-use super::{Source,Consumer,sharedImageProcessingContext,Framebuffer,ImageOrientation,GLSize,NodeType,RenderNode};
+use super::{Source,Consumer,sharedImageProcessingContext,Framebuffer,ImageOrientation,GLSize};
 
 use std::mem::transmute;
 use gles_rust_binding::*;
@@ -7,7 +7,6 @@ use std::os::raw::c_void;
 use std::cell::{RefCell};
 #[repr(C)]
 pub struct XheyPicture<'a>{
-    _type: RenderNode,
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
     _framebuffer: Framebuffer
 }
@@ -30,7 +29,6 @@ impl<'a> XheyPicture<'a> {
         }
 
         XheyPicture{
-            _type: RenderNode::new(NodeType::Picture),
             _targets: RefCell::default(),
             _framebuffer: framebuffer
         }

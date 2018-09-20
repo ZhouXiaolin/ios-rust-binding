@@ -7,7 +7,7 @@ use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType,ImageOr
 use super::GLRender::*;
 use super::FillMode;
 use super::sharedImageProcessingContext;
-use super::GLRender::*;
+use super::gl_render::*;
 use std::cell::Cell;
 use std::ptr;
 
@@ -15,7 +15,6 @@ use std::ptr;
 #[cfg(target_os = "ios")]
 #[repr(C)]
 pub struct XHeyView {
-    _type: RenderNode,
     displayFramebuffer: Cell<GLuint>,
     displayRenderbuffer: Cell<GLuint>,
     backingSize: Cell<GLSize>,
@@ -76,7 +75,6 @@ impl XHeyView {
 
 
         XHeyView{
-            _type:RenderNode::new(NodeType::View),
             displayFramebuffer:Cell::default(),
             displayRenderbuffer:Cell::default(),
             backingSize:Cell::default(),

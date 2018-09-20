@@ -1,8 +1,7 @@
-use super::{Source,Consumer,Framebuffer,NodeType,RenderNode};
+use super::{Source,Consumer,Framebuffer};
 use std::cell::RefCell;
 #[repr(C)]
 pub struct XheyCamera<'a>{
-    _type:RenderNode,
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
 }
 
@@ -26,7 +25,6 @@ impl<'a,'b:'a> Source<'b> for XheyCamera<'a> {
 impl<'a> XheyCamera<'a> {
     pub fn new() -> Self {
         XheyCamera {
-            _type:RenderNode::new(NodeType::Camera),
             _targets:RefCell::default()
         }
     }

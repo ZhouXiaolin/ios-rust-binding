@@ -7,25 +7,21 @@ extern crate gles_rust_binding;
 extern crate fnv;
 #[cfg(target_os = "ios")]
 extern crate ios_rust_binding;
-
-pub mod core;
-pub mod filter;
-pub mod input;
-pub mod output;
-
-pub use self::core::*;
-pub use self::filter::*;
-pub use self::input::*;
-pub use self::output::*;
-
 #[macro_use]
 extern crate lazy_static;
 #[macro_use]
 extern crate bitflags;
 
+pub mod operation;
+pub mod common;
+pub mod render;
 
-use self::filter::basic::*;
 
+
+
+
+use self::operation::*;
+use self::render::{Consumer,Source};
 
 
 #[cfg(target_os = "ios")]

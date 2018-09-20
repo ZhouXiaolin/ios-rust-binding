@@ -1,5 +1,5 @@
-use super::Position;
-use super::Size;
+use super::{Position,Size};
+
 pub enum Rotation {
     noRotation,
     rotateCounterclockwise,

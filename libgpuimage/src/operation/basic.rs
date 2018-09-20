@@ -1,10 +1,8 @@
 use std::mem;
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
-use super::{Consumer,Framebuffer,Source,ImageOrientation,GLSize,InputTextureStorageFormat};
-use super::gl_render::*;
-use super::sharedImageProcessingContext;
-use super::color::*;
+
+use super::*;
 #[repr(C)]
 pub struct XHeyBasicFilter<'a>{
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,

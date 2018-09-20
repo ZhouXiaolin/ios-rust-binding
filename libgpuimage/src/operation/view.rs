@@ -3,14 +3,11 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
 
-use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType,ImageOrientation,InputTextureProperties,InputTextureStorageFormat};
-use super::GLRender::*;
-use super::FillMode;
-use super::sharedImageProcessingContext;
-use super::color::*;
-use super::gl_render::*;
 use std::cell::Cell;
 use std::ptr;
+
+use super::*;
+
 
 
 #[cfg(target_os = "ios")]

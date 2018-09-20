@@ -2,25 +2,15 @@ pub mod context;
 pub mod framebuffer;
 pub mod framebuffercache;
 pub mod gl_render;
-pub mod color;
 pub mod gpu_texture_options;
-pub mod position;
-pub mod rotation;
-pub mod image_orientation;
-pub mod fill_mode;
 
+pub use self::context::*;
 pub use self::framebuffer::*;
 pub use self::framebuffercache::*;
 pub use self::gl_render::*;
-pub use self::context::*;
 pub use self::gpu_texture_options::*;
-pub use self::position::*;
-pub use self::rotation::*;
-pub use self::image_orientation::*;
-pub use self::fill_mode::*;
 
-pub use gles_rust_binding::GLProgram as Program;
-pub use gles_rust_binding::*;
+pub use super::common::*;
 
 
 // 这两个trait描述滤镜链图的关系

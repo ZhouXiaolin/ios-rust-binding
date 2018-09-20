@@ -1,8 +1,5 @@
-use super::color::*;
-use super::Framebuffer;
+use super::*;
 use gles_rust_binding::*;
-use super::sharedImageProcessingContext;
-use super::{InputTextureProperties,InputTextureStorageFormat};
 use std::ptr;
 use std::mem;
 

@@ -2,6 +2,7 @@ use gles_rust_binding::*;
 use super::*;
 use std::collections::BTreeMap;
 use std::mem;
+
 #[cfg(target_os = "ios")]
 use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 
@@ -138,7 +139,6 @@ impl GlContext {
 
 fn generateVBO<T>(vertices: &[T]) -> GLuint {
 
-
     let mut newBuffer: GLuint = 0;
     let length = vertices.len();
     let kind_size = mem::size_of::<T>();
@@ -159,3 +159,8 @@ fn deleteVBO(vbo: GLuint){
     }
 }
 
+
+
+lazy_static!{
+    pub static ref sharedImageProcessingContext : GlContext = GlContext::new();
+}

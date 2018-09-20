@@ -10,8 +10,6 @@ pub fn clearFramebufferWithColor(color:Color) {
     }
 }
 
-
-
 pub fn textureUnitForIndex(index: usize) -> GLenum {
     match index {
         0 => GL_TEXTURE0,
@@ -29,9 +27,6 @@ pub fn textureUnitForIndex(index: usize) -> GLenum {
 
 
 pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
-
-
-
 
     sharedImageProcessingContext.makeCurrentContext();
     unsafe {

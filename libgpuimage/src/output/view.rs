@@ -1,3 +1,4 @@
+#[cfg(target_os = "ios")]
 use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
@@ -9,6 +10,9 @@ use super::sharedImageProcessingContext;
 use super::GLRender::*;
 use std::cell::Cell;
 use std::ptr;
+
+
+#[cfg(target_os = "ios")]
 #[repr(C)]
 pub struct XHeyView {
     _type: RenderNode,
@@ -21,7 +25,7 @@ pub struct XHeyView {
 
 
 
-
+#[cfg(target_os = "ios")]
 impl Consumer for XHeyView {
     fn setSource(&self, _source: &dyn Source, _location: u32) {
         println!("XheyView set_source");
@@ -64,9 +68,9 @@ impl Consumer for XHeyView {
 
 
 
-
+#[cfg(target_os = "ios")]
 impl XHeyView {
-    fn new(view: &UIView) -> Self {
+    pub fn new(view: &UIView) -> Self {
         let layer = view.get_layer();
         let layer = layer.share();
 
@@ -123,11 +127,3 @@ impl XHeyView {
 
 }
 
-
-#[no_mangle]
-pub extern "C" fn xhey_init_view(source: *const UIView) -> *mut XHeyView{
-    let _source = unsafe{source.as_ref().unwrap()};
-    let view = XHeyView::new(_source);
-    Box::into_raw(Box::new(view))
-
-}

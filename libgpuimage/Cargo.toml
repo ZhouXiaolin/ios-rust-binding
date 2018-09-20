@@ -20,7 +20,7 @@ jni = { version = "0.10.1", default-features = false }
 
 [lib]
 name = "gpuimage"
-crate-type = ["staticlib"]
+crate-type = ["staticlib","cdylib"]
 
 
 [profile.dev]

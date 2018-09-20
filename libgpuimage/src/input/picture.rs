@@ -3,6 +3,7 @@ use super::{Source,Consumer,sharedImageProcessingContext,Framebuffer,ImageOrient
 
 use std::mem::transmute;
 use gles_rust_binding::*;
+use std::os::raw::c_void;
 use std::cell::{RefCell};
 #[repr(C)]
 pub struct XheyPicture<'a>{
@@ -64,36 +65,5 @@ impl<'a,'b:'a> Source<'b> for XheyPicture<'a> {
     }
 }
 
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn xhey_init_picture<'a>(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture<'a> {
-    println!("xhey_init_picture");
-    let picture = Box::new(XheyPicture::new(data,width,height));
-    Box::into_raw(picture)
 
-}
-
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn xhey_process_picture(picture: *const XheyPicture){
-    let p = unsafe{picture.as_ref().unwrap()};
-    p.processImage();
-
-
-}
-
-
-use std::os::raw::{c_char,c_void};
-use std::ffi::{CStr};
-use ios_rust_binding::UIImage;
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn test(path: *const c_char) -> *mut c_void{
-    unsafe {
-        let a =  CStr::from_ptr(path);
-        let a = a.to_str().unwrap();
-        let image = UIImage::get_image(a);
-        transmute(image)
-    }
-}
 

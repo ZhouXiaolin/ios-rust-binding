@@ -1,11 +1,12 @@
-use ios_rust_binding::EAGLContext;
 use gles_rust_binding::*;
 use super::FramebufferCache;
 use super::Rotation;
 use std::collections::BTreeMap;
 use std::mem;
+#[cfg(target_os = "ios")]
+use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 
-use ios_rust_binding::{ShareId};
+#[cfg(target_os = "ios")]
 pub struct GlContext{
     pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
@@ -15,6 +16,13 @@ pub struct GlContext{
 
 }
 
+#[cfg(target_os = "android")]
+pub struct GlContext{
+    pub standardImageVBO: GLuint,
+    pub passthroughShader: GLProgram,
+    pub frameubfferCache: FramebufferCache,
+    pub textureVBOs: Vec<GLuint>
+}
 
 static vertexStr: &str = r#"
  attribute vec4 position;
@@ -42,6 +50,7 @@ static fragmentStr: &str = r#"
     "#;
 
 impl GlContext {
+    #[cfg(target_os = "ios")]
     pub fn new() -> Self{
         let generatedContext = EAGLContext::withApi(2);
         let generatedContext = generatedContext.share();
@@ -62,6 +71,40 @@ impl GlContext {
         }
     }
 
+    #[cfg(target_os = "android")]
+    pub fn new() -> Self{
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let standardImageVBO = generateVBO(&standardImageVertices);
+
+        let program = GLProgram::new(vertexStr,fragmentStr);
+        let textureVBOs = Self::generateTextureVBOs();
+
+        GlContext{
+            standardImageVBO:standardImageVBO,
+            passthroughShader:program,
+            frameubfferCache: FramebufferCache::default(),
+            textureVBOs: textureVBOs
+        }
+    }
+
+    #[cfg(target_os = "ios")]
+    pub fn presentBufferForDisplay(&self){
+        self.context.presentRenderBuffer(GL_RENDERBUFFER as NSUInteger);
+    }
+    #[cfg(target_os = "android")]
+    pub fn presentBufferForDisplay(&self){
+
+    }
+
+    #[cfg(target_os = "ios")]
+    pub fn makeCurrentContext(&self){
+        EAGLContext::makeCurrentContext(&self.context);
+    }
+
+    #[cfg(target_os = "android")]
+    pub fn makeCurrentContext(&self){
+
+    }
 
 
     fn generateTextureVBOs() -> Vec<GLuint> {
@@ -80,13 +123,7 @@ impl GlContext {
     }
 
 
-    pub fn presentBufferForDisplay(&self){
-        self.context.presentRenderBuffer(GL_RENDERBUFFER as u64);
-    }
 
-    pub fn makeCurrentContext(&self){
-        EAGLContext::makeCurrentContext(&self.context);
-    }
 
 
 

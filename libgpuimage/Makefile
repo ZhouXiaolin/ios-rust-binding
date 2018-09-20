@@ -1,6 +1,10 @@
-all:
+ios:
 	cargo build --target aarch64-apple-ios --release
 
+android:
+	cargo build --target aarch64-linux-android --release
+	cargo build --target armv7-linux-androideabi --release
+	cargo build --target i686-linux-android --release
 
 clean:
 	cargo clean

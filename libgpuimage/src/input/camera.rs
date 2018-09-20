@@ -24,7 +24,7 @@ impl<'a,'b:'a> Source<'b> for XheyCamera<'a> {
 }
 
 impl<'a> XheyCamera<'a> {
-    fn new() -> Self {
+    pub fn new() -> Self {
         XheyCamera {
             _type:RenderNode::new(NodeType::Camera),
             _targets:RefCell::default()
@@ -33,23 +33,3 @@ impl<'a> XheyCamera<'a> {
 }
 
 
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn xhey_init_camera<'a>() -> *mut XheyCamera<'a> {
-    println!("xhey_init_camera");
-    let camera = Box::new(XheyCamera::new());
-    Box::into_raw(camera)
-}
-
-
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn xhey_start_capture(camera: *mut XheyCamera){
-    println!("xhey_start_camera");
-}
-
-#[allow(non_snake_case, unused_variables, dead_code)]
-#[no_mangle]
-pub extern "C" fn xhey_stop_capture(camera: *mut XheyCamera){
-    println!("xhey_start_camera");
-}

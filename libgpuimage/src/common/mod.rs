@@ -4,6 +4,9 @@ pub mod image_orientation;
 pub mod position;
 pub mod rotation;
 pub mod structure;
+pub mod graph_context;
+pub mod graph_node;
+pub mod graph;
 
 pub use self::color::*;
 pub use self::fill_mode::*;
@@ -11,6 +14,9 @@ pub use self::image_orientation::*;
 pub use self::position::*;
 pub use self::rotation::*;
 pub use self::structure::*;
+pub use self::graph_context::*;
+pub use self::graph_node::*;
+pub use self::graph::*;
 
 pub use super::render::gl_render::{GLSize,Size};
 pub use super::render::framebuffer::Framebuffer;

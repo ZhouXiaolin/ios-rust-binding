@@ -109,3 +109,26 @@ pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextur
 
     }
 }
+
+
+#[derive(Copy,Clone)]
+pub struct GLSize {
+    pub width : i32,
+    pub height: i32
+}
+impl GLSize {
+    pub fn new(width: i32, height: i32) -> Self {
+        GLSize{width:width,height:height}
+    }
+}
+impl Default for GLSize {
+    fn default() -> Self {
+        GLSize{width:0,height:0}
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct Size {
+    pub width: f32,
+    pub height: f32
+}

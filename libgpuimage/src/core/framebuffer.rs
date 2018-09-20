@@ -1,58 +1,29 @@
 use gles_rust_binding::*;
 use super::sharedImageProcessingContext;
+use super::gpu_texture_options::*;
+use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;
 use std::ptr;
 
-// framebuffer
-
-#[derive(Copy, Clone)]
-pub struct GPUTextureOptions {
-    minFilter : GLenum,
-    magFilter : GLenum,
-    wrapS : GLenum,
-    wrapT : GLenum,
-    internalFormat : GLenum,
-    format : GLenum,
-    _type : GLenum
+pub enum InputTextureStorageFormat {
+    textureCoordinate([GLfloat;8]),
+    textureVBO(GLuint)
 }
 
-impl Default for GPUTextureOptions {
-    fn default() -> Self {
-        GPUTextureOptions {
-            minFilter: GL_LINEAR,
-            magFilter: GL_LINEAR,
-            wrapS: GL_CLAMP_TO_EDGE,
-            wrapT: GL_CLAMP_TO_EDGE,
-            internalFormat: GL_RGBA,
-            format: GL_BGRA,
-            _type: GL_UNSIGNED_BYTE
+pub struct InputTextureProperties{
+    pub textureStorage: InputTextureStorageFormat,
+    pub texture: GLuint
+}
+
+impl InputTextureProperties {
+    pub fn new(textureStorageFormat: InputTextureStorageFormat, texture:GLuint) -> Self {
+        InputTextureProperties{
+            textureStorage: textureStorageFormat,
+            texture: texture
         }
     }
 }
 
-bitflags!{
-    struct TimestampFlags : u32 {
-        const valid = 1 << 0;
-        const hasBeenRounded = 1 << 1;
-        const positiveInfinity = 1 << 2;
-        const negativeInfinity = 1 << 3;
-        const indefinite = 1 << 4;
-    }
-}
-
-pub struct Timestamp{
-    value: i64,
-    timescale: i64,
-    flag: TimestampFlags,
-    epoch: i64
-}
-
-
-
-pub enum FramebufferTimingStyle {
-    stillImage,
-    videoFrame()
-}
 
 #[derive(Clone)] // 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
 pub struct Framebuffer {
@@ -68,136 +39,6 @@ pub struct Framebuffer {
 
 }
 
-pub struct Position{
-    x: f32,
-    y: f32,
-    z: f32
-}
-
-impl Position{
-    fn new(x: f32, y: f32, z: f32) -> Self {
-        Position{x:x,y:y,z:z}
-    }
-    fn center() -> Self {
-        Position::new(0.5,0.5,0.0)
-    }
-    fn zero() -> Self {
-        Position::new(0.0,0.0,0.0)
-    }
-}
-pub enum Rotation {
-    noRotation,
-    rotateCounterclockwise,
-    rotateClockwise,
-    rotate180,
-    flipHorizontally,
-    flipVertically,
-    rotateClockwiseAndFlipVertically,
-    rotateClockwiseAndFlipHorizontally,
-}
-
-
-
-impl Rotation {
-    pub fn toRawValue(&self) -> usize {
-        match self {
-            Rotation::noRotation => 0,
-            Rotation::rotateCounterclockwise => 1,
-            Rotation::rotateClockwise => 2,
-            Rotation::rotate180 => 3,
-            Rotation::flipHorizontally => 4,
-            Rotation::flipVertically => 5,
-            Rotation::rotateClockwiseAndFlipVertically => 6,
-            Rotation::rotateClockwiseAndFlipHorizontally => 7
-        }
-    }
-    pub fn flipsDimensions(&self) -> bool {
-
-        match self {
-            Rotation::noRotation | Rotation::rotate180 | Rotation::flipHorizontally | Rotation::flipVertically => false,
-            _ => true
-        }
-    }
-
-    pub fn textureCoordinates(&self) -> [f32;8] {
-
-        match self {
-            Rotation::noRotation => [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0],
-            Rotation::rotateCounterclockwise => [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0],
-            Rotation::rotateClockwise =>[1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0],
-            Rotation::rotate180 => [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-            Rotation::flipHorizontally => [1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0],
-            Rotation::flipVertically => [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
-            Rotation::rotateClockwiseAndFlipVertically => [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0],
-            Rotation::rotateClockwiseAndFlipHorizontally => [1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
-        }
-    }
-
-    pub fn croppedTextureCoordinates(&self, offsetFromOrigin:Position, cropSize: Size) -> [f32;8] {
-        let minX = offsetFromOrigin.x;
-        let minY = offsetFromOrigin.y;
-        let maxX = offsetFromOrigin.x + cropSize.width;
-        let maxY = offsetFromOrigin.y + cropSize.height;
-
-        match self {
-            Rotation::noRotation => [minX, minY, maxX, minY, minX, maxY, maxX, maxY],
-            Rotation::rotateCounterclockwise => [minX, maxY, minX, minY, maxX, maxY, maxX, minY],
-            Rotation::rotateClockwise => [maxX, minY, maxX, maxY, minX, minY, minX, maxY],
-            Rotation::rotate180 => [maxX, maxY, minX, maxY, maxX, minY, minX, minY],
-            Rotation::flipHorizontally => [maxX, minY, minX, minY, maxX, maxY, minX, maxY],
-            Rotation::flipVertically => [minX, maxY, maxX, maxY, minX, minY, maxX, minY],
-            Rotation::rotateClockwiseAndFlipVertically => [minX, minY, minX, maxY, maxX, minY, maxX, maxY],
-            Rotation::rotateClockwiseAndFlipHorizontally => [maxX, maxY, maxX, minY, minX, maxY, minX, minY],
-        }
-    }
-}
-#[derive(Copy, Clone)]
-pub enum ImageOrientation{
-    portrait,
-    portraitUpsideDown,
-    landscapeLeft,
-    landscapeRight
-}
-
-impl ImageOrientation {
-    pub fn rotationNeededForOrientation(&self, targetOrientation: ImageOrientation) -> Rotation {
-        match (self,targetOrientation) {
-            (ImageOrientation::portrait, ImageOrientation::portrait) | (ImageOrientation::portraitUpsideDown, ImageOrientation::portraitUpsideDown)
-            | (ImageOrientation::landscapeLeft,ImageOrientation::landscapeLeft) | (ImageOrientation::landscapeRight,ImageOrientation::landscapeRight) => Rotation::noRotation,
-
-            (ImageOrientation::portrait, ImageOrientation::portraitUpsideDown)  |  (ImageOrientation::portraitUpsideDown, ImageOrientation::portrait)
-            | (ImageOrientation::landscapeLeft, ImageOrientation::landscapeRight) | (ImageOrientation::landscapeRight, ImageOrientation::landscapeLeft) => Rotation::rotate180,
-
-            (ImageOrientation::portrait, ImageOrientation::landscapeLeft) | (ImageOrientation::landscapeRight, ImageOrientation::portrait)
-            | (ImageOrientation::landscapeLeft, ImageOrientation::portraitUpsideDown) | (ImageOrientation::portraitUpsideDown, ImageOrientation::landscapeRight) => Rotation::rotateCounterclockwise,
-
-            (ImageOrientation::landscapeRight, ImageOrientation::portraitUpsideDown) | (ImageOrientation::landscapeLeft, ImageOrientation::portrait)
-            | (ImageOrientation::portrait, ImageOrientation::landscapeRight) | (ImageOrientation::portraitUpsideDown, ImageOrientation::landscapeLeft) => Rotation::rotateClockwise
-        }
-    }
-}
-
-#[derive(Copy,Clone)]
-pub struct GLSize {
-    pub width : i32,
-    pub height: i32
-}
-impl GLSize {
-    pub fn new(width: i32, height: i32) -> Self {
-        GLSize{width:width,height:height}
-    }
-}
-impl Default for GLSize {
-    fn default() -> Self {
-        GLSize{width:0,height:0}
-    }
-}
-
-#[derive(Copy, Clone)]
-pub struct Size {
-    pub width: f32,
-    pub height: f32
-}
 
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
     if textureOnly {
@@ -373,24 +214,6 @@ impl Framebuffer {
 
 }
 
-pub enum InputTextureStorageFormat {
-    textureCoordinate([GLfloat;8]),
-    textureVBO(GLuint)
-}
-
-pub struct InputTextureProperties{
-    pub textureStorage: InputTextureStorageFormat,
-    pub texture: GLuint
-}
-
-impl InputTextureProperties {
-    pub fn new(textureStorageFormat: InputTextureStorageFormat, texture:GLuint) -> Self {
-        InputTextureProperties{
-            textureStorage: textureStorageFormat,
-            texture: texture
-        }
-    }
-}
 
 
 impl Drop for Framebuffer {
@@ -407,57 +230,3 @@ impl Drop for Framebuffer {
 }
 
 
-pub enum FillMode {
-    stretch,
-    preserveAspectRatio,
-    preserveAspectRatioAndFill
-}
-
-impl FillMode {
-    pub fn transformVertices(&self, vertices: [f32;8], fromInputSize : GLSize, toFitSize: GLSize) -> [f32;8] {
-
-
-        let aspectRatio = (fromInputSize.height as f32) / (fromInputSize.width as f32);
-        let targetAspectRatio = (toFitSize.height as f32) / (toFitSize.width as f32);
-
-        let (xRatio, yRatio) =  match self {
-            FillMode::stretch => {
-                (1.0,1.0)
-            },
-            FillMode::preserveAspectRatio => {
-                if aspectRatio > targetAspectRatio {
-                    let x = fromInputSize.width as f32 / toFitSize.width as f32 * ( toFitSize.height as f32 / fromInputSize.height as f32);
-                    (x,1.0)
-                }else{
-                    let y = fromInputSize.height as f32 / toFitSize.height as f32 * ( toFitSize.width as f32 / fromInputSize.width as f32);
-                    (1.0,y)
-                }
-            },
-            FillMode::preserveAspectRatioAndFill => {
-                if aspectRatio > targetAspectRatio {
-                    let y = fromInputSize.height as f32 / toFitSize.height as f32 * (toFitSize.width as f32 / fromInputSize.width as f32);
-                    (1.0,y)
-                }else {
-                    let x = toFitSize.height as f32 / fromInputSize.height as f32 * (fromInputSize.width as f32 / toFitSize.width as f32);
-                    (x,1.0)
-                }
-            }
-        };
-
-        let xConversionRatio = xRatio * (toFitSize.width as f32) / 2.0;
-        let xConversionDivisor = (toFitSize.width as f32) / 2.0;
-        let yConversionRatio = yRatio * (toFitSize.height as f32) / 2.0;
-        let yConversionDivisor = (toFitSize.height as f32) / 2.0;
-
-        let value1 = vertices[0] * xConversionRatio / xConversionDivisor;
-        let value2 = vertices[1] * yConversionRatio / yConversionDivisor;
-        let value3 = vertices[2] * xConversionRatio / xConversionDivisor;
-        let value4 = vertices[3] * yConversionRatio / yConversionDivisor;
-        let value5 = vertices[4] * xConversionRatio / xConversionDivisor;
-        let value6 = vertices[5] * yConversionRatio / yConversionDivisor;
-        let value7 = vertices[6] * xConversionRatio / xConversionDivisor;
-        let value8 = vertices[7] * yConversionRatio / yConversionDivisor;
-
-        return [value1, value2, value3, value4, value5, value6, value7, value8]
-    }
-}

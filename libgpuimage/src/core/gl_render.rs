@@ -1,4 +1,4 @@
-use super::Color;
+use super::color::*;
 use super::Framebuffer;
 use gles_rust_binding::*;
 use super::sharedImageProcessingContext;

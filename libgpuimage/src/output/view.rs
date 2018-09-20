@@ -7,6 +7,7 @@ use super::{RenderNode,GLSize,Consumer,Source,Framebuffer,Color,NodeType,ImageOr
 use super::GLRender::*;
 use super::FillMode;
 use super::sharedImageProcessingContext;
+use super::color::*;
 use super::gl_render::*;
 use std::cell::Cell;
 use std::ptr;

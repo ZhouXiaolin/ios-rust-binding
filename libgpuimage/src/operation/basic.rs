@@ -1,5 +1,5 @@
 use std::mem;
-use std::cell::{RefCell,Cell};
+use std::cell::{RefCell,Cell,RefMut};
 use gles_rust_binding::*;
 
 use super::*;
@@ -73,40 +73,41 @@ impl<'a> XHeyBasicFilter<'a> {
     }
 
 
+    pub fn renderFrameWithFramebuffers(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
+        let inputFramebuffer = inputFramebuffers.first().unwrap();
+
+        let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
+
+        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+
+        let textureProperties = {
+            let mut inputTextureProperties = vec![];
+            for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
+            }
+            inputTextureProperties
+        };
+
+        renderFramebuffer.activateFramebufferForRendering();
+
+        clearFramebufferWithColor(Color::black());
+
+        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+
+        renderQuadWithShader(&self._shader,&textureProperties,vertex);
+
+        renderFramebuffer
+    }
+
     pub fn renderFrame(&self,framebuffer: &Framebuffer, fromSourceIndex: usize){
 
         let mut inputFramebuffers = self._inputFramebuffers.borrow_mut();
-
-
         inputFramebuffers.insert(fromSourceIndex,framebuffer.clone());
 
         let len = inputFramebuffers.len();
 
         if len >= self._maximumInputs as usize {
-
-
-
-            let inputFramebuffer = inputFramebuffers.first().unwrap();
-
-            let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
-
-            let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-
-            let textureProperties = {
-                let mut inputTextureProperties = vec![];
-                for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
-                    inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
-                }
-                inputTextureProperties
-            };
-
-            renderFramebuffer.activateFramebufferForRendering();
-
-            clearFramebufferWithColor(Color::black());
-
-            let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
-
-            renderQuadWithShader(&self._shader,&textureProperties,vertex);
+            let renderFramebuffer= self.renderFrameWithFramebuffers(inputFramebuffers.as_mut());
 
             self.updateTargetsWithFramebuffer(&renderFramebuffer);
         }
@@ -185,28 +186,8 @@ impl<'a> Operation for XHeyBasicFilter<'a> {
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备，
     fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
 
+        let renderFramebuffer= self.renderFrameWithFramebuffers(&inputFramebuffers);
 
-        let inputFramebuffer = inputFramebuffers.first().unwrap();
-
-        let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
-
-        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-
-        let textureProperties = {
-            let mut inputTextureProperties = vec![];
-            for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
-                inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
-            }
-            inputTextureProperties
-        };
-
-        renderFramebuffer.activateFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::black());
-
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
-
-        renderQuadWithShader(&self._shader,&textureProperties,vertex);
 
         renderFramebuffer
     }

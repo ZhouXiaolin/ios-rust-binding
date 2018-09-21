@@ -29,13 +29,18 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>, source: *mut XheyPicture<'a>, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture<'a>,filter: *mut XHeyBasicFilter<'a>, filter2: *mut XHeyBasicFilter<'a>, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
     let box_view = view.as_ref().unwrap();
+    let box_filter = filter.as_ref().unwrap();
+    let box_filter2 = filter2.as_ref().unwrap();
+
     let pic = box_graph.placeholder("picture",box_picture);
-    let vi = box_graph.add_function("view",&[pic],box_view);
+    let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
+    let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
+    let vi = box_graph.add_function("view",&[filter2],box_view);
     box_graph.PrintGraphviz();
     box_graph.forward();
 

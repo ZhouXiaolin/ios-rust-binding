@@ -9,7 +9,6 @@ pub struct XHeyBasicFilter{
     _maximumInputs : i32,
     _inputFramebuffers:RefCell<Vec<Framebuffer>>,
     _renderFramebuffer: RefCell<Framebuffer>,
-
     index:u32,
     inputs: RefCell<Vec<u32>>
 
@@ -104,7 +103,6 @@ impl XHeyBasicFilter {
 
 
 
-#[cfg(feature = "new")]
 impl Operation for XHeyBasicFilter {
 
     /// 将ni加入这个节点的输入序列
@@ -133,7 +131,8 @@ impl Operation for XHeyBasicFilter {
         self._maximumInputs as u32
     }
 
-    /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备，
+    /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
+    /// 所有关系都由Graph来控制 Framebuffer
     fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
 
         let renderFramebuffer= self.renderFrame(&inputFramebuffers);

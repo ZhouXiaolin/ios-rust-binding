@@ -12,7 +12,6 @@ fnv = "1.0.6"
 bitflags = "1.0.4"
 
 [features]
-new = []
 
 [target.'cfg(target_os="ios")'.dependencies]
 objc = "0.2.5"

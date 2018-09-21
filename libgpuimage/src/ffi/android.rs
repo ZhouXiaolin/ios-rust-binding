@@ -8,13 +8,13 @@ use self::jni::sys::{jint, jlong};
 use std::os::raw::c_void;
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_init_basic_filter<'a>(env: JNIEnv, _: JClass) -> *mut XHeyBasicFilter<'a> {
+pub unsafe extern "C" fn xhey_init_basic_filter(env: JNIEnv, _: JClass) -> *mut XHeyBasicFilter {
     let filter = Box::new(XHeyBasicFilter::new());
     Box::into_raw(filter)
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_init_basic_filter_2<'a>(env: JNIEnv, _: JClass) -> *mut XHeyBasicFilter<'a> {
+pub unsafe extern "C" fn xhey_init_basic_filter_2(env: JNIEnv, _: JClass) -> *mut XHeyBasicFilter {
 
     let vertexString = r#"
  attribute vec4 position;
@@ -48,7 +48,7 @@ pub unsafe extern "C" fn xhey_init_basic_filter_2<'a>(env: JNIEnv, _: JClass) ->
 
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_init_picture<'a>(env: JNIEnv, _: JClass,data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture<'a> {
+pub unsafe extern "C" fn xhey_init_picture(env: JNIEnv, _: JClass,data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture {
     println!("xhey_init_picture");
     let picture = Box::new(XheyPicture::new(data,width,height));
     Box::into_raw(picture)
@@ -57,8 +57,5 @@ pub unsafe extern "C" fn xhey_init_picture<'a>(env: JNIEnv, _: JClass,data: *con
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_process_picture(env: JNIEnv, _: JClass, picture: *const XheyPicture){
-    let p = picture.as_ref().unwrap();
-    p.processImage();
-
 
 }

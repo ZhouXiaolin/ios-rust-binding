@@ -1,6 +1,5 @@
 use super::{Node,Framebuffer,sharedContext};
 
-
 pub trait Operation {
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32);
@@ -58,35 +57,6 @@ impl<'a> Graph<'a> {
 
     }
 
-    /// 渲染过程 前向渲染的计算
-    pub fn forward(&mut self) {
-
-        let nodes = &mut self.nodes;
-        let ops = &mut self.ops;
-        for node in nodes.iter() {
-            let op: &Box<&dyn Operation> = ops.get(node.id as usize).unwrap();
-
-            let mut xs = Vec::<Framebuffer>::with_capacity(op.arity() as usize);
-            for (ti,input) in op.inputs().iter().enumerate(){
-
-                let n: &Node = nodes.get(input.clone() as usize).unwrap();
-
-                xs.insert(ti,n.f.take());
-
-            }
-
-            node.f.set(op.forward(xs));
-        }
-
-    }
-
-    pub fn add_feed(&self, index:u32, value:Framebuffer){
-        let ops = &self.ops;
-        let op:&Box<&dyn Operation> = ops.get(index as usize).expect("Error to get op from ops");
-        op.set_framebuffer(value);
-
-    }
-
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
     pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Operation) -> u32 {
         let node = Node::new(name);
@@ -132,11 +102,44 @@ impl<'a> Graph<'a> {
 
         }
 
-        for op in ops.iter() {
-            for ni in op.inputs().iter() {
-                println!("N{} -> N{}",ni,op.index())
+        for node in nodes.iter() {
+            let inputs: Vec<u32> = ops.get(node.id as usize).unwrap().inputs();
+            for input in inputs.iter(){
+                let inner_node: &Node = nodes.get(input.clone() as usize).unwrap();
+                println!("N{} -> N{}",inner_node.id, node.id);
             }
         }
+    }
+
+
+
+    /// 渲染过程 前向计算  这个体系是计算图模型，在这种渲染中
+    pub fn forward(&mut self) {
+
+        let nodes = &mut self.nodes;
+        let ops = &mut self.ops;
+        for node in nodes.iter() {
+            let op: &Box<&dyn Operation> = ops.get(node.id as usize).unwrap();
+
+            let mut xs = Vec::<Framebuffer>::with_capacity(op.arity() as usize);
+            for (ti,input) in op.inputs().iter().enumerate(){
+
+                let n: &Node = nodes.get(input.clone() as usize).unwrap();
+
+                xs.insert(ti,n.f.take());
+
+            }
+
+            node.f.set(op.forward(xs));
+        }
+
+    }
+
+    pub fn add_feed(&self, index:u32, value:Framebuffer){
+        let ops = &self.ops;
+        let op:&Box<&dyn Operation> = ops.get(index as usize).expect("Error to get op from ops");
+        op.set_framebuffer(value);
+
     }
 
 }

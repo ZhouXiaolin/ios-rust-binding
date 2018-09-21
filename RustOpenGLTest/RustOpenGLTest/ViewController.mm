@@ -79,12 +79,13 @@
     CGColorSpaceRelease(genericRGBColorspace);
 
     Graph* graph = xhey_init_graph();
-    XheyView* view = xhey_init_view((__bridge void*)demoView);
     
-    XheyBasicFilter* filter = xhey_init_basic_filter();
-    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
+    XheyView* view = xhey_init_view((__bridge void*)demoView); // 0
+    XheyPicture* picture = xhey_init_picture(imageData,width,height); // 3
+    XheyBasicFilter* filter = xhey_init_basic_filter(); // 1
+    XheyBasicFilter* filter2 = xhey_init_basic_filter_2(); // 2
+
 //
-    XheyPicture* picture = xhey_init_picture(imageData,width,height);
 //    xhey_add_target(picture, filter, filter2,view);
 //    xhey_process_picture(picture);
 

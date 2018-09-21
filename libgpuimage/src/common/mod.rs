@@ -6,7 +6,6 @@ pub mod rotation;
 pub mod graph_context;
 pub mod graph_node;
 
-#[cfg(feature = "new")]
 pub mod graph;
 
 pub use self::color::*;
@@ -17,7 +16,6 @@ pub use self::rotation::*;
 pub use self::graph_context::*;
 pub use self::graph_node::*;
 
-#[cfg(feature = "new")]
 pub use self::graph::*;
 
 pub use super::render::gl_render::{GLSize,Size};

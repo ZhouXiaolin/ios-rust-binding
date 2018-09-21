@@ -124,7 +124,6 @@ impl XHeyView {
 }
 
 
-#[cfg(feature = "new")]
 impl Operation for XHeyView {
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32){

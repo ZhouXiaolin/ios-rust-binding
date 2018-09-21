@@ -14,7 +14,7 @@ pub trait Operation {
     fn arity(&self) -> u32;
 
     /// 前向计算
-    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer;
+    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer;
 
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer);
@@ -125,12 +125,18 @@ impl<'a> Graph<'a> {
             for (ti,input) in op.inputs().iter().enumerate(){
 
                 let n: &Node = nodes.get(input.clone() as usize).unwrap();
-
-                xs.insert(ti,n.f.take());
+                let framebuffer = n.f.take();
+                framebuffer.lock();
+                xs.insert(ti,framebuffer);
 
             }
 
-            node.f.set(op.forward(xs));
+            node.f.set(op.forward(&xs));
+
+            for x in xs.iter() {
+                x.unlock();
+            }
+
         }
 
     }

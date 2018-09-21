@@ -139,6 +139,11 @@ impl Framebuffer {
         let newValue = self.framebufferRetainCount.get() + 1;
         self.framebufferRetainCount.set(newValue);
     }
+
+    pub fn retainCount(&self) -> u32 {
+        self.framebufferRetainCount.get()
+    }
+
     pub fn unlock(&self){
         let newValue = self.framebufferRetainCount.get() - 1;
         self.framebufferRetainCount.set(newValue);
@@ -152,11 +157,12 @@ impl Framebuffer {
         }
 
     }
-    fn resetRetainCount(&self){
+
+    pub fn resetRetainCount(&self){
         self.framebufferRetainCount.set(0);
     }
 
-    fn valid(&self) -> bool {
+    pub fn valid(&self) -> bool {
         self.framebufferRetainCount.get() == 0
     }
 

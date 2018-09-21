@@ -70,6 +70,11 @@ impl XHeyBasicFilter {
 
 
     pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
+        for inputFramebuffer in inputFramebuffers.iter() {
+            println!("inputFramebuffer hashString {} count {}",inputFramebuffer.hashString(),inputFramebuffer.retainCount());
+        }
+
+
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
@@ -95,6 +100,9 @@ impl XHeyBasicFilter {
         renderFramebuffer
     }
 
+    fn getTexId(&self) -> u32 {
+        self._renderFramebuffer.borrow().texture
+    }
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
@@ -133,11 +141,9 @@ impl Operation for XHeyBasicFilter {
 
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
-    fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
+    fn forward(&self, inputFramebuffers: &Vec<Framebuffer>) -> Framebuffer{
 
         let renderFramebuffer= self.renderFrame(&inputFramebuffers);
-
-
         renderFramebuffer
     }
 

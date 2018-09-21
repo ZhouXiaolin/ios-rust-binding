@@ -15,18 +15,20 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
     let box_view = view.as_ref().unwrap();
     let box_filter = filter.as_ref().unwrap();
     let box_filter2 = filter2.as_ref().unwrap();
+    let box_filter3 = filter3.as_ref().unwrap();
 
     let pic = box_graph.placeholder("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
     let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
-    let vi = box_graph.add_function("view",&[filter2],box_view);
+    let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
+    let vi = box_graph.add_function("view",&[filter3],box_view);
     box_graph.PrintGraphviz();
     box_graph.forward();
 
@@ -63,7 +65,7 @@ pub extern "C" fn xhey_init_basic_filter_2() -> *mut XHeyBasicFilter {
  void main()
  {
      vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = vec4(0.0,color.r, 0.0, 1.0);
+     gl_FragColor = vec4(color.r,0.0, 0.0, 1.0);
  }
     "#;
 

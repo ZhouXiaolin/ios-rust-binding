@@ -54,10 +54,6 @@
 
     self.view.backgroundColor = [UIColor blueColor];
     
-
-//    OpenGLView* view = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-//    view.center = self.view.center;
-//    [self.view addSubview:view];
     
     DemoView* demoView = [[DemoView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     demoView.center = self.view.center;
@@ -84,15 +80,13 @@
     XheyPicture* picture = xhey_init_picture(imageData,width,height); // 3
     XheyBasicFilter* filter = xhey_init_basic_filter(); // 1
     XheyBasicFilter* filter2 = xhey_init_basic_filter_2(); // 2
+    XheyBasicFilter* filter3 = xhey_init_basic_filter_2(); // 2
 
-//
-//    xhey_add_target(picture, filter, filter2,view);
-//    xhey_process_picture(picture);
 
-    xhey_graph(graph, picture, filter, filter2, view);
+    xhey_graph(graph, picture, filter, filter2, filter3, view);
     
     free(imageData);
-    // Do any additional setup after loading the view, typically from a nib.
+    
 }
 
 

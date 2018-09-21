@@ -49,8 +49,8 @@ impl Operation for XheyPicture{
         self.index.set(edge);
     }
     /// 将ni加入这个节点的输入序列
-    fn append(&self, ni: u32){
-        self.inputs.borrow_mut().push(ni);
+    fn append_node(&self, node: u32){
+        self.inputs.borrow_mut().push(node);
     }
 
     /// 返回输入序列

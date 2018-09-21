@@ -2,7 +2,7 @@ use super::{Node,Framebuffer};
 
 pub trait Operation {
     /// 将ni加入这个节点的输入序列
-    fn append(&self, ni: u32);
+    fn append_node(&self, node: u32);
 
     fn append_edge(&self, edge: u32);
     /// 返回输入序列
@@ -70,7 +70,7 @@ impl<'a> Graph<'a> {
 
 
         for ni in arguments.iter(){
-            function.append(ni.clone());
+            function.append_node(ni.clone());
             let inner_node: &mut Node = nodes.get_mut(*ni as usize).unwrap();
             inner_node.append(node_id);
         }

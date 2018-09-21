@@ -76,9 +76,9 @@
 
     Graph* graph = xhey_init_graph();
     
+    XheyBasicFilter* filter = xhey_init_basic_filter(); // 1
     XheyView* view = xhey_init_view((__bridge void*)demoView); // 0
     XheyPicture* picture = xhey_init_picture(imageData,width,height); // 3
-    XheyBasicFilter* filter = xhey_init_basic_filter(); // 1
     XheyBasicFilter* filter2 = xhey_init_basic_filter_2(); // 2
     XheyBasicFilter* filter3 = xhey_init_basic_filter_2(); // 2
 

@@ -35,7 +35,7 @@ extern "C" {
     void xhey_init_triangle(void);
     struct Graph;
     struct Graph * xhey_init_graph();
-    
+
 #if __cplusplus
 }
 #endif

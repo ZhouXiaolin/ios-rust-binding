@@ -1,7 +1,6 @@
 use super::*;
 use gles_rust_binding::*;
 use std::ptr;
-use std::mem;
 
 pub fn clearFramebufferWithColor(color:Color) {
     unsafe {

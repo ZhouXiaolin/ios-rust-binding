@@ -1,5 +1,4 @@
-use std::mem;
-use std::cell::{RefCell,Cell,RefMut};
+use std::cell::{RefCell};
 use gles_rust_binding::*;
 
 use super::*;

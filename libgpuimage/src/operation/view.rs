@@ -3,9 +3,6 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 use gles_rust_binding::*;
 
 use std::cell::{Cell,RefCell};
-use std::ptr;
-use std::mem;
-use super::context::*;
 use super::*;
 
 

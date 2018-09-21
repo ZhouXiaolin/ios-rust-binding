@@ -26,6 +26,7 @@ pub struct Graph<'a>{
     ops: Vec<Box<&'a dyn Operation>>,
 
 }
+pub type VariableIndex = u32;
 
 impl<'a> Graph<'a> {
     pub fn new() -> Self {
@@ -42,8 +43,8 @@ impl<'a> Graph<'a> {
         self.ops.clear();
     }
 
-    /// 这个函数用来做输入
-    pub fn placeholder(&mut self, name:&str, op: &'a dyn Operation) -> u32 {
+    /// 这个函数用来添加输入
+    pub fn add_input(&mut self, name:&str, op: &'a dyn Operation) -> VariableIndex {
 
         let node = Node::new(name);
         let node_id = node.id;
@@ -58,7 +59,7 @@ impl<'a> Graph<'a> {
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Operation) -> u32 {
+    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Operation) -> VariableIndex {
         let node = Node::new(name);
         let node_id = node.id;
         let nodes = &mut self.nodes;

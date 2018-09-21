@@ -1,4 +1,4 @@
-use std::cell::{RefCell,Cell};
+use std::cell::{Cell};
 
 /// 图的上下文，应该包含在Graph类中
 pub struct Context {

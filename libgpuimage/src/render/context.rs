@@ -1,6 +1,5 @@
 use gles_rust_binding::*;
 use super::*;
-use std::collections::BTreeMap;
 use std::mem;
 
 #[cfg(target_os = "ios")]

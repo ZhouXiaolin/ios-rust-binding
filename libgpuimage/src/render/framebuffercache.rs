@@ -1,9 +1,5 @@
-#![allow(dead_code)]
-
 use fnv::FnvHashMap;
-use std::cell::{RefCell,Cell,Ref};
-use gles_rust_binding::*;
-use std::rc::Rc;
+use std::cell::{RefCell,Ref};
 
 use std::marker::Sync;
 

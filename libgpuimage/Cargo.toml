@@ -10,12 +10,14 @@ gles-rust-binding = { path = "../gles-rust-binding", version = "0.1.0"}
 lazy_static = "1.1.0"
 fnv = "1.0.6"
 bitflags = "1.0.4"
-
+foreign-types = "0.3.2"
 [features]
 
 [target.'cfg(target_os="ios")'.dependencies]
 objc = "0.2.5"
 ios-rust-binding = { path = "../ios-rust-binding", version = "0.1.0"}
+cocoa = "0.18.0"
+metal-rs = "0.10.4"
 
 [target.'cfg(target_os="android")'.dependencies]
 jni = { version = "0.10.1", default-features = false }

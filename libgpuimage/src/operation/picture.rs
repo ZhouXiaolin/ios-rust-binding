@@ -1,7 +1,6 @@
 
 use super::*;
 
-use std::mem::transmute;
 use gles_rust_binding::*;
 use std::os::raw::c_void;
 use std::cell::{RefCell,Cell};

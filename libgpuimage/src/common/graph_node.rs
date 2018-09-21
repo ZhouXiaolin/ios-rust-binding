@@ -1,4 +1,4 @@
-use std::cell::{Cell,RefCell};
+use std::cell::{Cell};
 use super::sharedContext;
 use super::Framebuffer;
 

@@ -1,4 +1,3 @@
-#[cfg(target_os = "ios")]
 use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
@@ -11,7 +10,6 @@ use super::*;
 
 
 
-#[cfg(target_os = "ios")]
 #[repr(C)]
 pub struct XHeyView {
     displayFramebuffer: Cell<GLuint>,
@@ -26,7 +24,6 @@ pub struct XHeyView {
 
 
 
-#[cfg(target_os = "ios")]
 impl Consumer for XHeyView {
     fn setSource(&self, _source: &dyn Source, _location: u32) {
         println!("XheyView set_source");
@@ -40,9 +37,13 @@ impl Consumer for XHeyView {
 
 }
 
+impl Drop for XHeyView {
+    fn drop(&mut self){
+        println!("Drop XHeyView");
+    }
 
+}
 
-#[cfg(target_os = "ios")]
 impl XHeyView {
     pub fn new(view: &UIView) -> Self {
         let layer = view.get_layer();
@@ -62,6 +63,7 @@ impl XHeyView {
 
 
     fn renderFrame(&self, framebuffer: &Framebuffer){
+
         sharedImageProcessingContext.makeCurrentContext();
 
         if self.displayFramebuffer.get() == 0 {
@@ -89,7 +91,9 @@ impl XHeyView {
         unsafe {
             glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
         }
+
         sharedImageProcessingContext.presentBufferForDisplay();
+
     }
 
     fn activateDisplayFramebuffer(&self) {
@@ -164,6 +168,8 @@ impl Operation for XHeyView {
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
     fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
+        println!("XHeyView 前向计算 {}",xs.len());
+
         self.renderFrame(&xs[0]);
         PlaceHolder::new()
     }

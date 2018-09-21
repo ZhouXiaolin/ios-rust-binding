@@ -14,10 +14,31 @@ pub extern "C" fn xhey_add_target<'a>(source: *mut XheyPicture<'a>, filter: *mut
     let box_filter = unsafe{filter.as_ref().unwrap()};
     let box_filter2 = unsafe{filter2.as_ref().unwrap()};
 
+
     let box_view = unsafe{consumer.as_ref().unwrap()};
     box_picture.addTarget(box_filter,0);
     box_filter.addTarget(box_filter2,0);
     box_filter2.addTarget(box_view,0);
+}
+
+use super::common::Graph;
+
+#[no_mangle]
+pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
+    let graph = Box::new(Graph::new());
+    Box::into_raw(graph)
+}
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>, source: *mut XheyPicture<'a>, view: *mut XHeyView){
+    let box_graph = graph.as_mut().unwrap();
+
+    let box_picture = source.as_ref().unwrap();
+    let box_view = view.as_ref().unwrap();
+    let pic = box_graph.placeholder("picture",box_picture);
+    let vi = box_graph.add_function("view",&[pic],box_view);
+    box_graph.PrintGraphviz();
+    box_graph.forward();
+
 }
 
 #[no_mangle]

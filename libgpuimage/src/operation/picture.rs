@@ -13,7 +13,12 @@ pub struct XheyPicture<'a>{
     inputs: RefCell<Vec<u32>>
 }
 
+impl<'a> Drop for XheyPicture<'a> {
+    fn drop(&mut self){
+        println!("Drop XheyPicture");
+    }
 
+}
 
 impl<'a> XheyPicture<'a> {
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
@@ -96,7 +101,8 @@ impl<'a> Operation for XheyPicture<'a>{
 
     /// 前向计算
     fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
-        self._framebuffer.take()
+        println!("XHeyPicture 前向计算");
+        self._framebuffer.take().clone()
     }
 
     ///针对Source节点，在渲染过程中指定其Framebufer

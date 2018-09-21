@@ -60,7 +60,7 @@ impl GlContext {
         let standardImageVBO = generateVBO(&standardImageVertices);
 
         let program = GLProgram::new(vertexStr,fragmentStr);
-        let textureVBOs = Self::generateTextureVBOs();
+        let textureVBOs = generateTextureVBOs();
 
         GlContext{
             context:generatedContext,
@@ -77,7 +77,7 @@ impl GlContext {
         let standardImageVBO = generateVBO(&standardImageVertices);
 
         let program = GLProgram::new(vertexStr,fragmentStr);
-        let textureVBOs = Self::generateTextureVBOs();
+        let textureVBOs = generateTextureVBOs();
 
         GlContext{
             standardImageVBO:standardImageVBO,
@@ -107,20 +107,7 @@ impl GlContext {
     }
 
 
-    fn generateTextureVBOs() -> Vec<GLuint> {
-        let mut textureVBOs = Vec::with_capacity(8);
 
-        textureVBOs.push(generateVBO(&Rotation::noRotation.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::rotateCounterclockwise.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::rotateClockwise.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::rotate180.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::flipHorizontally.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::flipVertically.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipVertically.textureCoordinates()));
-        textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates()));
-
-        textureVBOs
-    }
 
 
 
@@ -134,7 +121,20 @@ impl GlContext {
 }
 
 
+fn generateTextureVBOs() -> Vec<GLuint> {
+    let mut textureVBOs = Vec::with_capacity(8);
 
+    textureVBOs.push(generateVBO(&Rotation::noRotation.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::rotateCounterclockwise.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwise.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::rotate180.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::flipHorizontally.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::flipVertically.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipVertically.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates()));
+
+    textureVBOs
+}
 
 
 fn generateVBO<T>(vertices: &[T]) -> GLuint {

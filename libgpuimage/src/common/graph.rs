@@ -1,7 +1,6 @@
 use super::{Node,Framebuffer,sharedContext};
 
 
-#[cfg(feature = "new")]
 pub trait Operation {
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32);
@@ -22,15 +21,14 @@ pub trait Operation {
     fn set_framebuffer(&self, value:Framebuffer);
 }
 
-#[cfg(feature = "new")]
-pub struct Graph{
+#[repr(C)]
+pub struct Graph<'a>{
     nodes: Vec<Node>,
-    ops: Vec<Box<dyn Operation>>,
+    ops: Vec<Box<&'a dyn Operation>>,
 
 }
 
-#[cfg(feature = "new")]
-impl Graph {
+impl<'a> Graph<'a> {
     pub fn new() -> Self {
         Graph{
             nodes: Vec::default(),
@@ -46,7 +44,7 @@ impl Graph {
     }
 
     /// 这个函数用来做输入
-    pub fn placeholder(&mut self, name:&str, op: Box<dyn Operation>) -> u32 {
+    pub fn placeholder(&mut self, name:&str, op: &'a dyn Operation) -> u32 {
 
         let node = Node::new(name);
         let node_id = node.id;
@@ -54,7 +52,7 @@ impl Graph {
         nodes.push(node);
 
         let ops = &mut self.ops;
-        ops.push(op);
+        ops.push(Box::new(op));
 
         node_id
 
@@ -66,7 +64,7 @@ impl Graph {
         let nodes = &mut self.nodes;
         let ops = &mut self.ops;
         for node in nodes.iter() {
-            let op: &Box<dyn Operation> = ops.get(node.id as usize).unwrap();
+            let op: &Box<&dyn Operation> = ops.get(node.id as usize).unwrap();
 
             let mut xs = Vec::<Framebuffer>::with_capacity(op.arity() as usize);
             for (ti,input) in op.inputs().iter().enumerate(){
@@ -79,17 +77,18 @@ impl Graph {
 
             node.f.set(op.forward(xs));
         }
+
     }
 
     pub fn add_feed(&self, index:u32, value:Framebuffer){
         let ops = &self.ops;
-        let op:&Box<dyn Operation> = ops.get(index as usize).expect("Error to get op from ops");
+        let op:&Box<&dyn Operation> = ops.get(index as usize).expect("Error to get op from ops");
         op.set_framebuffer(value);
 
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: Box<dyn Operation>) -> u32 {
+    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Operation) -> u32 {
         let node = Node::new(name);
         let node_id = node.id;
         let nodes = &mut self.nodes;
@@ -103,7 +102,7 @@ impl Graph {
         }
 
         let ops = &mut self.ops;
-        ops.push(function);
+        ops.push(Box::new(function));
 
         node_id
 
@@ -119,7 +118,7 @@ impl Graph {
         for node in nodes.iter() {
 
             let mut var_names = Vec::<String>::new();
-            let op:&Box<dyn Operation> = ops.get(node.id as usize).unwrap();
+            let op:&Box<&dyn Operation> = ops.get(node.id as usize).unwrap();
             let inputs = op.inputs();
             for input in inputs.iter() {
                 let inner_node: &Node = nodes.get(input.clone() as usize).unwrap();

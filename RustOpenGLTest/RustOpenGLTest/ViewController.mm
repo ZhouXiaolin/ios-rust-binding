@@ -78,16 +78,18 @@
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
 
-    
+    Graph* graph = xhey_init_graph();
     XheyView* view = xhey_init_view((__bridge void*)demoView);
     
-    XheyBasicFilter* filter = xhey_init_basic_filter();
-    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
-    
+//    XheyBasicFilter* filter = xhey_init_basic_filter();
+//    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
+//
     XheyPicture* picture = xhey_init_picture(imageData,width,height);
-    xhey_add_target(picture, filter, filter2,view);
-    xhey_process_picture(picture);
+//    xhey_add_target(picture, filter, filter2,view);
+//    xhey_process_picture(picture);
 
+    xhey_graph(graph, picture, view);
+    
     free(imageData);
     // Do any additional setup after loading the view, typically from a nib.
 }

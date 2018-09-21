@@ -29,9 +29,12 @@ extern "C" {
     struct XHeyLookupTableFilter;
     struct XHeyGaussianBlurFilter;
     void xhey_add_target(void * source, void* filter,void* filter2, void* consumer);
+    void xhey_graph(void* graph, void* source, void* view);
     void* test(const char* path);
     int init(void);
     void xhey_init_triangle(void);
+    struct Graph;
+    struct Graph * xhey_init_graph();
 #if __cplusplus
 }
 #endif

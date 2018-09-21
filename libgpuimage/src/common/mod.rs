@@ -6,6 +6,8 @@ pub mod rotation;
 pub mod structure;
 pub mod graph_context;
 pub mod graph_node;
+
+#[cfg(feature = "new")]
 pub mod graph;
 
 pub use self::color::*;
@@ -16,12 +18,17 @@ pub use self::rotation::*;
 pub use self::structure::*;
 pub use self::graph_context::*;
 pub use self::graph_node::*;
+
+#[cfg(feature = "new")]
 pub use self::graph::*;
 
 pub use super::render::gl_render::{GLSize,Size};
 pub use super::render::framebuffer::Framebuffer;
 
 
+
+
+/// PlaceHolder
 use std::mem;
 use std::marker::PhantomData;
 pub struct PlaceHolder<T>{

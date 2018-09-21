@@ -1,5 +1,5 @@
 ios:
-	cargo build --target aarch64-apple-ios --release
+	cargo build --target aarch64-apple-ios --release --features=new
 
 android:
 	cargo build --target aarch64-linux-android --release

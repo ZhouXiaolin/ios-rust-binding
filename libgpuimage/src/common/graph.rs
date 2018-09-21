@@ -1,5 +1,7 @@
 use super::{Node,Framebuffer,sharedContext};
 
+
+#[cfg(feature = "new")]
 pub trait Operation {
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32);
@@ -20,12 +22,14 @@ pub trait Operation {
     fn set_framebuffer(&self, value:Framebuffer);
 }
 
-
+#[cfg(feature = "new")]
 pub struct Graph{
     nodes: Vec<Node>,
     ops: Vec<Box<dyn Operation>>,
 
 }
+
+#[cfg(feature = "new")]
 impl Graph {
     pub fn new() -> Self {
         Graph{

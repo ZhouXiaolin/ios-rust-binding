@@ -3,9 +3,10 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 
 use gles_rust_binding::*;
 
-use std::cell::Cell;
+use std::cell::{Cell,RefCell};
 use std::ptr;
-
+use std::mem;
+use super::context::*;
 use super::*;
 
 
@@ -17,7 +18,10 @@ pub struct XHeyView {
     displayRenderbuffer: Cell<GLuint>,
     backingSize: Cell<GLSize>,
     layer: ShareId<CALayer>,
-    orientation: ImageOrientation
+    orientation: ImageOrientation,
+
+    index:u32,
+    inputs:RefCell<Vec<u32>>,
 }
 
 
@@ -30,6 +34,34 @@ impl Consumer for XHeyView {
     }
 
     fn newFramebufferAvailable(&self,framebuffer: &Framebuffer, fromSourceIndex: usize){
+       self.renderFrame(framebuffer);
+
+    }
+
+}
+
+
+
+#[cfg(target_os = "ios")]
+impl XHeyView {
+    pub fn new(view: &UIView) -> Self {
+        let layer = view.get_layer();
+        let layer = layer.share();
+
+
+        XHeyView{
+            displayFramebuffer:Cell::default(),
+            displayRenderbuffer:Cell::default(),
+            backingSize:Cell::default(),
+            layer:layer,
+            orientation: ImageOrientation::portrait,
+            index:sharedContext.operation_id(),
+            inputs:RefCell::default()
+        }
+    }
+
+
+    fn renderFrame(&self, framebuffer: &Framebuffer){
         sharedImageProcessingContext.makeCurrentContext();
 
         if self.displayFramebuffer.get() == 0 {
@@ -58,29 +90,7 @@ impl Consumer for XHeyView {
             glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
         }
         sharedImageProcessingContext.presentBufferForDisplay();
-
     }
-
-}
-
-
-
-#[cfg(target_os = "ios")]
-impl XHeyView {
-    pub fn new(view: &UIView) -> Self {
-        let layer = view.get_layer();
-        let layer = layer.share();
-
-
-        XHeyView{
-            displayFramebuffer:Cell::default(),
-            displayRenderbuffer:Cell::default(),
-            backingSize:Cell::default(),
-            layer:layer,
-            orientation: ImageOrientation::portrait
-        }
-    }
-
 
     fn activateDisplayFramebuffer(&self) {
         unsafe {
@@ -123,3 +133,41 @@ impl XHeyView {
 
 }
 
+
+#[cfg(feature = "new")]
+impl Operation for XHeyView {
+    /// 将ni加入这个节点的输入序列
+    fn append(&self, ni: u32){
+        self.inputs.borrow_mut().push(ni);
+    }
+
+    /// 返回输入序列 这里的实现很扭曲
+    fn inputs(&self) -> Vec<u32>{
+//        unsafe{self.inputs.as_ptr().read().clone()}
+        let inputs = self.inputs.borrow();
+        let mut outputs = Vec::new();
+        for input in inputs.iter() {
+            outputs.push(input.clone());
+        }
+        outputs
+    }
+
+    /// 节点在图中的序号
+    fn index(&self) -> u32{
+        self.index
+    }
+
+    /// 指定输入最大个数
+    fn arity(&self) -> u32{
+        1
+    }
+
+    /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
+    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
+        self.renderFrame(&xs[0]);
+        PlaceHolder::new()
+    }
+
+    ///针对Source节点，在渲染过程中指定其Framebufer
+    fn set_framebuffer(&self, value:Framebuffer){}
+}

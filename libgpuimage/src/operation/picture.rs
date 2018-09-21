@@ -1,14 +1,16 @@
 
-use super::{Source,Consumer,sharedImageProcessingContext,Framebuffer,ImageOrientation,GLSize};
+use super::*;
 
 use std::mem::transmute;
 use gles_rust_binding::*;
 use std::os::raw::c_void;
-use std::cell::{RefCell};
+use std::cell::{RefCell,Cell};
 #[repr(C)]
 pub struct XheyPicture<'a>{
     _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
-    _framebuffer: Framebuffer
+    _framebuffer: Cell<Framebuffer>,
+    index:u32,
+    inputs: RefCell<Vec<u32>>
 }
 
 
@@ -30,12 +32,14 @@ impl<'a> XheyPicture<'a> {
 
         XheyPicture{
             _targets: RefCell::default(),
-            _framebuffer: framebuffer
+            _framebuffer: Cell::new(framebuffer),
+            index:sharedContext.operation_id(),
+            inputs:RefCell::default()
         }
     }
 
     pub fn processImage(&self) {
-        self.updateTargetsWithFramebuffer(&self._framebuffer);
+        self.updateTargetsWithFramebuffer(&self._framebuffer.take());
     }
 
 
@@ -63,5 +67,41 @@ impl<'a,'b:'a> Source<'b> for XheyPicture<'a> {
     }
 }
 
+#[cfg(feature = "new")]
+impl<'a> Operation for XheyPicture<'a>{
+    /// 将ni加入这个节点的输入序列
+    fn append(&self, ni: u32){
+        self.inputs.borrow_mut().push(ni);
+    }
 
+    /// 返回输入序列
+    fn inputs(&self) -> Vec<u32>{
+        let inputs = self.inputs.borrow();
+        let mut outputs = Vec::new();
+        for input in inputs.iter() {
+            outputs.push(input.clone());
+        }
+        outputs
+    }
+
+    /// 节点在图中的序号
+    fn index(&self) -> u32{
+        self.index
+    }
+
+    /// 指定输入最大个数
+    fn arity(&self) -> u32{
+        1
+    }
+
+    /// 前向计算
+    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
+        self._framebuffer.take()
+    }
+
+    ///针对Source节点，在渲染过程中指定其Framebufer
+    fn set_framebuffer(&self, value:Framebuffer){
+        self._framebuffer.set(value)
+    }
+}
 

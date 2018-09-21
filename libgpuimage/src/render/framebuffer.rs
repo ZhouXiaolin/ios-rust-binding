@@ -4,6 +4,7 @@ use super::gpu_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;
 use std::ptr;
+use std::mem;
 
 pub enum InputTextureStorageFormat {
     textureCoordinate([GLfloat;8]),

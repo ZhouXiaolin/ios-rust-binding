@@ -11,6 +11,9 @@ lazy_static = "1.1.0"
 fnv = "1.0.6"
 bitflags = "1.0.4"
 
+[features]
+new = []
+
 [target.'cfg(target_os="ios")'.dependencies]
 objc = "0.2.5"
 ios-rust-binding = { path = "../ios-rust-binding", version = "0.1.0"}

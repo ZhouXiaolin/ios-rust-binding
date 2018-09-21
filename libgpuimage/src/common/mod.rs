@@ -20,3 +20,15 @@ pub use self::graph::*;
 
 pub use super::render::gl_render::{GLSize,Size};
 pub use super::render::framebuffer::Framebuffer;
+
+
+use std::mem;
+use std::marker::PhantomData;
+pub struct PlaceHolder<T>{
+    _priv: PhantomData<T>
+}
+impl<T> PlaceHolder<T> {
+    pub fn new() -> T {
+        unsafe{mem::uninitialized()}
+    }
+}

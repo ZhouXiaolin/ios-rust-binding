@@ -1,12 +1,12 @@
 use super::basic::XHeyBasicFilter;
 #[repr(C)]
-pub struct XHeyLookupTableFilter<'a>{
-    basic: XHeyBasicFilter<'a>,
+pub struct XHeyLookupTableFilter{
+    basic: XHeyBasicFilter,
 }
 
 
 
-impl<'a> XHeyLookupTableFilter<'a> {
+impl XHeyLookupTableFilter {
     pub fn new() -> Self {
         XHeyLookupTableFilter {
             basic: XHeyBasicFilter::new()

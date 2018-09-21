@@ -4,8 +4,7 @@ use gles_rust_binding::*;
 
 use super::*;
 #[repr(C)]
-pub struct XHeyBasicFilter<'a>{
-    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
+pub struct XHeyBasicFilter{
     _shader : GLProgram,
     _maximumInputs : i32,
     _inputFramebuffers:RefCell<Vec<Framebuffer>>,
@@ -18,12 +17,11 @@ pub struct XHeyBasicFilter<'a>{
 
 
 
-impl<'a> XHeyBasicFilter<'a> {
+impl XHeyBasicFilter {
     pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: i32) -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
-            _targets:RefCell::new(Vec::new()),
             _maximumInputs:numberOfInputs,
             _shader: shader,
             _inputFramebuffers:RefCell::default(),
@@ -62,7 +60,6 @@ impl<'a> XHeyBasicFilter<'a> {
         let shader = GLProgram::new(vertexString,fragmentString);
 
         XHeyBasicFilter{
-            _targets:RefCell::new(Vec::new()),
             _maximumInputs:1,
             _shader: shader,
             _inputFramebuffers: RefCell::default(),
@@ -73,7 +70,7 @@ impl<'a> XHeyBasicFilter<'a> {
     }
 
 
-    pub fn renderFrameWithFramebuffers(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
+    pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
@@ -99,21 +96,6 @@ impl<'a> XHeyBasicFilter<'a> {
         renderFramebuffer
     }
 
-    pub fn renderFrame(&self,framebuffer: &Framebuffer, fromSourceIndex: usize){
-
-        let mut inputFramebuffers = self._inputFramebuffers.borrow_mut();
-        inputFramebuffers.insert(fromSourceIndex,framebuffer.clone());
-
-        let len = inputFramebuffers.len();
-
-        if len >= self._maximumInputs as usize {
-            let renderFramebuffer= self.renderFrameWithFramebuffers(inputFramebuffers.as_mut());
-
-            self.updateTargetsWithFramebuffer(&renderFramebuffer);
-        }
-
-
-    }
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
@@ -122,40 +104,8 @@ impl<'a> XHeyBasicFilter<'a> {
 
 
 
-
-impl<'a> Source<'a> for XHeyBasicFilter<'a> {
-    fn addTarget(&self, target: &'a dyn Consumer, _location: u32) {
-        let mut targets = self._targets.borrow_mut();
-        targets.push(Box::new(target));
-        target.setSource(self,_location);
-    }
-
-    fn removeAllTargets(&self){
-
-    }
-    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
-        for (index,target) in self._targets.borrow_mut().iter().enumerate() {
-            target.newFramebufferAvailable(framebuffer,index);
-        }
-    }
-}
-
-impl<'a> Consumer for XHeyBasicFilter<'a> {
-    fn setSource(&self, _source: &dyn Source, _location: u32) {
-
-    }
-
-    fn newFramebufferAvailable(&self, framebuffer: &Framebuffer, fromSourceIndex: usize){
-
-        self.renderFrame(framebuffer,fromSourceIndex);
-
-    }
-
-}
-
-
 #[cfg(feature = "new")]
-impl<'a> Operation for XHeyBasicFilter<'a> {
+impl Operation for XHeyBasicFilter {
 
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32){
@@ -186,7 +136,7 @@ impl<'a> Operation for XHeyBasicFilter<'a> {
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备，
     fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
 
-        let renderFramebuffer= self.renderFrameWithFramebuffers(&inputFramebuffers);
+        let renderFramebuffer= self.renderFrame(&inputFramebuffers);
 
 
         renderFramebuffer

@@ -3,7 +3,6 @@ pub mod fill_mode;
 pub mod image_orientation;
 pub mod position;
 pub mod rotation;
-pub mod structure;
 pub mod graph_context;
 pub mod graph_node;
 
@@ -15,7 +14,6 @@ pub use self::fill_mode::*;
 pub use self::image_orientation::*;
 pub use self::position::*;
 pub use self::rotation::*;
-pub use self::structure::*;
 pub use self::graph_context::*;
 pub use self::graph_node::*;
 

@@ -6,21 +6,20 @@ use gles_rust_binding::*;
 use std::os::raw::c_void;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
-pub struct XheyPicture<'a>{
-    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
+pub struct XheyPicture{
     _framebuffer: Cell<Framebuffer>,
     index:u32,
     inputs: RefCell<Vec<u32>>
 }
 
-impl<'a> Drop for XheyPicture<'a> {
+impl Drop for XheyPicture {
     fn drop(&mut self){
         println!("Drop XheyPicture");
     }
 
 }
 
-impl<'a> XheyPicture<'a> {
+impl XheyPicture {
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
 
@@ -36,44 +35,18 @@ impl<'a> XheyPicture<'a> {
         }
 
         XheyPicture{
-            _targets: RefCell::default(),
             _framebuffer: Cell::new(framebuffer),
             index:sharedContext.operation_id(),
             inputs:RefCell::default()
         }
     }
 
-    pub fn processImage(&self) {
-        self.updateTargetsWithFramebuffer(&self._framebuffer.take());
-    }
-
-
 }
 
 
-
-
-impl<'a,'b:'a> Source<'b> for XheyPicture<'a> {
-    fn addTarget(&self, target: &'b dyn Consumer, _location: u32){
-        println!("XheyPicture add_target");
-        let mut targets = self._targets.borrow_mut();
-        targets.push(Box::new(target));
-        target.setSource(self,_location);
-    }
-
-    fn removeAllTargets(&self){
-        println!("XheyPicture remove")
-    }
-
-    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
-        for (index,target) in self._targets.borrow_mut().iter().enumerate() {
-            target.newFramebufferAvailable(framebuffer,index);
-        }
-    }
-}
 
 #[cfg(feature = "new")]
-impl<'a> Operation for XheyPicture<'a>{
+impl Operation for XheyPicture{
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32){
         self.inputs.borrow_mut().push(ni);

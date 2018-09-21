@@ -1,11 +1,11 @@
 use super::basic::XHeyBasicFilter;
 #[repr(C)]
-pub struct XHeyToneCurveFilter<'a>{
-    base: XHeyBasicFilter<'a>,
+pub struct XHeyToneCurveFilter{
+    base: XHeyBasicFilter,
 }
 
 
-impl<'a> XHeyToneCurveFilter<'a> {
+impl XHeyToneCurveFilter {
     pub fn new() -> Self {
         XHeyToneCurveFilter {
             base: XHeyBasicFilter::new()

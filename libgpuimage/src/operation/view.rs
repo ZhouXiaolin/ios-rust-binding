@@ -23,20 +23,6 @@ pub struct XHeyView {
 }
 
 
-
-impl Consumer for XHeyView {
-    fn setSource(&self, _source: &dyn Source, _location: u32) {
-        println!("XheyView set_source");
-
-    }
-
-    fn newFramebufferAvailable(&self,framebuffer: &Framebuffer, fromSourceIndex: usize){
-       self.renderFrame(framebuffer);
-
-    }
-
-}
-
 impl Drop for XHeyView {
     fn drop(&mut self){
         println!("Drop XHeyView");

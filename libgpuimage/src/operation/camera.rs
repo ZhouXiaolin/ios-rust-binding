@@ -1,33 +1,14 @@
-use super::{Source,Consumer,Framebuffer};
+use super::*;
 use std::cell::RefCell;
 #[repr(C)]
-pub struct XheyCamera<'a>{
-    _targets: RefCell<Vec<Box<&'a dyn Consumer>>>,
+pub struct XheyCamera{
 }
 
-
-impl<'a,'b:'a> Source<'b> for XheyCamera<'a> {
-    fn addTarget(&self, target: &'b dyn Consumer, _location: u32){
-        println!("XheyCamera add_target");
-        target.setSource(self,_location);
-    }
-
-    fn removeAllTargets(&self){
-
-    }
-    fn updateTargetsWithFramebuffer(&self, framebuffer:&Framebuffer){
-        for (index,target) in self._targets.borrow_mut().iter().enumerate() {
-            target.newFramebufferAvailable(framebuffer,index);
-        }
-    }
-}
-
-impl<'a> XheyCamera<'a> {
+impl XheyCamera {
     pub fn new() -> Self {
-        XheyCamera {
-            _targets:RefCell::default()
-        }
+        XheyCamera{}
     }
 }
+
 
 

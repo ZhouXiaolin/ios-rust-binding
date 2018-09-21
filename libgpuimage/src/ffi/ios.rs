@@ -1,5 +1,4 @@
 use super::operation::*;
-use super::common::structure::*;
 
 use ios_rust_binding::UIView;
 use std::os::raw::{c_char,c_void};
@@ -7,19 +6,6 @@ use std::ffi::{CStr};
 use std::mem::transmute;
 use ios_rust_binding::UIImage;
 
-
-#[no_mangle]
-pub extern "C" fn xhey_add_target<'a>(source: *mut XheyPicture<'a>, filter: *mut XHeyBasicFilter<'a>, filter2: *mut XHeyBasicFilter<'a>, consumer: *mut XHeyView){
-    let box_picture = unsafe{source.as_ref().unwrap()};
-    let box_filter = unsafe{filter.as_ref().unwrap()};
-    let box_filter2 = unsafe{filter2.as_ref().unwrap()};
-
-
-    let box_view = unsafe{consumer.as_ref().unwrap()};
-    box_picture.addTarget(box_filter,0);
-    box_filter.addTarget(box_filter2,0);
-    box_filter2.addTarget(box_view,0);
-}
 
 use super::common::Graph;
 
@@ -29,7 +15,7 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture<'a>,filter: *mut XHeyBasicFilter<'a>, filter2: *mut XHeyBasicFilter<'a>, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
@@ -47,13 +33,13 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
 }
 
 #[no_mangle]
-pub extern "C" fn xhey_init_basic_filter<'a>() -> *mut XHeyBasicFilter<'a> {
+pub extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
     let filter = Box::new(XHeyBasicFilter::new());
     Box::into_raw(filter)
 }
 
 #[no_mangle]
-pub extern "C" fn xhey_init_basic_filter_2<'a>() -> *mut XHeyBasicFilter<'a> {
+pub extern "C" fn xhey_init_basic_filter_2() -> *mut XHeyBasicFilter {
 
     let vertexString = r#"
  attribute vec4 position;
@@ -96,7 +82,7 @@ pub extern "C" fn xhey_init_view(source: *const UIView) -> *mut XHeyView{
 
 
 #[no_mangle]
-pub extern "C" fn xhey_init_picture<'a>(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture<'a> {
+pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture {
     println!("xhey_init_picture");
     let picture = Box::new(XheyPicture::new(data,width,height));
     Box::into_raw(picture)
@@ -105,15 +91,12 @@ pub extern "C" fn xhey_init_picture<'a>(data: *const c_void, width: i32, height:
 
 #[no_mangle]
 pub extern "C" fn xhey_process_picture(picture: *const XheyPicture){
-    let p = unsafe{picture.as_ref().unwrap()};
-    p.processImage();
-
 
 }
 
 
 #[no_mangle]
-pub extern "C" fn xhey_init_camera<'a>() -> *mut XheyCamera<'a> {
+pub extern "C" fn xhey_init_camera() -> *mut XheyCamera {
     println!("xhey_init_camera");
     let camera = Box::new(XheyCamera::new());
     Box::into_raw(camera)

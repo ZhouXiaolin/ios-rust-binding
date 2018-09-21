@@ -1,12 +1,12 @@
 use super::basic::XHeyBasicFilter;
 #[repr(C)]
-pub struct XHeyGaussianBlurFilter<'a>{
-    basic : XHeyBasicFilter<'a>,
+pub struct XHeyGaussianBlurFilter{
+    basic : XHeyBasicFilter,
 }
 
 
 
-impl<'a> XHeyGaussianBlurFilter<'a> {
+impl XHeyGaussianBlurFilter {
     pub fn new() -> Self {
         XHeyGaussianBlurFilter{
             basic: XHeyBasicFilter::new()

@@ -1,9 +1,10 @@
-use super::{Node,Framebuffer,sharedContext};
+use super::{Node,Framebuffer};
 
 pub trait Operation {
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32);
 
+    fn append_edge(&self, edge: u32);
     /// 返回输入序列
     fn inputs(&self) -> Vec<u32>;
 
@@ -38,19 +39,20 @@ impl<'a> Graph<'a> {
 
     /// 清空关系图 一般用于重新构建一个图
     pub fn reset(&mut self) {
-        sharedContext.reset();
         self.nodes.clear();
         self.ops.clear();
     }
 
     /// 这个函数用来添加输入
     pub fn add_input(&mut self, name:&str, op: &'a dyn Operation) -> VariableIndex {
+        let node_id = self.nodes.len() as u32;
 
-        let node = Node::new(name);
-        let node_id = node.id;
+        let node = Node::new(name,node_id);
         let nodes = &mut self.nodes;
         nodes.push(node);
 
+        let edge_index = self.ops.len() as u32;
+        op.append_edge(edge_index);
         let ops = &mut self.ops;
         ops.push(Box::new(op));
 
@@ -60,8 +62,9 @@ impl<'a> Graph<'a> {
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
     pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Operation) -> VariableIndex {
-        let node = Node::new(name);
-        let node_id = node.id;
+        let node_id = self.nodes.len() as u32;
+
+        let node = Node::new(name,node_id);
         let nodes = &mut self.nodes;
         nodes.push(node);
 
@@ -72,6 +75,8 @@ impl<'a> Graph<'a> {
             inner_node.append(node_id);
         }
 
+        let edge_index = self.ops.len() as u32;
+        function.append_edge(edge_index);
         let ops = &mut self.ops;
         ops.push(Box::new(function));
 
@@ -103,13 +108,19 @@ impl<'a> Graph<'a> {
 
         }
 
-        for node in nodes.iter() {
-            let inputs: Vec<u32> = ops.get(node.id as usize).unwrap().inputs();
-            for input in inputs.iter(){
-                let inner_node: &Node = nodes.get(input.clone() as usize).unwrap();
-                println!("N{} -> N{}",inner_node.id, node.id);
+
+        for op in ops.iter() {
+            for ni in op.inputs().iter() {
+                println!("N{} ---> N{}",ni,op.index());
             }
         }
+//        for node in nodes.iter() {
+//            let inputs: Vec<u32> = ops.get(node.id as usize).unwrap().inputs();
+//            for input in inputs.iter(){
+//                let inner_node: &Node = nodes.get(input.clone() as usize).unwrap();
+//                println!("N{} -> N{}",inner_node.id, node.id);
+//            }
+//        }
     }
 
 

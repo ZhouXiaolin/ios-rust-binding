@@ -1,4 +1,4 @@
-use std::cell::{RefCell};
+use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
 
 use super::*;
@@ -8,7 +8,7 @@ pub struct XHeyBasicFilter{
     _maximumInputs : i32,
     _inputFramebuffers:RefCell<Vec<Framebuffer>>,
     _renderFramebuffer: RefCell<Framebuffer>,
-    index:u32,
+    index:Cell<u32>,
     inputs: RefCell<Vec<u32>>
 
 }
@@ -24,7 +24,7 @@ impl XHeyBasicFilter {
             _shader: shader,
             _inputFramebuffers:RefCell::default(),
             _renderFramebuffer: RefCell::default(),
-            index:sharedContext.operation_id(),
+            index:Cell::default(),
             inputs:RefCell::default()
         }
     }
@@ -62,7 +62,7 @@ impl XHeyBasicFilter {
             _shader: shader,
             _inputFramebuffers: RefCell::default(),
             _renderFramebuffer: RefCell::default(),
-            index:sharedContext.operation_id(),
+            index:Cell::default(),
             inputs:RefCell::default()
         }
     }
@@ -111,6 +111,9 @@ impl XHeyBasicFilter {
 
 
 impl Operation for XHeyBasicFilter {
+    fn append_edge(&self, edge: u32){
+        self.index.set(edge);
+    }
 
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32){
@@ -130,7 +133,7 @@ impl Operation for XHeyBasicFilter {
 
     /// 节点在图中的序号
     fn index(&self) -> u32{
-        self.index
+        self.index.get()
     }
 
     /// 指定输入最大个数

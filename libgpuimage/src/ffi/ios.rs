@@ -24,7 +24,7 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     let box_filter2 = filter2.as_ref().unwrap();
     let box_filter3 = filter3.as_ref().unwrap();
 
-    let pic = box_graph.placeholder("picture",box_picture);
+    let pic = box_graph.add_input("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
     let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
     let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);

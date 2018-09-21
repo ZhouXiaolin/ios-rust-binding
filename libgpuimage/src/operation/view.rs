@@ -15,7 +15,7 @@ pub struct XHeyView {
     layer: ShareId<CALayer>,
     orientation: ImageOrientation,
 
-    index:u32,
+    index:Cell<u32>,
     inputs:RefCell<Vec<u32>>,
 }
 
@@ -39,7 +39,7 @@ impl XHeyView {
             backingSize:Cell::default(),
             layer:layer,
             orientation: ImageOrientation::portrait,
-            index:sharedContext.operation_id(),
+            index:Cell::default(),
             inputs:RefCell::default()
         }
     }
@@ -124,6 +124,10 @@ impl XHeyView {
 
 
 impl Operation for XHeyView {
+    fn append_edge(&self, edge: u32){
+        self.index.set(edge);
+    }
+
     /// 将ni加入这个节点的输入序列
     fn append(&self, ni: u32){
         self.inputs.borrow_mut().push(ni);
@@ -141,7 +145,7 @@ impl Operation for XHeyView {
 
     /// 节点在图中的序号
     fn index(&self) -> u32{
-        self.index
+        self.index.get()
     }
 
     /// 指定输入最大个数

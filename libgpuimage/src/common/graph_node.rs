@@ -1,5 +1,4 @@
 use std::cell::{Cell};
-use super::sharedContext;
 use super::Framebuffer;
 
 pub struct Node {
@@ -10,9 +9,9 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn new(name:&str) -> Self {
+    pub fn new(name:&str,id:u32) -> Self {
         Node {
-            id: sharedContext.node_id(),
+            id: id,
             name: String::from(name),
             output: Vec::default(),
             f:Cell::default()

@@ -145,9 +145,8 @@ impl Operation for XHeyView {
         self.inputs.borrow_mut().push(ni);
     }
 
-    /// 返回输入序列 这里的实现很扭曲
+    /// 返回输入序列 这里的实现很奇怪，应该有其他更好的办法？
     fn inputs(&self) -> Vec<u32>{
-//        unsafe{self.inputs.as_ptr().read().clone()}
         let inputs = self.inputs.borrow();
         let mut outputs = Vec::new();
         for input in inputs.iter() {

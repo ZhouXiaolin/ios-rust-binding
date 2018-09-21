@@ -1,5 +1,6 @@
 use std::cell::{RefCell,Cell};
 
+/// 图的上下文，应该包含在Graph类中
 pub struct Context {
     node_id: Cell<u32>,
     operation_id:Cell<u32>,

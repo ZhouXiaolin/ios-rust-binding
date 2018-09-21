@@ -9,7 +9,7 @@ use std::marker::Sync;
 
 use super::*;
 
-// 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
+/// 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
 pub struct FramebufferCache(RefCell<FnvHashMap<String,Framebuffer>>);
 
 impl Default for FramebufferCache {

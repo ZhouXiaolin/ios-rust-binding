@@ -25,10 +25,11 @@ impl InputTextureProperties {
 }
 
 
-#[derive(Clone)] // 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
+/// 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
+#[derive(Clone)]
 pub struct Framebuffer {
     pub size : GLSize,
-    pub orientation: Cell<ImageOrientation>, // Cell 在cache中可能修改
+    pub orientation: Cell<ImageOrientation>,
     pub texture: u32,
     hashString: String,
     framebuffer: u32,

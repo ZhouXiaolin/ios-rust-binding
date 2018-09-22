@@ -1,14 +1,13 @@
 use super::{Node,Framebuffer};
-
+use std::cell::RefCell;
 pub trait Edge {
-    /// 将ni加入这个节点的输入序列
+    /// 将tail加入这个节点的输入序列
     fn add_tail(&self, tail: u32);
-
-    fn add_head_node(&self, head_node: u32);
-
     /// 返回输入序列
     fn tail_nodes(&self) -> Vec<u32>;
 
+
+    fn add_head_node(&self, head_node: u32);
     /// 节点在图中的序号
     fn head_node(&self) -> u32;
 
@@ -24,8 +23,8 @@ pub trait Edge {
 
 #[repr(C)]
 pub struct Graph<'a>{
-    nodes: Vec<Node>,
-    edges: Vec<Box<&'a dyn Edge>>,
+    nodes: RefCell<Vec<Node>>,
+    edges: RefCell<Vec<Box<&'a dyn Edge>>>,
 
 }
 pub type VariableIndex = u32;
@@ -33,28 +32,28 @@ pub type VariableIndex = u32;
 impl<'a> Graph<'a> {
     pub fn new() -> Self {
         Graph{
-            nodes: Vec::default(),
-            edges: Vec::default(),
+            nodes: RefCell::default(),
+            edges: RefCell::default(),
         }
     }
 
     /// 清空关系图 一般用于重新构建一个图
-    pub fn reset(&mut self) {
-        self.nodes.clear();
-        self.edges.clear();
+    pub fn reset(&self) {
+        self.nodes.borrow_mut().clear();
+        self.edges.borrow_mut().clear();
     }
 
     /// 这个函数用来添加输入
-    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge) -> VariableIndex {
-        let new_node_index = self.nodes.len() as u32;
-        let new_edge_index = self.edges.len() as u32;
+    pub fn add_input(&self, name:&str, op: &'a dyn Edge) -> VariableIndex {
+        let new_node_index = self.nodes.borrow().len() as u32;
+        let new_edge_index = self.edges.borrow().len() as u32;
 
         let node = Node::new(name,new_edge_index,new_node_index);
-        let nodes = &mut self.nodes;
+        let mut nodes = self.nodes.borrow_mut();
         nodes.push(node);
 
         op.add_head_node(new_node_index);
-        let edges = &mut self.edges;
+        let mut edges = self.edges.borrow_mut();
         edges.push(Box::new(op));
 
         new_node_index
@@ -62,17 +61,17 @@ impl<'a> Graph<'a> {
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge) -> VariableIndex {
-        let new_node_index = self.nodes.len() as u32;
-        let new_edge_index = self.edges.len() as u32;
+    pub fn add_function(&self, name:&str, arguments: &[u32], function: &'a dyn Edge) -> VariableIndex {
+        let new_node_index = self.nodes.borrow().len() as u32;
+        let new_edge_index = self.edges.borrow().len() as u32;
 
         let node = Node::new(name,new_edge_index,new_node_index);
-        let nodes = &mut self.nodes;
+        let mut nodes = self.nodes.borrow_mut();
         nodes.push(node);
 
 
         function.add_head_node(new_node_index);
-        let edges = &mut self.edges;
+        let mut edges = self.edges.borrow_mut();
         edges.push(Box::new(function));
 
         for ni in arguments.iter(){
@@ -93,8 +92,8 @@ impl<'a> Graph<'a> {
 
 
 
-        let edges = &self.edges;
-        let nodes = &self.nodes;
+        let edges = self.edges.borrow();
+        let nodes = self.nodes.borrow();
         let mut nc = 0;
 
         for node in nodes.iter() {
@@ -125,14 +124,13 @@ impl<'a> Graph<'a> {
 
 
     /// 渲染过程 前向计算  这个体系是计算图模型，在这种渲染中 有问题 待解决
-    pub fn forward(&mut self) {
+    pub fn forward(&self)  {
 
-        let nodes = &mut self.nodes;
-        let edges = &mut self.edges;
+        let nodes = self.nodes.borrow_mut();
+        let edges = self.edges.borrow_mut();
 
-        let mut last_node_evaluated = 0;
 
-        while last_node_evaluated < nodes.len() {
+        for (last_node_evaluated,node) in nodes.iter().enumerate() {
 
             let node:&Node = nodes.get(last_node_evaluated as usize).expect("Error, cannot get node from nodes");
             let in_edge:&Box<&Edge> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
@@ -144,17 +142,17 @@ impl<'a> Graph<'a> {
                 xs.insert(ti,inner_node.f.take())
             }
 
+            println!("xs len:{}",xs.len());
             node.f.set(in_edge.forward(xs));
-
-            last_node_evaluated += 1;
         }
 
+        println!("render success");
 
 
     }
 
     pub fn add_feed(&self, index:u32, value:Framebuffer){
-        let edges = &self.edges;
+        let edges = self.edges.borrow_mut();
         let edge :&Box<&dyn Edge> = edges.get(index as usize).expect("Error to get op from edges");
         edge.set_framebuffer(value);
 

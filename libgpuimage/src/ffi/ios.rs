@@ -30,17 +30,22 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
     let vi = box_graph.add_function("view",&[filter3],box_view);
     box_graph.PrintGraphviz();
+    
+    box_graph.forward();
+    box_graph.forward();
+    box_graph.forward();
+    box_graph.forward();
 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_forward(graph: *mut Graph){
+pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut Graph<'a>){
     let box_graph = graph.as_mut().unwrap();
     box_graph.forward();
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_printgraphviz(graph: *mut Graph){
+pub unsafe extern "C" fn xhey_graph_printgraphviz<'a>(graph: *mut Graph<'a>){
     let box_graph = graph.as_mut().unwrap();
     box_graph.PrintGraphviz();
 }

@@ -84,8 +84,12 @@
 
 
     xhey_graph(graph, picture, filter, filter2, filter3, view);
+//    free(imageData);
+
+//    [NSTimer scheduledTimerWithTimeInterval:0.1 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//        xhey_graph_forward(graph);
+//    }];
     
-    free(imageData);
     
 }
 

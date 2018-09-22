@@ -75,7 +75,7 @@ impl Edge for XheyPicture{
     }
 
     /// 前向计算
-    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
+    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
         let fb = self._framebuffer.take();
         self._framebuffer.set(fb.clone());
         fb

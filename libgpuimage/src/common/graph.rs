@@ -16,7 +16,7 @@ pub trait Edge {
     fn arity(&self) -> u32;
 
     /// 前向计算
-    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer;
+    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer;
 
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer);
@@ -34,7 +34,7 @@ impl<'a> Graph<'a> {
     pub fn new() -> Self {
         Graph{
             nodes: Vec::default(),
-            edges: Vec::default()
+            edges: Vec::default(),
         }
     }
 
@@ -124,42 +124,37 @@ impl<'a> Graph<'a> {
 
 
 
-    /// 渲染过程 前向计算  这个体系是计算图模型，在这种渲染中
+    /// 渲染过程 前向计算  这个体系是计算图模型，在这种渲染中 有问题 待解决
     pub fn forward(&mut self) {
 
-//        let nodes = &mut self.nodes;
-//        let edges = &mut self.edges;
-//        for node in nodes.iter() {
-//            let op: &Box<&dyn Edge> = edges.get(node.id as usize).unwrap();
-//
-//            println!("op arity{}",op.arity());
-//
-//            let mut xs = Vec::<Framebuffer>::with_capacity(op.arity() as usize);
-//            for (ti,input) in op.inputs().iter().enumerate(){
-//
-//                let n: &Node = nodes.get(input.clone() as usize).unwrap();
-//
-//                let framebuffer = n.f.take();
-//                framebuffer.lock();
-//                xs.insert(ti,framebuffer);
-//
-//            }
-//
-//            node.f.set(op.forward(&xs));
-//
-//
-//            for x in xs.iter() {
-//                x.unlock();
-//            }
-//
-//        }
+        let nodes = &mut self.nodes;
+        let edges = &mut self.edges;
+
+        let mut last_node_evaluated = 0;
+
+        while last_node_evaluated < nodes.len() {
+
+            let node:&Node = nodes.get(last_node_evaluated as usize).expect("Error, cannot get node from nodes");
+            let in_edge:&Box<&Edge> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
+
+            let mut xs = Vec::<Framebuffer>::with_capacity(in_edge.arity() as usize);
+            for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
+                let inner_node : &Node = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
+
+                xs.insert(ti,inner_node.f.take())
+            }
+
+            node.f.set(in_edge.forward(xs));
+
+            last_node_evaluated += 1;
+        }
 
     }
 
     pub fn add_feed(&self, index:u32, value:Framebuffer){
-//        let edges = &self.edges;
-//        let op:&Box<&dyn Edge> = edges.get(index as usize).expect("Error to get op from edges");
-//        op.set_framebuffer(value);
+        let edges = &self.edges;
+        let edge :&Box<&dyn Edge> = edges.get(index as usize).expect("Error to get op from edges");
+        edge.set_framebuffer(value);
 
     }
 

@@ -68,7 +68,7 @@ impl XHeyBasicFilter {
     }
 
 
-    pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
+    pub fn renderFrame(&self, inputFramebuffers:Vec<Framebuffer>) -> Framebuffer {
 
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
@@ -140,9 +140,9 @@ impl Edge for XHeyBasicFilter {
 
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
-    fn forward(&self, inputFramebuffers: &Vec<Framebuffer>) -> Framebuffer{
+    fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
 
-        let renderFramebuffer= self.renderFrame(&inputFramebuffers);
+        let renderFramebuffer= self.renderFrame(inputFramebuffers);
         renderFramebuffer
     }
 

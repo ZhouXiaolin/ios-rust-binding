@@ -31,7 +31,7 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     let vi = box_graph.add_function("view",&[filter3],box_view);
     box_graph.PrintGraphviz();
     box_graph.forward();
-    box_graph.forward();
+//    box_graph.forward();
 //    box_graph.forward();
 //    box_graph.forward();
 //    box_graph.forward();

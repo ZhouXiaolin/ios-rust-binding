@@ -75,7 +75,8 @@ impl XHeyBasicFilter {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer : Framebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer : Framebuffer = sharedImageProcessingContext.frameubfferCache.pull();
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];

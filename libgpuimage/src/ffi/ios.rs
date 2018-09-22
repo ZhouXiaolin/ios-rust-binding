@@ -32,9 +32,9 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     box_graph.PrintGraphviz();
     
     box_graph.forward();
-    box_graph.forward();
-    box_graph.forward();
-    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
 
 }
 

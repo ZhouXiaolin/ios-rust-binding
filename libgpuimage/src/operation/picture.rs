@@ -6,7 +6,7 @@ use std::os::raw::c_void;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
 pub struct XheyPicture{
-    _framebuffer: Cell<Framebuffer>,
+    _framebuffer: Framebuffer,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
 }
@@ -25,8 +25,7 @@ impl XheyPicture {
 
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
-        sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
-        let framebuffer = sharedImageProcessingContext.frameubfferCache.pull();
+        let framebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
@@ -35,7 +34,7 @@ impl XheyPicture {
         }
 
         XheyPicture{
-            _framebuffer: Cell::new(framebuffer),
+            _framebuffer: framebuffer,
             head_node:Cell::default(),
             tail:RefCell::default()
         }
@@ -76,15 +75,17 @@ impl Edge for XheyPicture{
     }
 
     /// 前向计算
-    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
-        let fb = self._framebuffer.take();
-        self._framebuffer.set(fb.clone());
-        fb
+    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
+        PlaceHolder::new()
+
+    }
+    fn forward_default(&self) -> Framebuffer{
+        self._framebuffer.clone()
+
     }
 
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer){
-        self._framebuffer.set(value)
     }
 }
 

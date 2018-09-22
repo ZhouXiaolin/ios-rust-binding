@@ -1,13 +1,14 @@
 use super::operation::*;
 
 use ios_rust_binding::UIView;
-use std::os::raw::{c_char,c_void};
+use std::os::raw::{c_char,c_void,c_uint};
 use std::ffi::{CStr};
 use std::mem::transmute;
 use ios_rust_binding::UIImage;
 
 
 use super::common::Graph;
+use super::common::Edge;
 
 #[no_mangle]
 pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
@@ -15,7 +16,7 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
@@ -29,9 +30,13 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
     let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
     let vi = box_graph.add_function("view",&[filter3],box_view);
-    box_graph.PrintGraphviz();
+//    box_graph.PrintGraphviz();
     
-    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
+//    box_graph.forward();
 //    box_graph.forward();
 //    box_graph.forward();
 //    box_graph.forward();

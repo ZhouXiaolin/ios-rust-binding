@@ -15,7 +15,8 @@ pub trait Edge {
     fn arity(&self) -> u32;
 
     /// 前向计算
-    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer;
+    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer;
+    fn forward_default(&self) -> Framebuffer;
 
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer);
@@ -134,14 +135,24 @@ impl<'a> Graph<'a> {
             let node:&Node = nodes.get(node_index).expect("Error, cannot get node from nodes");
             let in_edge:&Box<&Edge> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
-            let mut xs = Vec::<Framebuffer>::with_capacity(in_edge.arity() as usize);
-            for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
-                let inner_node : &Node = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
+            if in_edge.arity() == 0 {
+                node.f.borrow_mut().push(in_edge.forward_default());
+            }else{
+                let mut xs = Vec::<Framebuffer>::with_capacity(in_edge.arity() as usize);
+                for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
+                    let inner_node : &Node = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
+                    let f = inner_node.f.borrow_mut().pop().unwrap();
+                    f.lock();
+                    xs.insert(ti,f)
+                }
+                node.f.borrow_mut().push(in_edge.forward(&xs));
+                for x in xs.iter() {
+                    x.unlock();
+                }
 
-                xs.insert(ti,inner_node.f.take())
             }
 
-            node.f.set(in_edge.forward(xs));
+
 
         }
 

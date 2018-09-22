@@ -45,7 +45,7 @@ impl XHeyView {
     }
 
 
-    fn renderFrame(&self, framebuffers: Vec<Framebuffer>){
+    fn renderFrame(&self, framebuffers: &Vec<Framebuffer>){
 
 
 
@@ -156,10 +156,15 @@ impl Edge for XHeyView {
     }
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
-    fn forward(&self, xs: Vec<Framebuffer>) -> Framebuffer{
+    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
         self.renderFrame(xs);
         PlaceHolder::new()
     }
+
+    fn forward_default(&self) -> Framebuffer{
+        PlaceHolder::new()
+    }
+
 
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer){}

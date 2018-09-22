@@ -5,7 +5,7 @@ use super::*;
 #[repr(C)]
 pub struct XHeyBasicFilter{
     _shader : GLProgram,
-    _maximumInputs : i32,
+    _maximumInputs : u32,
     _inputFramebuffers:RefCell<Vec<Framebuffer>>,
     _renderFramebuffer: RefCell<Framebuffer>,
     head_node: Cell<u32>,
@@ -16,7 +16,7 @@ pub struct XHeyBasicFilter{
 
 
 impl XHeyBasicFilter {
-    pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: i32) -> Self {
+    pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
@@ -68,15 +68,14 @@ impl XHeyBasicFilter {
     }
 
 
-    pub fn renderFrame(&self, inputFramebuffers:Vec<Framebuffer>) -> Framebuffer {
+    pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
 
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-        let renderFramebuffer : Framebuffer = sharedImageProcessingContext.frameubfferCache.pull();
+        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];
@@ -136,17 +135,21 @@ impl Edge for XHeyBasicFilter {
 
     /// 指定输入最大个数
     fn arity(&self) -> u32{
-        self._maximumInputs as u32
+        self._maximumInputs
     }
 
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
-    fn forward(&self, inputFramebuffers: Vec<Framebuffer>) -> Framebuffer{
+    fn forward(&self, inputFramebuffers: &Vec<Framebuffer>) -> Framebuffer{
 
         let renderFramebuffer= self.renderFrame(inputFramebuffers);
         renderFramebuffer
     }
 
+    fn forward_default(&self) -> Framebuffer{
+
+        PlaceHolder::new()
+    }
     ///针对Source节点，在渲染过程中指定其Framebufer
     fn set_framebuffer(&self, value:Framebuffer){
 

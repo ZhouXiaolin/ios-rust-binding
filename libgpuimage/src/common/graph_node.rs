@@ -1,4 +1,4 @@
-use std::cell::{Cell};
+use std::cell::{RefCell};
 use super::Framebuffer;
 
 pub struct Node {
@@ -6,7 +6,7 @@ pub struct Node {
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:Cell<Framebuffer>
+    pub f:RefCell<Vec<Framebuffer>>
 }
 
 impl Node {
@@ -16,7 +16,7 @@ impl Node {
             name: String::from(name),
             in_edge:in_edge_index,
             out_edges: Vec::default(),
-            f:Cell::default()
+            f:RefCell::default()
         }
     }
 

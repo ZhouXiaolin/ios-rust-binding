@@ -30,17 +30,21 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
     let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
     let vi = box_graph.add_function("view",&[filter3],box_view);
     box_graph.PrintGraphviz();
-    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-
 
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph_forward(graph: *mut Graph){
+    let box_graph = graph.as_mut().unwrap();
+    box_graph.forward();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph_printgraphviz(graph: *mut Graph){
+    let box_graph = graph.as_mut().unwrap();
+    box_graph.PrintGraphviz();
+}
+
 
 #[no_mangle]
 pub extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
@@ -73,7 +77,7 @@ pub extern "C" fn xhey_init_basic_filter_2() -> *mut XHeyBasicFilter {
  void main()
  {
      vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = vec4(color.r,0.0, 0.0, 1.0);
+     gl_FragColor = vec4(color.r, 0.0, 0.0, 1.0);
  }
     "#;
 

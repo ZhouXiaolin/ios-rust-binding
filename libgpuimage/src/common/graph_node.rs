@@ -5,7 +5,7 @@ pub struct Node {
     pub id: u32,
     pub name: String,
     pub output: Vec<u32>,
-    pub f:Cell<Option<Framebuffer>>
+    pub f:Cell<Framebuffer>
 }
 
 impl Node {

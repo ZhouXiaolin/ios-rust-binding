@@ -127,7 +127,7 @@ impl<'a> Graph<'a> {
         for node in nodes.iter() {
             let op: &Box<&dyn Operation> = ops.get(node.id as usize).unwrap();
             
-            println!("node n{} node name{}",node.id, node.name);
+            println!("op arity{}",op.arity());
 
             let mut xs = Vec::<Framebuffer>::with_capacity(op.arity() as usize);
             for (ti,input) in op.inputs().iter().enumerate(){
@@ -135,24 +135,12 @@ impl<'a> Graph<'a> {
                 let n: &Node = nodes.get(input.clone() as usize).unwrap();
 
                 let framebuffer = n.f.take();
-                if let Some(fb) = framebuffer {
-                    fb.lock();
-                    n.f.set(Some(fb.clone()));
-                    xs.insert(ti,fb);
-                }else{
-
-                    println!("solaren ERRR 1");
-
-                }
-
-
+                framebuffer.lock();
+                xs.insert(ti,framebuffer);
 
             }
-
-            let f = op.forward(&xs);
-            println!("solaren f : {:?}",f.size);
             
-            node.f.set(Some(op.forward(&xs)));
+            node.f.set(op.forward(&xs));
 
 
             for x in xs.iter() {

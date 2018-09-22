@@ -70,7 +70,7 @@ impl Operation for XheyPicture{
 
     /// 指定输入最大个数
     fn arity(&self) -> u32{
-        1
+        0
     }
 
     /// 前向计算

@@ -15,8 +15,8 @@ pub struct XHeyView {
     layer: ShareId<CALayer>,
     orientation: ImageOrientation,
 
-    index:Cell<u32>,
-    inputs:RefCell<Vec<u32>>,
+    head_node: Cell<u32>,
+    tail: RefCell<Vec<u32>>,
 }
 
 
@@ -39,8 +39,8 @@ impl XHeyView {
             backingSize:Cell::default(),
             layer:layer,
             orientation: ImageOrientation::portrait,
-            index:Cell::default(),
-            inputs:RefCell::default()
+            head_node:Cell::default(),
+            tail:RefCell::default()
         }
     }
 
@@ -122,19 +122,19 @@ impl XHeyView {
 }
 
 
-impl Operation for XHeyView {
-    fn append_edge(&self, edge: u32){
-        self.index.set(edge);
+impl Edge for XHeyView {
+    fn add_head_node(&self, edge: u32){
+        self.head_node.set(edge);
     }
 
     /// 将ni加入这个节点的输入序列
-    fn append_node(&self, node: u32){
-        self.inputs.borrow_mut().push(node);
+    fn add_tail(&self, node: u32){
+        self.tail.borrow_mut().push(node);
     }
 
     /// 返回输入序列 这里的实现很奇怪，应该有其他更好的办法？
-    fn inputs(&self) -> Vec<u32>{
-        let inputs = self.inputs.borrow();
+    fn tail_nodes(&self) -> Vec<u32>{
+        let inputs = self.tail.borrow();
         let mut outputs = Vec::new();
         for input in inputs.iter() {
             outputs.push(input.clone());
@@ -143,8 +143,8 @@ impl Operation for XHeyView {
     }
 
     /// 节点在图中的序号
-    fn index(&self) -> u32{
-        self.index.get()
+    fn head_node(&self) -> u32{
+        self.head_node.get()
     }
 
     /// 指定输入最大个数

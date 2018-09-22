@@ -2,18 +2,20 @@ use std::cell::{Cell};
 use super::Framebuffer;
 
 pub struct Node {
-    pub id: u32,
+    pub node_id: u32,
     pub name: String,
-    pub output: Vec<u32>,
+    pub in_edge: u32,
+    pub out_edges: Vec<u32>,
     pub f:Cell<Framebuffer>
 }
 
 impl Node {
-    pub fn new(name:&str,id:u32) -> Self {
+    pub fn new(name:&str,in_edge_index:u32, nid: u32) -> Self {
         Node {
-            id: id,
+            node_id: nid,
             name: String::from(name),
-            output: Vec::default(),
+            in_edge:in_edge_index,
+            out_edges: Vec::default(),
             f:Cell::default()
         }
     }
@@ -22,7 +24,7 @@ impl Node {
         &self.name
     }
 
-    pub fn append(&mut self, id: u32) {
-        self.output.push(id);
+    pub fn add_out_edge(&mut self, out_edge: u32) {
+        self.out_edges.push(out_edge);
     }
 }

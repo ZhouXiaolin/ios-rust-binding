@@ -8,8 +8,8 @@ pub struct XHeyBasicFilter{
     _maximumInputs : i32,
     _inputFramebuffers:RefCell<Vec<Framebuffer>>,
     _renderFramebuffer: RefCell<Framebuffer>,
-    index:Cell<u32>,
-    inputs: RefCell<Vec<u32>>
+    head_node: Cell<u32>,
+    tail: RefCell<Vec<u32>>,
 
 }
 
@@ -24,8 +24,8 @@ impl XHeyBasicFilter {
             _shader: shader,
             _inputFramebuffers:RefCell::default(),
             _renderFramebuffer: RefCell::default(),
-            index:Cell::default(),
-            inputs:RefCell::default()
+            head_node:Cell::default(),
+            tail:RefCell::default()
         }
     }
     pub fn new() -> Self {
@@ -62,8 +62,8 @@ impl XHeyBasicFilter {
             _shader: shader,
             _inputFramebuffers: RefCell::default(),
             _renderFramebuffer: RefCell::default(),
-            index:Cell::default(),
-            inputs:RefCell::default()
+            head_node:Cell::default(),
+            tail:RefCell::default()
         }
     }
 
@@ -107,20 +107,20 @@ impl XHeyBasicFilter {
 
 
 
-impl Operation for XHeyBasicFilter {
-    fn append_edge(&self, edge: u32){
-        self.index.set(edge);
+impl Edge for XHeyBasicFilter {
+    fn add_head_node(&self, edge: u32){
+        self.head_node.set(edge);
     }
 
     /// 将ni加入这个节点的输入序列
-    fn append_node(&self, node: u32){
-        self.inputs.borrow_mut().push(node)
+    fn add_tail(&self, node: u32){
+        self.tail.borrow_mut().push(node);
     }
 
     /// 返回输入序列
-    fn inputs(&self) -> Vec<u32>{
+    fn tail_nodes(&self) -> Vec<u32>{
 
-        let inputs = self.inputs.borrow();
+        let inputs = self.tail.borrow();
         let mut outputs = Vec::new();
         for input in inputs.iter() {
             outputs.push(input.clone());
@@ -129,8 +129,8 @@ impl Operation for XHeyBasicFilter {
     }
 
     /// 节点在图中的序号
-    fn index(&self) -> u32{
-        self.index.get()
+    fn head_node(&self) -> u32{
+        self.head_node.get()
     }
 
     /// 指定输入最大个数

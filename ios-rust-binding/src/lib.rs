@@ -225,7 +225,6 @@ impl EAGLContext {
 
     pub fn renderBufferStorage(&self, target: NSUInteger, drawable: &ShareId<CALayer>) -> BOOL {
         let rect = drawable.get_bounds();
-        println!("rect : width{} height{}",rect.size.width, rect.size.height);
         unsafe {msg_send![self, renderbufferStorage:target fromDrawable:&*(*drawable)]}
     }
 

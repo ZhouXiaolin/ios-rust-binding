@@ -63,7 +63,6 @@ impl XHeyView {
 
         let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize.get());
 
-        println!("scaledVertices: {:?}",scaledVertices);
 
         let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
 
@@ -155,9 +154,6 @@ impl Operation for XHeyView {
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
     fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
-        for inputFramebuffer in xs.iter() {
-            println!("inputFramebuffer hashString {} count {}",inputFramebuffer.hashString(),inputFramebuffer.retainCount());
-        }
         self.renderFrame(&xs[0]);
         PlaceHolder::new()
     }

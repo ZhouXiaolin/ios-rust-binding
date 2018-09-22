@@ -36,13 +36,11 @@ impl FramebufferCache {
 
         match values {
             Some(fb) if fb.valid() => {
-                println!("has key,and so find framebuffer in hashmap");
                 fb.orientation.set(orientation);
                 fb.clone()
             },
             _ => {
                 // 为什么不在这里直接存入，因为在使用RefCell时，不允许借用和可变可用同时存在，
-                println!("create a new framebuffer, hashString {}",hash);
                 let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
                 framebuffer
             }

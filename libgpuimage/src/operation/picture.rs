@@ -75,10 +75,9 @@ impl Operation for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
-        for inputFramebuffer in xs.iter() {
-            println!("inputFramebuffer hashString {} count {}",inputFramebuffer.hashString(),inputFramebuffer.retainCount());
-        }
-        self._framebuffer.take()
+        let fb = self._framebuffer.take();
+        self._framebuffer.set(fb.clone());
+        fb
     }
 
     ///针对Source节点，在渲染过程中指定其Framebufer

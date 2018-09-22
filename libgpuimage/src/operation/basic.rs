@@ -69,16 +69,13 @@ impl XHeyBasicFilter {
 
 
     pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
-        for inputFramebuffer in inputFramebuffers.iter() {
-            println!("inputFramebuffer hashString {} count {}",inputFramebuffer.hashString(),inputFramebuffer.retainCount());
-        }
 
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer : Framebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];

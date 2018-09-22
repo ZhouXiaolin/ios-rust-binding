@@ -149,7 +149,6 @@ impl Framebuffer {
 
         if newValue < 1 {
 
-            println!("return To Cache");
             self.resetRetainCount();
 
             sharedImageProcessingContext.frameubfferCache.returnToCache(self);

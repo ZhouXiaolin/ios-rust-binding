@@ -13,7 +13,9 @@ pub struct XHeyBasicFilter{
 
 }
 
+impl Renderable for XHeyBasicFilter {
 
+}
 
 impl XHeyBasicFilter {
     pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {

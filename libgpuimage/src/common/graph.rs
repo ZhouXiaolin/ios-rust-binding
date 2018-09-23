@@ -1,4 +1,4 @@
-use super::{Node,Framebuffer};
+use super::{Node,Tensor,Framebuffer};
 use std::cell::RefCell;
 pub trait Edge {
     /// 将tail加入这个节点的输入序列

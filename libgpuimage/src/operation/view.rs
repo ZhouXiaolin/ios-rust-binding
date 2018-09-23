@@ -3,6 +3,7 @@ use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
 use gles_rust_binding::*;
 
 use std::cell::{Cell,RefCell};
+
 use super::*;
 
 
@@ -19,6 +20,7 @@ pub struct XHeyView {
     tail: RefCell<Vec<u32>>,
 }
 
+impl Drawable for XHeyView{}
 
 impl Drop for XHeyView {
     fn drop(&mut self){

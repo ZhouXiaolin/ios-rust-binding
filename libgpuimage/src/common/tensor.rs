@@ -4,8 +4,3 @@ pub trait Tensor {
 
 }
 
-/// 所有Tensor都能进行fold
-
-pub trait Foldable{
-
-}

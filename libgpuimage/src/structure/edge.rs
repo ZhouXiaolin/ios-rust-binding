@@ -7,6 +7,7 @@ pub trait Edge {
     /// 返回输入序列
     fn tail_nodes(&self) -> Vec<u32>;
 
+
     fn add_head_node(&self, head_node: u32);
     /// 节点在图中的序号
     fn head_node(&self) -> u32;
@@ -34,7 +35,7 @@ pub trait Drawable{
 
 /// 计算
 /// 计算过程
-pub trait Computeale{
+pub trait Computeable{
 
 }
 

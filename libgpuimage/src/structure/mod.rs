@@ -1,12 +1,12 @@
-mod graph_node;
+mod node;
 mod graph;
-mod op;
+mod edge;
 mod tensor;
 mod expression;
 
-pub use self::graph_node::*;
+pub use self::node::*;
 pub use self::graph::*;
-pub use self::op::*;
+pub use self::edge::*;
 pub use self::tensor::*;
 pub use self::expression::*;
 

@@ -1,15 +1,18 @@
 use std::cell::{RefCell};
 use super::Framebuffer;
+use super::Tensor;
 
-pub struct Node {
+
+pub struct Node<T:Tensor> {
+
     pub node_id: u32,
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:RefCell<Vec<Framebuffer>>
+    pub f:RefCell<Vec<T>>
 }
 
-impl Node {
+impl<T:Tensor> Node<T> {
     pub fn new(name:&str,in_edge_index:u32, nid: u32) -> Self {
         Node {
             node_id: nid,

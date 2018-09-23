@@ -82,20 +82,14 @@
     XheyBasicFilter* filter2 = xhey_init_basic_filter_2(); // 2
     XheyBasicFilter* filter3 = xhey_init_basic_filter_2(); // 2
 
-
-    unsigned pic = xhey_graph_add_input(graph, "picture", picture);
-    unsigned f1 = xhey_graph_add_function_0(graph, "filter1", filter, pic);
-    unsigned f2 = xhey_graph_add_function_0(graph, "filter2", filter2, f1);
-    unsigned f3 = xhey_graph_add_function_0(graph, "filter3", filter3, f2);
-    unsigned f4 = xhey_graph_add_function_0(graph, "view", view, f3);
     
     xhey_graph_printgraphviz(graph);
-//    xhey_graph(graph, picture, filter, filter2, filter3, view);
-//    free(imageData);
-//
-//    [NSTimer scheduledTimerWithTimeInterval:0.03333 repeats:YES block:^(NSTimer * _Nonnull timer) {
-//        xhey_graph_forward(graph);
-//    }];
+    xhey_graph(graph, picture, filter, filter2, filter3, view);
+    free(imageData);
+
+    [NSTimer scheduledTimerWithTimeInterval:0.03333 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        xhey_graph_forward(graph);
+    }];
     
     
 }

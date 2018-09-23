@@ -24,7 +24,7 @@ pub trait Edge {
 
 #[repr(C)]
 pub struct Graph<'a>{
-    nodes: Vec<Node>,
+    nodes: Vec<Node<Framebuffer>>,
     edges: Vec<Box<&'a dyn Edge>>,
 
 }
@@ -77,7 +77,7 @@ impl<'a> Graph<'a> {
 
         for ni in arguments.iter(){
             function.add_tail(ni.clone());
-            let inner_node: &mut Node = nodes.get_mut(*ni as usize).unwrap();
+            let inner_node: &mut Node<_> = nodes.get_mut(*ni as usize).unwrap();
             inner_node.add_out_edge(new_edge_index);
         }
 
@@ -104,7 +104,7 @@ impl<'a> Graph<'a> {
 
             let tail_nodes = in_edge.tail_nodes();
             for tail_node in tail_nodes.iter() {
-                let inner_node: &Node = nodes.get(tail_node.clone() as usize).unwrap();
+                let inner_node: &Node<_> = nodes.get(tail_node.clone() as usize).unwrap();
 
                 var_names.push(String::from(inner_node.var_name()));
             }
@@ -132,7 +132,7 @@ impl<'a> Graph<'a> {
 
         for(node_index,node) in nodes.iter().enumerate() {
 
-            let node:&Node = nodes.get(node_index).expect("Error, cannot get node from nodes");
+            let node:&Node<_> = nodes.get(node_index).expect("Error, cannot get node from nodes");
             let in_edge:&Box<&Edge> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
             if in_edge.arity() == 0 {
@@ -140,7 +140,7 @@ impl<'a> Graph<'a> {
             }else{
                 let mut xs = Vec::<Framebuffer>::with_capacity(in_edge.arity() as usize);
                 for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
-                    let inner_node : &Node = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
+                    let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
                     let f = inner_node.f.borrow_mut().pop().unwrap();
                     f.lock();
                     xs.insert(ti,f)

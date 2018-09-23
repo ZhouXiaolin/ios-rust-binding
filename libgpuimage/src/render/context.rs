@@ -1,7 +1,6 @@
 use gles_rust_binding::*;
-use super::*;
 use std::mem;
-
+use super::{Rotation, FramebufferCache};
 #[cfg(target_os = "ios")]
 use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 

@@ -1,12 +1,12 @@
-pub mod basic;
-pub mod gaussianblur;
-pub mod lookuptable;
-pub mod tonecurve;
-pub mod camera;
-pub mod picture;
+mod basic;
+mod gaussianblur;
+mod lookuptable;
+mod tonecurve;
+mod camera;
+mod picture;
 
 #[cfg(target_os = "ios")]
-pub mod view;
+mod view;
 
 pub use self::basic::*;
 pub use self::gaussianblur::*;

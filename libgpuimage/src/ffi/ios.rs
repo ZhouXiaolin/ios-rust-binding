@@ -1,4 +1,3 @@
-use super::operation::*;
 
 use ios_rust_binding::UIView;
 use std::os::raw::{c_char,c_void,c_uint};
@@ -7,8 +6,8 @@ use std::mem::transmute;
 use ios_rust_binding::UIImage;
 
 
-use super::common::Graph;
-use super::common::Edge;
+use super::common::{Graph,Edge};
+use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera};
 
 #[no_mangle]
 pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {

@@ -1,7 +1,8 @@
-use super::*;
 use gles_rust_binding::*;
 use std::ptr;
 
+use super::{Color, InputTextureProperties, InputTextureStorageFormat};
+use super::sharedImageProcessingContext;
 pub fn clearFramebufferWithColor(color:Color) {
     unsafe {
         glClearColor(color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent);

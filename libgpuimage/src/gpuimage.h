@@ -35,7 +35,7 @@ extern "C" {
     void xhey_graph_forward(void*);
     void xhey_graph_printgraphviz(void*);
 
-    
+
 
 #if __cplusplus
 }

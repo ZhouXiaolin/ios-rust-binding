@@ -2,9 +2,8 @@ use fnv::FnvHashMap;
 use std::cell::{RefCell,Ref};
 
 use std::marker::Sync;
-use super::Framebuffer;
-use super::*;
-
+use super::{Framebuffer,GPUTextureOptions,GLSize,ImageOrientation};
+use super::hashStringForFramebuffer;
 /// 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
 pub struct FramebufferCache{
     unused:RefCell<FnvHashMap<String,Framebuffer>>,

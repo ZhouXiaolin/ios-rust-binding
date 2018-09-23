@@ -44,7 +44,9 @@ impl XheyPicture {
 
 
 
-impl Edge<Framebuffer> for XheyPicture{
+impl Edge for XheyPicture{
+    type Item = Framebuffer;
+
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }
@@ -75,17 +77,10 @@ impl Edge<Framebuffer> for XheyPicture{
     }
 
     /// 前向计算
-    fn forward(&self, xs: &Vec<Framebuffer>) -> Framebuffer{
-        PlaceHolder::new()
-
-    }
-    fn forward_default(&self) -> Framebuffer{
+    fn forward(&self, xs: &Vec<Self::Item>) -> Self::Item{
         self._framebuffer.clone()
 
     }
 
-    ///针对Source节点，在渲染过程中指定其Framebufer
-    fn set_framebuffer(&self, value:Framebuffer){
-    }
 }
 

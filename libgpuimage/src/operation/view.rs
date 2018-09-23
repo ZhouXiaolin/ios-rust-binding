@@ -15,49 +15,19 @@ pub struct XHeyView {
     backingSize: Cell<GLSize>,
     layer: ShareId<CALayer>,
     orientation: ImageOrientation,
-
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
 }
 
-impl Drawable for XHeyView{}
-
-impl Drop for XHeyView {
-    fn drop(&mut self){
-        println!("Drop XHeyView");
-    }
-
-}
-
-impl XHeyView {
-    pub fn new(view: &UIView) -> Self {
-        let layer = view.get_layer();
-        let layer = layer.share();
-
-
-        XHeyView{
-            displayFramebuffer:Cell::default(),
-            displayRenderbuffer:Cell::default(),
-            backingSize:Cell::default(),
-            layer:layer,
-            orientation: ImageOrientation::portrait,
-            head_node:Cell::default(),
-            tail:RefCell::default()
-        }
-    }
-
-
-    fn renderFrame(&self, framebuffers: &Vec<Framebuffer>){
-
-
-
+impl Drawable for XHeyView{
+    type Item = Framebuffer;
+    fn render(&self, framebuffer:&Self::Item){
         sharedImageProcessingContext.makeCurrentContext();
 
         if self.displayFramebuffer.get() == 0 {
             self.createDisplayFramebuffer()
         }
 
-        let framebuffer = &framebuffers[0];
 
         self.activateDisplayFramebuffer();
         clearFramebufferWithColor(Color::black());
@@ -84,6 +54,33 @@ impl XHeyView {
 
 
     }
+
+}
+
+impl Drop for XHeyView {
+    fn drop(&mut self){
+        println!("Drop XHeyView");
+    }
+
+}
+
+impl XHeyView {
+    pub fn new(view: &UIView) -> Self {
+        let layer = view.get_layer();
+        let layer = layer.share();
+
+
+        XHeyView{
+            displayFramebuffer:Cell::default(),
+            displayRenderbuffer:Cell::default(),
+            backingSize:Cell::default(),
+            layer:layer,
+            orientation: ImageOrientation::portrait,
+            head_node:Cell::default(),
+            tail:RefCell::default()
+        }
+    }
+
 
     fn activateDisplayFramebuffer(&self) {
         unsafe {
@@ -161,7 +158,7 @@ impl Edge for XHeyView {
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
     fn forward(&self, xs: &Vec<Self::Item>) -> Self::Item{
-        self.renderFrame(xs);
+        self.render(&xs[0]);
         PlaceHolder::new()
     }
 

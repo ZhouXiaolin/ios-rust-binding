@@ -5,17 +5,43 @@ use super::*;
 
 #[repr(C)]
 pub struct XHeyBasicFilter{
-    _shader : GLProgram,
-    _maximumInputs : u32,
-    _inputFramebuffers:RefCell<Vec<Framebuffer>>,
-    _renderFramebuffer: RefCell<Framebuffer>,
+    shader : GLProgram,
+    maximumInputs : u32,
+    inputFramebuffers:RefCell<Vec<Framebuffer>>,
+    renderFramebuffer: RefCell<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
 
 }
 
 impl Renderable for XHeyBasicFilter {
+    type Item = Framebuffer;
+    fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
+        let inputFramebuffer = inputFramebuffers.first().unwrap();
+
+        let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
+
+        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+
+        let textureProperties = {
+            let mut inputTextureProperties = vec![];
+            for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
+            }
+            inputTextureProperties
+        };
+
+        renderFramebuffer.activateFramebufferForRendering();
+
+        clearFramebufferWithColor(Color::black());
+
+        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+
+        renderQuadWithShader(&self.shader,&textureProperties,vertex);
+
+        renderFramebuffer
+    }
 }
 
 impl XHeyBasicFilter {
@@ -23,10 +49,10 @@ impl XHeyBasicFilter {
         sharedImageProcessingContext.makeCurrentContext();
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
-            _maximumInputs:numberOfInputs,
-            _shader: shader,
-            _inputFramebuffers:RefCell::default(),
-            _renderFramebuffer: RefCell::default(),
+            maximumInputs:numberOfInputs,
+            shader: shader,
+            inputFramebuffers:RefCell::default(),
+            renderFramebuffer: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default()
         }
@@ -61,46 +87,18 @@ impl XHeyBasicFilter {
         let shader = GLProgram::new(vertexString,fragmentString);
 
         XHeyBasicFilter{
-            _maximumInputs:1,
-            _shader: shader,
-            _inputFramebuffers: RefCell::default(),
-            _renderFramebuffer: RefCell::default(),
+            maximumInputs:1,
+            shader: shader,
+            inputFramebuffers: RefCell::default(),
+            renderFramebuffer: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default()
         }
     }
 
 
-    pub fn renderFrame(&self, inputFramebuffers:&Vec<Framebuffer>) -> Framebuffer {
-
-
-        let inputFramebuffer = inputFramebuffers.first().unwrap();
-
-        let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
-
-        let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-
-        let textureProperties = {
-            let mut inputTextureProperties = vec![];
-            for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
-                inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
-            }
-            inputTextureProperties
-        };
-
-        renderFramebuffer.activateFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::black());
-
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
-
-        renderQuadWithShader(&self._shader,&textureProperties,vertex);
-
-        renderFramebuffer
-    }
-
     fn getTexId(&self) -> u32 {
-        self._renderFramebuffer.borrow().texture
+        self.renderFramebuffer.borrow().texture
     }
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
@@ -139,14 +137,14 @@ impl Edge for XHeyBasicFilter {
 
     /// 指定输入最大个数
     fn arity(&self) -> u32{
-        self._maximumInputs
+        self.maximumInputs
     }
 
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
     fn forward(&self, inputFramebuffers: &Vec<Self::Item>) -> Self::Item{
 
-        let renderFramebuffer= self.renderFrame(inputFramebuffers);
+        let renderFramebuffer= self.render(inputFramebuffers);
         renderFramebuffer
     }
 

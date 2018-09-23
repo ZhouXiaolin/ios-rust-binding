@@ -1,6 +1,7 @@
 use gles_rust_binding::*;
 use std::mem;
 use super::{Rotation, FramebufferCache};
+use super::Context;
 #[cfg(target_os = "ios")]
 use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 
@@ -94,27 +95,24 @@ impl GlContext {
 
     }
 
-    #[cfg(target_os = "ios")]
-    pub fn makeCurrentContext(&self){
-        EAGLContext::makeCurrentContext(&self.context);
-    }
-
-    #[cfg(target_os = "android")]
-    pub fn makeCurrentContext(&self){
-
-    }
-
-
-
-
-
-
 
 
 
     pub fn textureVBO(&self, rotation: Rotation) -> GLuint {
         let textureVBO = self.textureVBOs[rotation.toRawValue()];
         textureVBO
+    }
+}
+
+impl Context for GlContext {
+    #[cfg(target_os = "ios")]
+    fn makeCurrentContext(&self){
+        EAGLContext::makeCurrentContext(&self.context);
+    }
+
+    #[cfg(target_os = "android")]
+    fn makeCurrentContext(&self){
+
     }
 }
 

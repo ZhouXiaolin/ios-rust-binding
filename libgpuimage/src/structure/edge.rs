@@ -23,14 +23,16 @@ pub trait Edge {
 /// 渲染
 /// 渲染过程
 pub trait Renderable{
-
+    type Item;
+    fn render(&self, xs: &Vec<Self::Item>) -> Self::Item;
 }
 
 
 /// 绘制到屏幕 或者 文件
 /// 如果一个Edge是Drawable的，其forward的参数长度必定为1，返回值为PlaceHolder，
 pub trait Drawable{
-
+    type Item;
+    fn render(&self, x:&Self::Item);
 }
 
 /// 计算

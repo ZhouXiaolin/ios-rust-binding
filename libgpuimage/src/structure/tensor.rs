@@ -6,3 +6,12 @@ pub trait Tensor {
     fn unlock(&self);
 }
 
+/// 缓存机制应该写到structure模块吗？
+/// request 根据条件，生成或者找出一个Tensor
+/// pull 拉取这个Tensor
+/// push 使用完毕后回传这个Tensor
+
+pub trait TensorCache<T>{
+    fn pull(&self) -> T;
+    fn push(&self,t:T);
+}

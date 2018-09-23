@@ -1,6 +1,6 @@
 use gles_rust_binding::*;
 use super::sharedImageProcessingContext;
-use super::gpu_texture_options::*;
+use super::gl_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;
 use std::ptr;

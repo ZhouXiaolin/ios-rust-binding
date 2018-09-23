@@ -14,3 +14,4 @@ pub use self::graph::*;
 pub use self::edge::*;
 pub use self::tensor::*;
 pub use self::expression::*;
+pub use self::context::*;

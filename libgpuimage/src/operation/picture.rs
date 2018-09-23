@@ -6,7 +6,7 @@ use std::os::raw::c_void;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
 pub struct XheyPicture{
-    _framebuffer: Framebuffer,
+    framebuffer: Framebuffer,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
 }
@@ -34,7 +34,7 @@ impl XheyPicture {
         }
 
         XheyPicture{
-            _framebuffer: framebuffer,
+            framebuffer: framebuffer,
             head_node:Cell::default(),
             tail:RefCell::default()
         }
@@ -78,7 +78,7 @@ impl Edge for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Self::Item{
-        self._framebuffer.clone()
+        self.framebuffer.clone()
 
     }
 

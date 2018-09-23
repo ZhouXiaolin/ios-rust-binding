@@ -46,7 +46,6 @@ impl FramebufferCache {
             },
             _ => {
                 println!("create a new framebuffer");
-                // 为什么不在这里直接存入，因为在使用RefCell时，不允许借用和可变可用同时存在，
                 let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
                 framebuffer
             }

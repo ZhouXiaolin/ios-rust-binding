@@ -1,4 +1,6 @@
 /// 这个模块和gl耦合非常高，需要进一步抽象
+/// 所有Operation都应该包含一个Graph引用
+/// Graph引用包含一个Context
 mod basic;
 mod gaussianblur;
 mod lookuptable;

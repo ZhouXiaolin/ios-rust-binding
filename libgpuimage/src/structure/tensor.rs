@@ -10,8 +10,11 @@ pub trait Tensor {
 /// request 根据条件，生成或者找出一个Tensor
 /// pull 拉取这个Tensor
 /// push 使用完毕后回传这个Tensor
+pub enum CacheConfig{
+
+}
 
 pub trait TensorCache<T>{
-    fn pull(&self) -> T;
+    fn requst_and_then_pull(&self, config:CacheConfig) -> T;
     fn push(&self,t:T);
 }

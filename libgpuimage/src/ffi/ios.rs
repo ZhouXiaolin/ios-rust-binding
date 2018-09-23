@@ -30,16 +30,7 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
     let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
     let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
     let vi = box_graph.add_function("view",&[filter3],box_view);
-//    box_graph.PrintGraphviz();
-    
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
-//    box_graph.forward();
+
 
 }
 

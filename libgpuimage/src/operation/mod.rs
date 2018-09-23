@@ -1,6 +1,6 @@
 /// 这个模块和gl耦合非常高，需要进一步抽象
-/// 所有Operation都应该包含一个Graph引用
-/// Graph引用包含一个Context
+/// 滤镜是渲染操作的一个特化，渲染的一般是一个矩形，在片元上操作
+///
 mod basic;
 mod gaussianblur;
 mod lookuptable;

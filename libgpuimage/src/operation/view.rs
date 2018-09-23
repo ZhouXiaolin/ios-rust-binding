@@ -17,6 +17,8 @@ pub struct XHeyView {
     orientation: ImageOrientation,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
+    uniformSettings:ShaderUniformSettings
+
 }
 
 impl Drawable for XHeyView{
@@ -43,15 +45,13 @@ impl Drawable for XHeyView{
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
-        renderQuadWithShader(program,&vec![inputTexture],vertex);
+        renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
 
         unsafe {
             glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
         }
 
         sharedImageProcessingContext.presentBufferForDisplay();
-
-
 
     }
 
@@ -77,7 +77,9 @@ impl XHeyView {
             layer:layer,
             orientation: ImageOrientation::portrait,
             head_node:Cell::default(),
-            tail:RefCell::default()
+            tail:RefCell::default(),
+            uniformSettings:ShaderUniformSettings::default()
+
         }
     }
 

@@ -11,12 +11,14 @@ pub struct XHeyBasicFilter{
     renderFramebuffer: RefCell<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
+    uniformSettings:ShaderUniformSettings
 
 }
 
 impl Renderable for XHeyBasicFilter {
     type Item = Framebuffer;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
+
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
@@ -38,7 +40,7 @@ impl Renderable for XHeyBasicFilter {
 
         let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 
-        renderQuadWithShader(&self.shader,&textureProperties,vertex);
+        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
         renderFramebuffer
     }
@@ -54,7 +56,8 @@ impl XHeyBasicFilter {
             inputFramebuffers:RefCell::default(),
             renderFramebuffer: RefCell::default(),
             head_node:Cell::default(),
-            tail:RefCell::default()
+            tail:RefCell::default(),
+            uniformSettings:ShaderUniformSettings::default()
         }
     }
     pub fn new() -> Self {
@@ -92,7 +95,9 @@ impl XHeyBasicFilter {
             inputFramebuffers: RefCell::default(),
             renderFramebuffer: RefCell::default(),
             head_node:Cell::default(),
-            tail:RefCell::default()
+            tail:RefCell::default(),
+            uniformSettings:ShaderUniformSettings::default()
+
         }
     }
 

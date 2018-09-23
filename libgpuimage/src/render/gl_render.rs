@@ -3,6 +3,7 @@ use std::ptr;
 use super::Context;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};
 use super::sharedImageProcessingContext;
+use super::ShaderUniformSettings;
 pub fn clearFramebufferWithColor(color:Color) {
     unsafe {
         glClearColor(color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent);
@@ -26,12 +27,14 @@ pub fn textureUnitForIndex(index: usize) -> GLenum {
 }
 
 
-pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
+pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
     sharedImageProcessingContext.makeCurrentContext();
     unsafe {
 
         program.bind();
+
+        uniformSettings.restoreShaderSettings(program);
 
         let position = program.get_attribute("position").unwrap();
 
@@ -103,20 +106,4 @@ pub fn renderQuadWithShader(program: &GLProgram, inputTextures: &Vec<InputTextur
 }
 
 
-#[derive(Copy,Clone,Debug,Default)]
-pub struct GLSize {
-    pub width : i32,
-    pub height: i32
-}
-impl GLSize {
-    pub fn new(width: i32, height: i32) -> Self {
-        GLSize{width:width,height:height}
-    }
-}
 
-
-#[derive(Copy, Clone,Debug,Default)]
-pub struct Size {
-    pub width: f32,
-    pub height: f32
-}

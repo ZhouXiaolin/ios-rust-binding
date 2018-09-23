@@ -4,6 +4,7 @@ use super::gpu_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;
 use std::ptr;
+use super::Tensor;
 
 pub enum InputTextureStorageFormat {
     textureCoordinate([GLfloat;8]),
@@ -40,6 +41,7 @@ pub struct Framebuffer {
 
 }
 
+impl Tensor for Framebuffer{}
 
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
     if textureOnly {

@@ -6,7 +6,7 @@ use std::mem::transmute;
 use ios_rust_binding::UIImage;
 
 
-use super::common::{Graph,Edge};
+use super::structure::{Graph,Edge};
 use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera};
 
 #[no_mangle]

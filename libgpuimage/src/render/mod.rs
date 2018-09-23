@@ -11,7 +11,7 @@ pub use self::gl_render::*;
 pub use self::gpu_texture_options::*;
 
 use super::common::*;
-
+use super::structure::Tensor;
 
 
 

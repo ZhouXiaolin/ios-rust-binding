@@ -2,6 +2,7 @@ use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
 
 use super::*;
+
 #[repr(C)]
 pub struct XHeyBasicFilter{
     _shader : GLProgram,

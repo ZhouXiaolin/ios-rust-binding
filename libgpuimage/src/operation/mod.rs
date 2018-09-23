@@ -19,6 +19,7 @@ pub use self::picture::*;
 pub use self::view::*;
 
 use super::common::*;
+use super::structure::*;
 use super::render::*;
 
 

@@ -44,7 +44,7 @@ impl XheyPicture {
 
 
 
-impl Edge for XheyPicture{
+impl Edge<Framebuffer> for XheyPicture{
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }

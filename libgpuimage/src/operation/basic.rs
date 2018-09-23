@@ -110,7 +110,7 @@ impl XHeyBasicFilter {
 
 
 
-impl Edge for XHeyBasicFilter {
+impl Edge<Framebuffer> for XHeyBasicFilter {
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }

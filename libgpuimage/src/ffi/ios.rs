@@ -7,15 +7,16 @@ use ios_rust_binding::UIImage;
 
 
 use super::structure::{Graph,Edge};
+use super::render::Framebuffer;
 use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera};
-
+type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]
-pub extern "C" fn xhey_init_graph<'a>() -> *mut Graph<'a> {
+pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
     let graph = Box::new(Graph::new());
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
@@ -43,13 +44,13 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut Graph<'a>,source: *mut XheyP
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut Graph<'a>){
+pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
     let box_graph = graph.as_mut().unwrap();
     box_graph.forward();
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_printgraphviz<'a>(graph: *mut Graph<'a>){
+pub unsafe extern "C" fn xhey_graph_printgraphviz<'a>(graph: *mut RenderGraph<'a>){
     let box_graph = graph.as_mut().unwrap();
     box_graph.PrintGraphviz();
 }

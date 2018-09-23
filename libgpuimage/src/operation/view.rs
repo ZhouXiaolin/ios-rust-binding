@@ -127,7 +127,7 @@ impl XHeyView {
 }
 
 
-impl Edge for XHeyView {
+impl Edge<Framebuffer> for XHeyView {
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }

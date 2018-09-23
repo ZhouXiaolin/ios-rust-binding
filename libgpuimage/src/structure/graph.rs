@@ -2,14 +2,14 @@ use super::{Node,Tensor,Edge};
 use super::Framebuffer;
 use std::cell::RefCell;
 #[repr(C)]
-pub struct Graph<'a>{
-    nodes: Vec<Node<Framebuffer>>,
-    edges: Vec<Box<&'a dyn Edge>>,
+pub struct Graph<'a,T:Tensor>{
+    nodes: Vec<Node<T>>,
+    edges: Vec<Box<&'a dyn Edge<T>>>,
 
 }
 pub type VariableIndex = u32;
 
-impl<'a> Graph<'a> {
+impl<'a,T:Tensor> Graph<'a,T> {
     pub fn new() -> Self {
         Graph{
             nodes: Vec::default(),
@@ -24,7 +24,7 @@ impl<'a> Graph<'a> {
     }
 
     /// 这个函数用来添加输入
-    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge) -> VariableIndex {
+    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge<T>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -41,7 +41,7 @@ impl<'a> Graph<'a> {
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge) -> VariableIndex {
+    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge<T>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -79,7 +79,7 @@ impl<'a> Graph<'a> {
         for node in nodes.iter() {
 
             let mut var_names = Vec::<String>::new();
-            let in_edge : &Box<&dyn Edge> = edges.get(node.in_edge as usize).unwrap();
+            let in_edge : &Box<&dyn Edge<_>> = edges.get(node.in_edge as usize).unwrap();
 
             let tail_nodes = in_edge.tail_nodes();
             for tail_node in tail_nodes.iter() {
@@ -112,12 +112,12 @@ impl<'a> Graph<'a> {
         for(node_index,node) in nodes.iter().enumerate() {
 
             let node:&Node<_> = nodes.get(node_index).expect("Error, cannot get node from nodes");
-            let in_edge:&Box<&Edge> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
+            let in_edge:&Box<&Edge<_>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
             if in_edge.arity() == 0 {
                 node.f.borrow_mut().push(in_edge.forward_default());
             }else{
-                let mut xs = Vec::<Framebuffer>::with_capacity(in_edge.arity() as usize);
+                let mut xs = Vec::<T>::with_capacity(in_edge.arity() as usize);
                 for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
                     let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
                     let f = inner_node.f.borrow_mut().pop().unwrap();
@@ -139,9 +139,9 @@ impl<'a> Graph<'a> {
 
     }
 
-    pub fn add_feed(&self, index:u32, value:Framebuffer){
+    pub fn add_feed(&self, index:u32, value:T){
         let edges = &self.edges;
-        let edge :&Box<&dyn Edge> = edges.get(index as usize).expect("Error to get op from edges");
+        let edge :&Box<&dyn Edge<_>> = edges.get(index as usize).expect("Error to get op from edges");
         edge.set_framebuffer(value);
 
     }

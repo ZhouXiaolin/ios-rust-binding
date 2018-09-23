@@ -41,7 +41,24 @@ pub struct Framebuffer {
 
 }
 
-impl Tensor for Framebuffer{}
+impl Tensor for Framebuffer{
+    fn lock(&self){
+        let newValue = self.framebufferRetainCount.get() + 1;
+        self.framebufferRetainCount.set(newValue);
+    }
+    fn unlock(&self){
+        let newValue = self.framebufferRetainCount.get() - 1;
+        self.framebufferRetainCount.set(newValue);
+
+        if newValue < 1 {
+
+            self.resetRetainCount();
+
+            sharedImageProcessingContext.frameubfferCache.returnToCache(self);
+        }
+
+    }
+}
 
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
     if textureOnly {
@@ -136,27 +153,13 @@ impl Framebuffer {
 
     }
 
-    pub fn lock(&self){
-        let newValue = self.framebufferRetainCount.get() + 1;
-        self.framebufferRetainCount.set(newValue);
-    }
+
 
     pub fn retainCount(&self) -> u32 {
         self.framebufferRetainCount.get()
     }
 
-    pub fn unlock(&self){
-        let newValue = self.framebufferRetainCount.get() - 1;
-        self.framebufferRetainCount.set(newValue);
 
-        if newValue < 1 {
-
-            self.resetRetainCount();
-
-            sharedImageProcessingContext.frameubfferCache.returnToCache(self);
-        }
-
-    }
 
     pub fn resetRetainCount(&self){
         self.framebufferRetainCount.set(0);

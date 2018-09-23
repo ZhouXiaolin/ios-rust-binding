@@ -7,6 +7,7 @@ mod graph;
 mod edge;
 mod tensor;
 mod expression;
+mod context;
 
 pub use self::node::*;
 pub use self::graph::*;

@@ -60,6 +60,7 @@ impl Tensor for Framebuffer{
     }
 }
 
+#[inline]
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
     if textureOnly {
         let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
@@ -70,6 +71,7 @@ pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: G
     }
 }
 
+#[inline]
 fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
     let mut texture:GLuint = 0;
 
@@ -87,6 +89,8 @@ fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
 
     texture
 }
+
+#[inline]
 fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
     let mut framebuffer : GLuint = 0;
     unsafe {
@@ -213,6 +217,8 @@ impl Framebuffer {
 
         self.texturePropertiesForOutputRotation(self.orientation.get().rotationNeededForOrientation(targetOrientation))
     }
+
+    #[inline]
     pub fn activateFramebufferForRendering(&self){
         unsafe {
             glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);

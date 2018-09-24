@@ -17,7 +17,7 @@ pub struct ShaderUniformSettings{
 
 impl ShaderUniformSettings {
 
-    pub fn setValue(&mut self, value:Uniform, key:String) {
+    pub fn setValue(&mut self, key:String, value:Uniform) {
         let uniformValues = &mut self.uniformValues;
         uniformValues.insert(key,value);
     }

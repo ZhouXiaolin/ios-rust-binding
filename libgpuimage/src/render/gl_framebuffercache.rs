@@ -35,21 +35,28 @@ impl FramebufferCache {
 
         let hash = hashStringForFramebuffer(size,textureOnly,textureOptions);
 
-        let hashSet = self.unused.borrow();
-        let values: Option<&Framebuffer> = hashSet.get(&hash);
+        let mut hashT = self.unused.borrow_mut();
 
-        match values {
-            Some(fb) if fb.valid() => {
-                println!("has key, find fbo from cache");
-                fb.orientation.set(orientation);
-                fb.clone()
-            },
-            _ => {
-                println!("create a new framebuffer");
-                let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
-                framebuffer
-            }
+//        if hashT.contains_key(&hash) {
+//            let fb = hashT.get(&hash).unwrap();
+//            fb.orientation.set(orientation);
+//            fb.clone()
+//        }else{
+//            let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
+//            hashT.insert(framebuffer.hashString(),framebuffer.clone());
+//            framebuffer
+//        }
 
+
+
+
+        if hashT.contains_key(&hash) {
+            let v = hashT.get(&hash).unwrap();
+            v.orientation.set(orientation);
+            v.clone()
+        }else{
+            let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
+            framebuffer
         }
 
     }

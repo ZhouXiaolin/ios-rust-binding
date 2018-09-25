@@ -17,7 +17,8 @@ pub struct XHeyView {
     orientation: ImageOrientation,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings
+    uniformSettings:ShaderUniformSettings,
+    value:Cell<f32>
 
 }
 
@@ -32,7 +33,16 @@ impl Drawable for XHeyView{
 
 
         self.activateDisplayFramebuffer();
-        clearFramebufferWithColor(Color::black());
+
+        let v = self.value.get();
+        if v > 1.0 {
+            self.value.set(0.0);
+        }else{
+            self.value.set(v+0.1);
+        }
+
+        let v = self.value.get();
+        clearFramebufferWithColor(Color::new(1.0,v,1.0,1.0));
 
         let program = &sharedImageProcessingContext.passthroughShader;
 
@@ -78,7 +88,8 @@ impl XHeyView {
             orientation: ImageOrientation::portrait,
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            value:Cell::default()
 
         }
     }

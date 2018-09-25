@@ -88,14 +88,14 @@
     xhey_graph_printgraphviz(graph);
     free(imageData);
 
-    __block float value = 0.0;
+    __block float value = 0.3;
     [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
         
-        xhey_combine_value(filter3, 0.4);
+        xhey_combine_value(filter3, value);
         xhey_graph_forward(graph);
         
         if (value > 1.0) {
-            value = 0.0;
+            value = 0.3;
         }else{
             value += 0.1;
         }

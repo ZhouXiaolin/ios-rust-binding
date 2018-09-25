@@ -1,6 +1,6 @@
 
 use ios_rust_binding::UIView;
-use std::os::raw::{c_char,c_void,c_uint};
+use std::os::raw::{c_char,c_void,c_uint,c_float};
 use std::ffi::{CStr};
 use std::mem::transmute;
 use ios_rust_binding::UIImage;
@@ -8,7 +8,7 @@ use ios_rust_binding::UIImage;
 
 use super::structure::{Graph,Edge};
 use super::render::Framebuffer;
-use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera};
+use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera,XHeyCombineFilter};
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]
 pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
@@ -16,19 +16,19 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
     Box::into_raw(graph)
 }
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyBasicFilter, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyCombineFilter, view: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
 
     let box_picture = source.as_ref().unwrap();
     let box_view = view.as_ref().unwrap();
     let box_filter = filter.as_ref().unwrap();
     let box_filter2 = filter2.as_ref().unwrap();
-    let box_filter3 = filter3.as_ref().unwrap();
+    let combine = filter3.as_ref().unwrap();
 
     let pic = box_graph.add_input("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-    let filter2 = box_graph.add_function("filter2",&[filter1],box_filter2);
-    let filter3 = box_graph.add_function("filter3",&[filter2],box_filter3);
+    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
+    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
     let vi = box_graph.add_function("view",&[filter3],box_view);
 
 
@@ -51,6 +51,20 @@ pub unsafe extern "C" fn xhey_graph_printgraphviz<'a>(graph: *mut RenderGraph<'a
 pub extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
     let filter = Box::new(XHeyBasicFilter::new());
     Box::into_raw(filter)
+}
+
+
+#[no_mangle]
+pub extern "C" fn xhey_init_combine_filter() -> *mut XHeyCombineFilter {
+    let filter = Box::new(XHeyCombineFilter::new());
+    Box::into_raw(filter)
+}
+
+
+#[no_mangle]
+pub extern "C" fn xhey_combine_value(filter: *mut XHeyCombineFilter, value: c_float){
+    let combine = unsafe{filter.as_mut().unwrap()};
+    combine.set_value(value);
 }
 
 #[no_mangle]

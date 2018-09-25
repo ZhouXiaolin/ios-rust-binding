@@ -7,6 +7,7 @@ mod lookuptable;
 mod tonecurve;
 mod camera;
 mod picture;
+mod combine;
 
 #[cfg(target_os = "ios")]
 mod view;
@@ -17,6 +18,7 @@ pub use self::lookuptable::*;
 pub use self::tonecurve::*;
 pub use self::camera::*;
 pub use self::picture::*;
+pub use self::combine::*;
 
 #[cfg(target_os = "ios")]
 pub use self::view::*;

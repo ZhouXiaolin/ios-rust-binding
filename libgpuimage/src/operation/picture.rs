@@ -82,5 +82,9 @@ impl Edge for XheyPicture{
 
     }
 
+    fn name(&self) -> &str {
+        "picture input"
+    }
+
 }
 

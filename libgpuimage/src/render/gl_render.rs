@@ -64,7 +64,7 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
             let (inputTextureCoordinateString,inputImageTextureString) = if index == 0 {
                 (format!("inputTextureCoordinate"),format!("inputImageTexture"))
             }else{
-                (format!("inputTextureCoordinate{}",index),format!("inputImageTexture{}",index))
+                (format!("inputTextureCoordinate{}",index+1),format!("inputImageTexture{}",index+1))
             };
 
 

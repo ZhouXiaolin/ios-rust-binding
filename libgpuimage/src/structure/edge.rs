@@ -2,6 +2,8 @@
 use super::Tensor;
 pub trait Edge {
     type Item;
+
+    fn name(&self) -> &str;
     /// 将tail加入这个节点的输入序列
     fn add_tail(&self, tail: u32);
     /// 返回输入序列

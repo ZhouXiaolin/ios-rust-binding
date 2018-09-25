@@ -1,6 +1,6 @@
 use super::{Color,Position,Size};
 use fnv::FnvHashMap;
-use gles_rust_binding::GLProgram;
+use gles_rust_binding::*;
 pub enum Uniform{
     Float(f32),
     Int(i32),
@@ -17,16 +17,16 @@ pub struct ShaderUniformSettings{
 
 impl ShaderUniformSettings {
 
-    pub fn setValue(&mut self, key:String, value:Uniform) {
+    pub fn setValue(&mut self, key:&str, value:Uniform) {
         let uniformValues = &mut self.uniformValues;
-        uniformValues.insert(key,value);
+        uniformValues.insert(String::from(key),value);
     }
     pub fn restoreShaderSettings(&self, shader: &GLProgram){
         for (key,value) in self.uniformValues.iter() {
             let uniform = shader.get_uniform(key);
             match value {
                 Uniform::Float(f) => {
-
+                    unsafe {glUniform1f(uniform.location() as i32, f.clone())};
                 },
                 Uniform::Int(i) => {
 

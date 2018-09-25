@@ -76,19 +76,31 @@
 
     Graph* graph = xhey_init_graph();
     
-    XheyBasicFilter* filter = xhey_init_basic_filter(); // 1
-    XheyView* view = xhey_init_view((__bridge void*)demoView); // 0
-    XheyPicture* picture = xhey_init_picture(imageData,width,height); // 3
-    XheyBasicFilter* filter2 = xhey_init_basic_filter_2(); // 2
-    XheyBasicFilter* filter3 = xhey_init_basic_filter_2(); // 2
+    XheyView* view = xhey_init_view((__bridge void*)demoView); 
+    XheyPicture* picture = xhey_init_picture(imageData,width,height);
+    XheyBasicFilter* filter = xhey_init_basic_filter();
+    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
+    XHeyCombineFilter* filter3 = xhey_init_combine_filter();
+    
+    xhey_graph(graph, picture, filter, filter2, filter3, view);
 
     
     xhey_graph_printgraphviz(graph);
-    xhey_graph(graph, picture, filter, filter2, filter3, view);
     free(imageData);
 
-    [NSTimer scheduledTimerWithTimeInterval:0.03333 repeats:YES block:^(NSTimer * _Nonnull timer) {
+    __block float value = 0.0;
+    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        
+        xhey_combine_value(filter3, 0.4);
         xhey_graph_forward(graph);
+        
+        if (value > 1.0) {
+            value = 0.0;
+        }else{
+            value += 0.1;
+        }
+        
+        
     }];
     
     

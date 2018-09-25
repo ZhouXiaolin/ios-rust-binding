@@ -1,14 +1,14 @@
 use super::{Node,Tensor,Edge};
 use std::cell::RefCell;
 #[repr(C)]
-pub struct Graph<'a,T:Tensor>{
+pub struct Graph<'a,T:Tensor + Clone>{
     nodes: Vec<Node<T>>,
     edges: Vec<Box<&'a dyn Edge<Item=T>>>,
 
 }
 pub type VariableIndex = u32;
 
-impl<'a,T:Tensor> Graph<'a,T> {
+impl<'a,T:Tensor + Clone> Graph<'a,T> {
     pub fn new() -> Self {
         Graph{
             nodes: Vec::default(),
@@ -113,12 +113,23 @@ impl<'a,T:Tensor> Graph<'a,T> {
             let node:&Node<_> = nodes.get(node_index).expect("Error, cannot get node from nodes");
             let in_edge : &Box<&Edge<Item=T>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
+
+            println!("current edge name {} ",in_edge.name());
+
             let mut xs = Vec::<T>::with_capacity(in_edge.arity() as usize);
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
+
+
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
-                let f = inner_node.f.borrow_mut().pop().unwrap();
-                f.lock();
-                xs.insert(ti,f)
+
+                println!("current inner_node : {}",inner_node.name);
+                let mut f = inner_node.f.borrow_mut();
+
+                let fbo = f.pop().unwrap();
+                fbo.lock();
+                xs.insert(ti,fbo.clone());
+                f.push(fbo);
+
             }
             node.f.borrow_mut().push(in_edge.forward(&xs));
             for x in xs.iter() {

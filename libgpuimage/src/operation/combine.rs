@@ -4,7 +4,7 @@ use gles_rust_binding::*;
 use super::*;
 
 #[repr(C)]
-pub struct XHeyBasicFilter{
+pub struct XHeyCombineFilter{
     shader : GLProgram,
     maximumInputs : u32,
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
@@ -15,7 +15,7 @@ pub struct XHeyBasicFilter{
 
 }
 
-impl Renderable for XHeyBasicFilter {
+impl Renderable for XHeyCombineFilter {
     type Item = Framebuffer;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -46,32 +46,23 @@ impl Renderable for XHeyBasicFilter {
     }
 }
 
-impl XHeyBasicFilter {
-    pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
-        let shader = GLProgram::new(vertex,fragment);
-        XHeyBasicFilter{
-            maximumInputs:numberOfInputs,
-            shader: shader,
-            inputFramebuffers:RefCell::default(),
-            renderFramebuffer: RefCell::default(),
-            head_node:Cell::default(),
-            tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
-        }
-    }
+impl XHeyCombineFilter {
+
     pub fn new() -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let vertexString = r#"
  attribute vec4 position;
  attribute vec4 inputTextureCoordinate;
-
+ attribute vec4 inputTextureCoordinate2;
  varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
 
  void main()
  {
      gl_Position = position;
      textureCoordinate = inputTextureCoordinate.xy;
+     textureCoordinate2 = inputTextureCoordinate2.xy;
+
  }
     "#;
 
@@ -79,18 +70,27 @@ impl XHeyBasicFilter {
  precision mediump float;
 
  varying highp vec2 textureCoordinate;
+ varying highp vec2 textureCoordinate2;
  uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
 
+ uniform float value;
  void main()
  {
-     vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = color;
+     vec4 color1 = texture2D(inputImageTexture, textureCoordinate);
+     vec4 color2 = texture2D(inputImageTexture2, textureCoordinate2);
+
+     if(textureCoordinate.x > value) {
+        gl_FragColor = color1;
+     }else{
+        gl_FragColor = color2;
+     }
  }
     "#;
         let shader = GLProgram::new(vertexString,fragmentString);
 
-        XHeyBasicFilter{
-            maximumInputs:1,
+        XHeyCombineFilter{
+            maximumInputs:2,
             shader: shader,
             inputFramebuffers: RefCell::default(),
             renderFramebuffer: RefCell::default(),
@@ -109,11 +109,15 @@ impl XHeyBasicFilter {
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
     }
+
+    pub fn set_value(&mut self, v : f32){
+        self.uniformSettings.setValue("value",Uniform::Float(v));
+    }
 }
 
 
 
-impl Edge for XHeyBasicFilter {
+impl Edge for XHeyCombineFilter {
     type Item = Framebuffer;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -154,7 +158,7 @@ impl Edge for XHeyBasicFilter {
     }
 
     fn name(&self) -> &str {
-        "basic filter"
+        "combine"
     }
 
 }

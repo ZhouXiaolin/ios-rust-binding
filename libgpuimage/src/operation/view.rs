@@ -164,5 +164,8 @@ impl Edge for XHeyView {
         PlaceHolder::new()
     }
 
+    fn name(&self) -> &str {
+        "view"
+    }
 
 }

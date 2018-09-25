@@ -35,7 +35,9 @@ extern "C" {
     void xhey_graph_forward(void*);
     void xhey_graph_printgraphviz(void*);
 
-
+    struct XHeyCombineFilter;
+    struct XHeyCombineFilter* xhey_init_combine_filter();
+    void xhey_combine_value(void* , float);
 
 #if __cplusplus
 }

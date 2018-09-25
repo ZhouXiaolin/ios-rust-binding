@@ -103,14 +103,13 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
 
 
     /// 渲染过程 前向计算  这个体系是计算图模型
-    pub fn forward(&mut self) {
+    pub fn forward(&self) {
 
-        let nodes = &mut self.nodes;
-        let edges = &mut self.edges;
+        let nodes = &self.nodes;
+        let edges = &self.edges;
 
-        for(node_index,node) in nodes.iter().enumerate() {
+        for node in nodes {
 
-            let node:&Node<_> = nodes.get(node_index).expect("Error, cannot get node from nodes");
             let in_edge : &Box<&Edge<Item=T>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
 

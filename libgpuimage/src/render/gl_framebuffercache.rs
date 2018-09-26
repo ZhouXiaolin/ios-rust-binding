@@ -37,7 +37,6 @@ impl FramebufferCache {
 
         let hashT = self.cache.borrow_mut();
 
-
         if hashT.contains_key(&hash) {
             let v = hashT.get(&hash).unwrap();
             v.orientation.set(orientation);

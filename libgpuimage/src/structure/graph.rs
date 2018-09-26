@@ -113,30 +113,27 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
             let in_edge : &Box<&Edge<Item=T>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
 
-            println!("current edge name {} ",in_edge.name());
-
             let mut xs = Vec::<T>::with_capacity(in_edge.arity() as usize);
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
 
 
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
 
-                println!("current inner_node : {}",inner_node.name);
                 let mut f = inner_node.f.borrow_mut();
 
                 let fbo = f.pop().unwrap();
-                fbo.lock();
                 xs.insert(ti,fbo.clone());
                 f.push(fbo);
 
             }
 
+            xs.iter().for_each(|x|x.lock());
+
             if let Some(v) = in_edge.forward(&xs) {
                 node.f.borrow_mut().push(v)
             }
-            for x in xs.iter() {
-                x.unlock();
-            }
+
+            xs.iter().for_each(|x|x.unlock());
 
 
 

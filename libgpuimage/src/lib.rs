@@ -9,8 +9,7 @@ extern crate fnv;
 extern crate ios_rust_binding;
 #[macro_use]
 extern crate lazy_static;
-#[macro_use]
-extern crate bitflags;
+
 
 pub mod operation;
 pub mod common;

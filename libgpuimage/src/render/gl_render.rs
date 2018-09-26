@@ -4,6 +4,9 @@ use super::Context;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};
 use super::sharedImageProcessingContext;
 use super::ShaderUniformSettings;
+
+
+
 pub fn clearFramebufferWithColor(color:Color) {
     unsafe {
         glClearColor(color.redComponent, color.greenComponent, color.blueComponent, color.alphaComponent);
@@ -98,6 +101,10 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
         glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
+
+        if let InputTextureStorageFormat::textureVBO(_) = vertex {
+            glBindBuffer(GL_ARRAY_BUFFER,0);
+        }
 
         for (index,_) in inputTextures.iter().enumerate() {
             glActiveTexture(textureUnitForIndex(index));

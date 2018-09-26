@@ -9,10 +9,6 @@ extern "C" {
 #endif
 
 
-    struct XheyCamera;
-    struct XheyCamera* xhey_init_camera(void);
-    void xhey_start_capture(struct XheyCamera* camera);
-    void xhey_stop_capture(struct XheyCamera* camera);
 
     struct XheyPicture;
     struct XheyPicture* xhey_init_picture(void* data, int width, int height);
@@ -25,9 +21,7 @@ extern "C" {
     struct XheyBasicFilter* xhey_init_basic_filter();
     struct XheyBasicFilter* xhey_init_basic_filter_2();
 
-    struct XheyToneCurveFilter;
-    struct XHeyLookupTableFilter;
-    struct XHeyGaussianBlurFilter;
+
 
     struct Graph;
     struct Graph * xhey_init_graph();
@@ -38,6 +32,9 @@ extern "C" {
     struct XHeyCombineFilter;
     struct XHeyCombineFilter* xhey_init_combine_filter();
     void xhey_combine_value(void* , float);
+
+
+    void xhey_context_release();
 
 #if __cplusplus
 }

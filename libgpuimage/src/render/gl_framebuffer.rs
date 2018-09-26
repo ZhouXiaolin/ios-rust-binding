@@ -4,6 +4,7 @@ use super::gl_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;
 use std::ptr;
+use std::rc::Rc;
 use super::Tensor;
 
 pub enum InputTextureStorageFormat {
@@ -27,14 +28,13 @@ impl InputTextureProperties {
 
 
 /// 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
-#[derive(Clone)]
 pub struct Framebuffer {
     pub size : GLSize,
     pub orientation: Cell<ImageOrientation>,
     pub texture: u32,
     hashString: String,
     framebuffer: u32,
-    framebufferRetainCount: Cell<u32>,
+    locked: Cell<bool>,
     textureOptions: GPUTextureOptions,
     textureOverride: bool,
 
@@ -43,22 +43,17 @@ pub struct Framebuffer {
 
 impl Tensor for Framebuffer{
     fn lock(&self){
-        let newValue = self.framebufferRetainCount.get() + 1;
-        self.framebufferRetainCount.set(newValue);
+
+        self.locked.set(true);
     }
     fn unlock(&self){
-        let newValue = self.framebufferRetainCount.get() - 1;
-        self.framebufferRetainCount.set(newValue);
+        self.locked.set(false);
 
-        if newValue < 1 {
-
-            self.resetRetainCount();
-
-            sharedImageProcessingContext.frameubfferCache.returnToCache(self);
-        }
 
     }
 }
+
+
 
 #[inline]
 pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
@@ -117,7 +112,7 @@ impl Default for Framebuffer {
             texture: 0,
             hashString: String::from(""),
             framebuffer: 0,
-            framebufferRetainCount: Cell::from(0),
+            locked: Cell::from(false),
             textureOptions: GPUTextureOptions::default(),
             textureOverride: false,
         }
@@ -161,26 +156,17 @@ impl Framebuffer {
             textureOverride:textureOverride,
             framebuffer:framebuffer,
             texture: texture,
-            framebufferRetainCount: Cell::default()
+            locked: Cell::from(false)
         }
 
     }
 
 
 
-    pub fn retainCount(&self) -> u32 {
-        self.framebufferRetainCount.get()
-    }
-
-
-
-    pub fn resetRetainCount(&self){
-        self.framebufferRetainCount.set(0);
-    }
-
     pub fn valid(&self) -> bool {
-        self.framebufferRetainCount.get() == 0
+        self.locked.get() == false
     }
+
 
     pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
 
@@ -244,9 +230,10 @@ impl Framebuffer {
 
 impl Drop for Framebuffer {
     fn drop(&mut self) {
-        if self.textureOverride {
+        if self.textureOverride == false {
             unsafe {
-                glDeleteTextures(1,&mut self.texture)
+                glDeleteTextures(1,&mut self.texture);
+                println!("Delete texture at size {:?}",self.size);
             }
         }
         unsafe {

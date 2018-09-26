@@ -1,14 +1,18 @@
 use super::{Node,Tensor,Edge};
 use std::cell::RefCell;
+use std::rc::Rc;
+
+// 使用Rc来保持Tensor引用，否则会触发Drop导致渲染错误
+
 #[repr(C)]
-pub struct Graph<'a,T:Tensor + Clone>{
+pub struct Graph<'a,T:Tensor>{
     nodes: Vec<Node<T>>,
-    edges: Vec<Box<&'a dyn Edge<Item=T>>>,
+    edges: Vec<Box<&'a dyn Edge<Item=Rc<T>>>>,
 
 }
 pub type VariableIndex = u32;
 
-impl<'a,T:Tensor + Clone> Graph<'a,T> {
+impl<'a,T:Tensor> Graph<'a,T> {
     pub fn new() -> Self {
         Graph{
             nodes: Vec::default(),
@@ -23,7 +27,7 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
     }
 
     /// 这个函数用来添加输入
-    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge<Item=T>) -> VariableIndex {
+    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge<Item=Rc<T>>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -40,7 +44,7 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge<Item=T>) -> VariableIndex {
+    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge<Item=Rc<T>>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -78,7 +82,7 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
         for node in nodes.iter() {
 
             let mut var_names = Vec::<String>::new();
-            let in_edge : &Box<&dyn Edge<Item=T>> = edges.get(node.in_edge as usize).unwrap();
+            let in_edge : &Box<&dyn Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).unwrap();
 
             let tail_nodes = in_edge.tail_nodes();
             for tail_node in tail_nodes.iter() {
@@ -102,7 +106,7 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
 
 
 
-    /// 渲染过程 前向计算  这个体系是计算图模型
+    /// 渲染过程 前向计算  这个体系是计算图模型 xs的T需要被Rc包裹起来，否则会立即释放导致渲染错误
     pub fn forward(&self) {
 
         let nodes = &self.nodes;
@@ -110,25 +114,25 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
 
         for node in nodes {
 
-            let in_edge : &Box<&Edge<Item=T>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
+            let in_edge : &Box<&Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
+            println!("in_edge {}",in_edge.name());
 
-            let mut xs = Vec::<T>::with_capacity(in_edge.arity() as usize);
+            
+            let mut xs = Vec::<Rc<T>>::with_capacity(in_edge.arity() as usize);
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
 
 
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
-
-                let mut f = inner_node.f.borrow_mut();
-
-                let fbo = f.pop().unwrap();
+                let f = inner_node.f.borrow();
+                let fbo = f.last().unwrap();
                 xs.insert(ti,fbo.clone());
-                f.push(fbo);
 
             }
 
             xs.iter().for_each(|x|x.lock());
 
+            // 在各个edge的forward计算中，须lock所有资源
             if let Some(v) = in_edge.forward(&xs) {
                 node.f.borrow_mut().push(v)
             }

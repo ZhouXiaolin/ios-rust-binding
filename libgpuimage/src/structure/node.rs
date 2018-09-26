@@ -1,6 +1,6 @@
 use std::cell::{RefCell};
 use super::Tensor;
-
+use std::rc::Rc;
 
 pub struct Node<T:Tensor> {
 
@@ -8,7 +8,7 @@ pub struct Node<T:Tensor> {
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:RefCell<Vec<T>>
+    pub f:RefCell<Vec<Rc<T>>>
 }
 
 impl<T:Tensor> Node<T> {

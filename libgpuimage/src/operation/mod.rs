@@ -2,10 +2,6 @@
 /// 滤镜是渲染操作的一个特化，渲染的一般是一个矩形，在片元上操作
 ///
 mod basic;
-mod gaussianblur;
-mod lookuptable;
-mod tonecurve;
-mod camera;
 mod picture;
 mod combine;
 
@@ -13,10 +9,6 @@ mod combine;
 mod view;
 
 pub use self::basic::*;
-pub use self::gaussianblur::*;
-pub use self::lookuptable::*;
-pub use self::tonecurve::*;
-pub use self::camera::*;
 pub use self::picture::*;
 pub use self::combine::*;
 

@@ -74,37 +74,62 @@
     CGContextRelease(imageContext);
     CGColorSpaceRelease(genericRGBColorspace);
 
-    Graph* graph = xhey_init_graph();
     
-    XheyView* view = xhey_init_view((__bridge void*)demoView); 
+    
+    Graph* graph = xhey_init_graph();
+
+    XheyView* view = xhey_init_view((__bridge void*)demoView);
     XheyPicture* picture = xhey_init_picture(imageData,width,height);
     XheyBasicFilter* filter = xhey_init_basic_filter();
     XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
     XHeyCombineFilter* filter3 = xhey_init_combine_filter();
-    
+
     xhey_graph(graph, picture, filter, filter2, filter3, view);
 
-    
+
     xhey_graph_printgraphviz(graph);
     free(imageData);
+    
 
-    __block float value = 0.3;
-    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
-        
-        xhey_combine_value(filter3, value);
-        xhey_graph_forward(graph);
-        
-        if (value > 1.0) {
-            value = 0.3;
-        }else{
-            value += 0.1;
-        }
-        
-        
-    }];
+    
+    xhey_combine_value(filter3, 0.3);
+    xhey_graph_forward(graph);
+    
+    xhey_combine_value(filter3, 0.7);
+    xhey_graph_forward(graph);
+    
+    
+    xhey_combine_value(filter3, 0.3);
+    xhey_graph_forward(graph);
+    
+    xhey_combine_value(filter3, 0.7);
+    xhey_graph_forward(graph);
+    
+    
+    xhey_context_release();
+//    xhey_combine_value(filter3, 0.7);
+//    xhey_graph_forward(graph);
+
+
+//    __block float value = 0.9;
+//    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
+//
+//
+//
+//        if (value > 1.0) {
+//            value = 0.3;
+//        }else{
+//            value += 0.1;
+//        }
+//
+//
+//    }];
+
+
     
     
 }
+
 
 
 - (void)didReceiveMemoryWarning {

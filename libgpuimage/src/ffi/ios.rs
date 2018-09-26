@@ -4,11 +4,11 @@ use std::os::raw::{c_char,c_void,c_uint,c_float};
 use std::ffi::{CStr};
 use std::mem::transmute;
 use ios_rust_binding::UIImage;
-
+use std::rc::Rc;
 
 use super::structure::{Graph,Edge};
-use super::render::Framebuffer;
-use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XheyCamera,XHeyCombineFilter};
+use super::render::{Framebuffer,sharedImageProcessingContext};
+use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XHeyCombineFilter};
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]
 pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
@@ -21,9 +21,9 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
     let box_picture = source.as_ref().unwrap();
     let box_view = view.as_ref().unwrap();
-//    let box_filter = filter.as_ref().unwrap();
-//    let box_filter2 = filter2.as_ref().unwrap();
-//    let combine = filter3.as_ref().unwrap();
+    let box_filter = filter.as_ref().unwrap();
+    let box_filter2 = filter2.as_ref().unwrap();
+    let combine = filter3.as_ref().unwrap();
 
     let pic = box_graph.add_input("picture",box_picture);
 //    let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
@@ -34,6 +34,10 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
 }
 
+#[no_mangle]
+pub extern "C" fn xhey_context_release(){
+    sharedImageProcessingContext.frameubfferCache.purgeAllUnassignedFramebuffer();
+}
 #[no_mangle]
 pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
     let box_graph = graph.as_mut().unwrap();
@@ -123,24 +127,6 @@ pub extern "C" fn xhey_process_picture(picture: *const XheyPicture){
 
 }
 
-
-#[no_mangle]
-pub extern "C" fn xhey_init_camera() -> *mut XheyCamera {
-    println!("xhey_init_camera");
-    let camera = Box::new(XheyCamera::new());
-    Box::into_raw(camera)
-}
-
-
-#[no_mangle]
-pub extern "C" fn xhey_start_capture(camera: *mut XheyCamera){
-    println!("xhey_start_camera");
-}
-
-#[no_mangle]
-pub extern "C" fn xhey_stop_capture(camera: *mut XheyCamera){
-    println!("xhey_start_camera");
-}
 
 
 

@@ -1,9 +1,7 @@
 use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
-
 use gles_rust_binding::*;
-
 use std::cell::{Cell,RefCell};
-
+use std::rc::Rc;
 use super::*;
 
 
@@ -138,7 +136,7 @@ impl XHeyView {
 
 
 impl Edge for XHeyView {
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

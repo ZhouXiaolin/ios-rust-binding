@@ -9,8 +9,7 @@ libc = { version = "0.2.43", default-features = false }
 gles-rust-binding = { path = "../gles-rust-binding", version = "0.1.0"}
 lazy_static = "1.1.0"
 fnv = "1.0.6"
-bitflags = "1.0.4"
-foreign-types = "0.3.2"
+
 [features]
 
 [target.'cfg(target_os="ios")'.dependencies]

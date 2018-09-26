@@ -3,10 +3,11 @@ use super::*;
 
 use gles_rust_binding::*;
 use std::os::raw::c_void;
+use std::rc::Rc;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
 pub struct XheyPicture{
-    framebuffer: Framebuffer,
+    framebuffer: Rc<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
 }
@@ -19,6 +20,14 @@ impl Drop for XheyPicture {
 }
 
 impl XheyPicture {
+    pub fn new_default() -> Self {
+        XheyPicture{
+            framebuffer:Rc::default(),
+            head_node: Cell::from(0),
+            tail: RefCell::default()
+        }
+    }
+
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
 
@@ -45,7 +54,7 @@ impl XheyPicture {
 
 
 impl Edge for XheyPicture{
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -78,6 +87,7 @@ impl Edge for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
+        // 当进行前向计算时 framebuffer需要lock
         Some(self.framebuffer.clone())
 
     }

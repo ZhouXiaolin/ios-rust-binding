@@ -1,6 +1,6 @@
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
-
+use std::rc::Rc;
 use super::*;
 
 #[repr(C)]
@@ -16,7 +16,7 @@ pub struct XHeyCombineFilter{
 }
 
 impl Renderable for XHeyCombineFilter {
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
 
@@ -25,7 +25,6 @@ impl Renderable for XHeyCombineFilter {
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
         let renderFramebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
@@ -118,7 +117,7 @@ impl XHeyCombineFilter {
 
 
 impl Edge for XHeyCombineFilter {
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }

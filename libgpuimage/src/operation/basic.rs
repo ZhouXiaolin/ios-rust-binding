@@ -1,6 +1,6 @@
 use std::cell::{RefCell,Cell};
 use gles_rust_binding::*;
-
+use std::rc::Rc;
 use super::*;
 
 #[repr(C)]
@@ -16,7 +16,7 @@ pub struct XHeyBasicFilter{
 }
 
 impl Renderable for XHeyBasicFilter {
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
 
@@ -114,7 +114,7 @@ impl XHeyBasicFilter {
 
 
 impl Edge for XHeyBasicFilter {
-    type Item = Framebuffer;
+    type Item = Rc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }

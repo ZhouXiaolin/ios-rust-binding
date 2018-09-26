@@ -130,7 +130,10 @@ impl<'a,T:Tensor + Clone> Graph<'a,T> {
                 f.push(fbo);
 
             }
-            node.f.borrow_mut().push(in_edge.forward(&xs));
+
+            if let Some(v) = in_edge.forward(&xs) {
+                node.f.borrow_mut().push(v)
+            }
             for x in xs.iter() {
                 x.unlock();
             }

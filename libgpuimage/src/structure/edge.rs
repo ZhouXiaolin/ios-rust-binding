@@ -18,7 +18,7 @@ pub trait Edge {
     fn arity(&self) -> u32;
 
     /// 前向计算
-    fn forward(&self, xs: &Vec<Self::Item>) -> Self::Item;
+    fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>;
 }
 
 

@@ -151,10 +151,10 @@ impl Edge for XHeyCombineFilter {
 
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
-    fn forward(&self, inputFramebuffers: &Vec<Self::Item>) -> Self::Item{
+    fn forward(&self, inputFramebuffers: &Vec<Self::Item>) -> Option<Self::Item>{
 
         let renderFramebuffer= self.render(inputFramebuffers);
-        renderFramebuffer
+        Some(renderFramebuffer)
     }
 
     fn name(&self) -> &str {

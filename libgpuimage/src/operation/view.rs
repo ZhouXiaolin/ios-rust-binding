@@ -170,9 +170,9 @@ impl Edge for XHeyView {
     }
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
-    fn forward(&self, xs: &Vec<Self::Item>) -> Self::Item{
+    fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
         self.render(&xs[0]);
-        PlaceHolder::new()
+        None
     }
 
     fn name(&self) -> &str {

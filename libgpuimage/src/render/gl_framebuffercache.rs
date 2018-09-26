@@ -6,13 +6,13 @@ use super::{Framebuffer,GPUTextureOptions,GLSize,ImageOrientation};
 use super::hashStringForFramebuffer;
 /// 这个缓存如何设计 内部可变 RefCell 字典 FnvHashMap 以 String 为key, 储存一个Framebuffer,内部可变，
 pub struct FramebufferCache{
-    unused:RefCell<FnvHashMap<String,Framebuffer>>,
+    cache:RefCell<FnvHashMap<String,Framebuffer>>,
 }
 
 impl Default for FramebufferCache {
     fn default() -> Self {
         FramebufferCache{
-            unused:RefCell::default(),
+            cache:RefCell::default(),
         }
     }
 
@@ -35,19 +35,7 @@ impl FramebufferCache {
 
         let hash = hashStringForFramebuffer(size,textureOnly,textureOptions);
 
-        let mut hashT = self.unused.borrow_mut();
-
-//        if hashT.contains_key(&hash) {
-//            let fb = hashT.get(&hash).unwrap();
-//            fb.orientation.set(orientation);
-//            fb.clone()
-//        }else{
-//            let framebuffer = Framebuffer::new(orientation,size,textureOnly,textureOptions,None);
-//            hashT.insert(framebuffer.hashString(),framebuffer.clone());
-//            framebuffer
-//        }
-
-
+        let hashT = self.cache.borrow_mut();
 
 
         if hashT.contains_key(&hash) {
@@ -62,12 +50,12 @@ impl FramebufferCache {
     }
 
     pub fn purgeAllUnassignedFramebuffer(&self){
-        self.unused.borrow_mut().clear();
+        self.cache.borrow_mut().clear();
     }
 
 
     pub fn returnToCache(&self, framebuffer:&Framebuffer){
-        let mut framebufferCache = self.unused.borrow_mut();
+        let mut framebufferCache = self.cache.borrow_mut();
         framebufferCache.insert(framebuffer.hashString(),framebuffer.clone());
 
     }

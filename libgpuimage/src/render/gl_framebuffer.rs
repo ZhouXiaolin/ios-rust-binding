@@ -111,7 +111,16 @@ fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, t
 
 impl Default for Framebuffer {
     fn default() -> Self{
-        Framebuffer::new_default(ImageOrientation::portrait,GLSize::default(),false)
+        Framebuffer{
+            size : GLSize::new(0,0),
+            orientation: Cell::from(ImageOrientation::portrait),
+            texture: 0,
+            hashString: String::from(""),
+            framebuffer: 0,
+            framebufferRetainCount: Cell::from(0),
+            textureOptions: GPUTextureOptions::default(),
+            textureOverride: false,
+        }
     }
 }
 

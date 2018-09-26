@@ -16,8 +16,7 @@ foreign-types = "0.3.2"
 [target.'cfg(target_os="ios")'.dependencies]
 objc = "0.2.5"
 ios-rust-binding = { path = "../ios-rust-binding", version = "0.1.0"}
-cocoa = "0.18.0"
-metal-rs = "0.10.4"
+
 
 [target.'cfg(target_os="android")'.dependencies]
 jni = { version = "0.10.1", default-features = false }
@@ -25,6 +24,7 @@ jni = { version = "0.10.1", default-features = false }
 [lib]
 name = "gpuimage"
 crate-type = ["staticlib","cdylib"]
+
 
 
 [profile.dev]

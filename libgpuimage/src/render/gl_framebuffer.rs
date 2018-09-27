@@ -42,72 +42,6 @@ pub struct Framebuffer {
 
 }
 
-impl Tensor for Framebuffer{
-    fn lock(&self){
-
-        let v = self.locked.get();
-        self.locked.set(v+1);
-    }
-    fn unlock(&self){
-        let v = self.locked.get();
-        self.locked.set(v-1);
-
-
-
-    }
-}
-
-
-
-#[inline]
-pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
-    if textureOnly {
-        let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
-        string
-    }else{
-        let string = format!("FB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
-        string
-    }
-}
-
-#[inline]
-fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
-    let mut texture:GLuint = 0;
-
-    unsafe {
-        glActiveTexture(GL_TEXTURE1);
-        glGenTextures(1, &mut texture);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureOptions.minFilter as i32);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureOptions.magFilter as i32);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureOptions.wrapS as i32);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureOptions.wrapT as i32);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
-
-    texture
-}
-
-#[inline]
-fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
-    let mut framebuffer : GLuint = 0;
-    unsafe {
-        glActiveTexture(GL_TEXTURE1);
-        glGenFramebuffers(1,&mut framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glTexImage2D(GL_TEXTURE_2D,0,textureOptions.internalFormat as i32,width,height,0,textureOptions.format,textureOptions._type,ptr::null());
-        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0);
-
-        glBindTexture(GL_TEXTURE_2D,0);
-        glBindFramebuffer(GL_FRAMEBUFFER,0);
-
-        framebuffer
-
-    }
-}
-
 impl Default for Framebuffer {
     fn default() -> Self{
         Framebuffer{
@@ -122,6 +56,19 @@ impl Default for Framebuffer {
         }
     }
 }
+
+impl Tensor for Framebuffer{
+    fn lock(&self){
+
+        let v = self.locked.get();
+        self.locked.set(v+1);
+    }
+    fn unlock(&self){
+        let v = self.locked.get();
+        self.locked.set(v-1);
+    }
+}
+
 
 impl Framebuffer {
 
@@ -165,12 +112,9 @@ impl Framebuffer {
 
     }
 
-
-
     pub fn valid(&self) -> bool {
         self.locked.get() == 0
     }
-
 
     pub fn sizeForTargetOrientation(&self, targetOrientation: ImageOrientation) -> GLSize {
 
@@ -217,7 +161,6 @@ impl Framebuffer {
         self.texturePropertiesForOutputRotation(self.orientation.get().rotationNeededForOrientation(targetOrientation))
     }
 
-    #[inline]
     pub fn activateFramebufferForRendering(&self){
         unsafe {
             glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
@@ -248,4 +191,56 @@ impl Drop for Framebuffer {
     }
 }
 
+
+
+pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> String {
+    if textureOnly {
+        let string = format!("NOFB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
+        string
+    }else{
+        let string = format!("FB-{}{}-{}{}{}{}{}{}{}",size.width, size.height, textureOptions.minFilter, textureOptions.magFilter, textureOptions.wrapS, textureOptions.wrapT, textureOptions.internalFormat, textureOptions.format, textureOptions._type);
+        string
+    }
+}
+
+fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
+    let mut texture:GLuint = 0;
+
+    unsafe {
+        glActiveTexture(GL_TEXTURE1);
+        glGenTextures(1, &mut texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureOptions.minFilter as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureOptions.magFilter as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureOptions.wrapS as i32);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureOptions.wrapT as i32);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    texture
+}
+
+fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
+    let mut framebuffer : GLuint = 0;
+    unsafe {
+        glActiveTexture(GL_TEXTURE1);
+        glGenFramebuffers(1,&mut framebuffer);
+        glBindFramebuffer(GL_FRAMEBUFFER,framebuffer);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexImage2D(GL_TEXTURE_2D,0,textureOptions.internalFormat as i32,width,height,0,textureOptions.format,textureOptions._type,ptr::null());
+        glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0);
+
+        let status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+        if status != GL_FRAMEBUFFER_COMPLETE {
+            panic!("Error framebuffer fail {}",status);
+        }
+
+        glBindTexture(GL_TEXTURE_2D,0);
+        glBindFramebuffer(GL_FRAMEBUFFER,0);
+
+        framebuffer
+
+    }
+}
 

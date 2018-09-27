@@ -27,12 +27,14 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
     let pic = box_graph.add_input("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
-    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
-    let vi = box_graph.add_function("view",&[filter3],box_view);
+//    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
+//    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
+    let vi = box_graph.add_function("view",&[filter1],box_view);
 
 
 }
+
+
 
 #[no_mangle]
 pub extern "C" fn xhey_context_release(){

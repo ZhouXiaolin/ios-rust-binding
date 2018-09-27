@@ -21,62 +21,15 @@ pub struct XHeyView {
 
 }
 
-impl Drawable for XHeyView{
-    type Item = Framebuffer;
-    fn render(&self, framebuffer:&Self::Item){
-        sharedImageProcessingContext.makeCurrentContext();
-
-        if self.displayFramebuffer.get() == 0 {
-            self.createDisplayFramebuffer()
-        }
-
-
-        self.activateDisplayFramebuffer();
-
-        let v = self.value.get();
-        if v > 1.0 {
-            self.value.set(0.0);
-        }else{
-            self.value.set(v+0.1);
-        }
-
-        let v = self.value.get();
-        clearFramebufferWithColor(Color::new(1.0,v,1.0,1.0));
-
-        let program = &sharedImageProcessingContext.passthroughShader;
-
-        let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
-
-        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize.get());
-
-
-        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
-
-        let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
-
-        renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
-
-        unsafe {
-            glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
-        }
-
-        sharedImageProcessingContext.presentBufferForDisplay();
-
-    }
-
-}
-
 impl Drop for XHeyView {
     fn drop(&mut self){
         println!("Drop XHeyView");
-
-
         unsafe {
             let mut displayFramebuffer = self.displayFramebuffer.get();
-
             if displayFramebuffer > 0{
                 glDeleteFramebuffers(1,&mut displayFramebuffer);
             }
+
             let mut displayRenderbuffer = self.displayRenderbuffer.get();
             if displayRenderbuffer > 0 {
                 glDeleteRenderbuffers(1,&mut displayRenderbuffer);
@@ -185,6 +138,53 @@ impl Edge for XHeyView {
 
     fn name(&self) -> &str {
         "view"
+    }
+
+}
+
+
+
+impl Drawable for XHeyView{
+    type Item = Framebuffer;
+    fn render(&self, framebuffer:&Self::Item){
+        sharedImageProcessingContext.makeCurrentContext();
+
+        if self.displayFramebuffer.get() == 0 {
+            self.createDisplayFramebuffer()
+        }
+
+
+        self.activateDisplayFramebuffer();
+
+        let v = self.value.get();
+        if v > 1.0 {
+            self.value.set(0.0);
+        }else{
+            self.value.set(v+0.1);
+        }
+
+        let v = self.value.get();
+        clearFramebufferWithColor(Color::new(1.0,v,1.0,1.0));
+
+        let program = &sharedImageProcessingContext.passthroughShader;
+
+        let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
+
+        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize.get());
+
+
+        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
+
+        let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
+
+        renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
+
+        unsafe {
+            glBindRenderbuffer(GL_RENDERBUFFER,self.displayRenderbuffer.get());
+        }
+
+        sharedImageProcessingContext.presentBufferForDisplay();
+
     }
 
 }

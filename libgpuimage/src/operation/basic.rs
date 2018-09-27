@@ -11,7 +11,9 @@ pub struct XHeyBasicFilter{
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings
+    uniformSettings:ShaderUniformSettings,
+    value:Cell<f32>
+
 
 }
 
@@ -25,7 +27,9 @@ impl XHeyBasicFilter {
             inputFramebuffers:RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            value:Cell::from(0.0)
+
         }
     }
     pub fn new() -> Self {
@@ -63,7 +67,8 @@ impl XHeyBasicFilter {
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            value:Cell::from(0.0)
 
         }
     }
@@ -120,6 +125,7 @@ impl Edge for XHeyBasicFilter {
 impl Renderable for XHeyBasicFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
+        sharedImageProcessingContext.makeCurrentContext();
 
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
@@ -138,7 +144,17 @@ impl Renderable for XHeyBasicFilter {
 
         renderFramebuffer.activateFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::black());
+        let v = self.value.get();
+        if v > 1.0 {
+            self.value.set(0.0);
+        }else{
+            self.value.set(v+0.1);
+        }
+
+        let v = self.value.get();
+
+
+        clearFramebufferWithColor(Color::new(v,1.0,0.0,1.0));
 
         let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 

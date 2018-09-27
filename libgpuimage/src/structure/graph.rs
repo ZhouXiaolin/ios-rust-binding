@@ -141,6 +141,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
             }
 
             for x in xs {
+                // 这个节点的forward完毕后，unlock他的输入
                 x.unlock();
             }
 

@@ -50,7 +50,6 @@ static fragmentStr: &str = r#"
 
 impl GlContext {
     #[cfg(target_os = "ios")]
-    #[inline]
     pub fn new() -> Self{
         let generatedContext = EAGLContext::withApi(2);
         let generatedContext = generatedContext.share();
@@ -72,7 +71,6 @@ impl GlContext {
     }
 
     #[cfg(target_os = "android")]
-    #[inline]
     pub fn new() -> Self{
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let standardImageVBO = generateVBO(&standardImageVertices);
@@ -89,12 +87,10 @@ impl GlContext {
     }
 
     #[cfg(target_os = "ios")]
-    #[inline]
     pub fn presentBufferForDisplay(&self){
         self.context.presentRenderBuffer(GL_RENDERBUFFER as NSUInteger);
     }
     #[cfg(target_os = "android")]
-    #[inline]
     pub fn presentBufferForDisplay(&self){
 
     }
@@ -102,7 +98,6 @@ impl GlContext {
 
 
 
-    #[inline]
     pub fn textureVBO(&self, rotation: Rotation) -> GLuint {
         let textureVBO = self.textureVBOs[rotation.toRawValue()];
         textureVBO

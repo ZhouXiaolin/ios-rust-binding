@@ -128,6 +128,7 @@ impl Renderable for XHeyCombineFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
+        sharedImageProcessingContext.makeCurrentContext();
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 

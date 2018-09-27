@@ -83,7 +83,6 @@ impl Edge for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
-        // 当进行前向计算时 framebuffer需要lock
         Some(self.framebuffer.clone())
 
     }

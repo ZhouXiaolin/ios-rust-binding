@@ -34,7 +34,7 @@ pub struct Framebuffer {
     pub orientation: Cell<ImageOrientation>,
     pub texture: u32,
     hashString: String,
-    framebuffer: u32,
+    pub framebuffer: u32,
     locked: Cell<i32>, // 引用计数
     textureOptions: GPUTextureOptions,
     textureOverride: bool,

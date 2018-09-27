@@ -25,7 +25,7 @@ pub struct GlContext{
 
 static vertexStr: &str = r#"
  attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
+ attribute vec2 inputTextureCoordinate;
 
  varying vec2 textureCoordinate;
 

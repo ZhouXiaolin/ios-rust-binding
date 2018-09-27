@@ -27,9 +27,9 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
     let pic = box_graph.add_input("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-//    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
-//    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
-    let vi = box_graph.add_function("view",&[filter1],box_view);
+    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
+    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
+    let vi = box_graph.add_function("view",&[filter3],box_view);
 
 
 }
@@ -99,7 +99,7 @@ pub extern "C" fn xhey_init_basic_filter_2() -> *mut XHeyBasicFilter {
 
     let vertexString = r#"
  attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
+ attribute vec2 inputTextureCoordinate;
 
  varying vec2 textureCoordinate;
 

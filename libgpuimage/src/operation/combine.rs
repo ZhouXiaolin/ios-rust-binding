@@ -22,8 +22,8 @@ impl XHeyCombineFilter {
         sharedImageProcessingContext.makeCurrentContext();
         let vertexString = r#"
  attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
- attribute vec4 inputTextureCoordinate2;
+ attribute vec2 inputTextureCoordinate;
+ attribute vec2 inputTextureCoordinate2;
  varying vec2 textureCoordinate;
  varying vec2 textureCoordinate2;
 
@@ -111,9 +111,7 @@ impl Edge for XHeyCombineFilter {
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
     fn forward(&self, inputFramebuffers: &Vec<Self::Item>) -> Option<Self::Item>{
-
-        let renderFramebuffer= self.render(inputFramebuffers);
-        Some(renderFramebuffer)
+        Some(self.render(inputFramebuffers))
     }
 
     fn name(&self) -> &str {

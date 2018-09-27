@@ -63,7 +63,7 @@ impl XHeyView {
 
     fn activateDisplayFramebuffer(&self) {
         unsafe {
-            glBindBuffer(GL_FRAMEBUFFER,self.displayFramebuffer.get());
+            glBindFramebuffer(GL_FRAMEBUFFER,self.displayFramebuffer.get());
             glViewport(0,0,self.backingSize.get().width,self.backingSize.get().height);
         }
     }

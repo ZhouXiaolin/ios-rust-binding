@@ -36,7 +36,7 @@ impl XHeyBasicFilter {
         sharedImageProcessingContext.makeCurrentContext();
         let vertexString = r#"
  attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
+ attribute vec2 inputTextureCoordinate;
 
  varying vec2 textureCoordinate;
 
@@ -63,7 +63,7 @@ impl XHeyBasicFilter {
 
         XHeyBasicFilter{
             maximumInputs:1,
-            shader: shader,
+            shader,
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
@@ -110,9 +110,7 @@ impl Edge for XHeyBasicFilter {
     /// 前向计算 根据xs渲染到FBO FBO可以复用，图构造后，根据拓扑序可以计算需要的最大Framebuffer个数，并提前准备
     /// 所有关系都由Graph来控制 Framebuffer
     fn forward(&self, inputFramebuffers: &Vec<Self::Item>) -> Option<Self::Item>{
-
-        let renderFramebuffer= self.render(inputFramebuffers);
-        Some(renderFramebuffer)
+        Some(self.render(inputFramebuffers))
     }
 
     fn name(&self) -> &str {
@@ -133,10 +131,12 @@ impl Renderable for XHeyBasicFilter {
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
         let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        println!("solaren current renderFramebuffer texture {}",renderFramebuffer.texture);
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                println!("solaren current inputFramebuffer : {}  texture_id {}",inputFramebuffer.framebuffer, inputFramebuffer.texture);
                 inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
             }
             inputTextureProperties

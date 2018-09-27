@@ -1,6 +1,8 @@
 use super::{Color,Position,Size};
 use fnv::FnvHashMap;
 use gles_rust_binding::*;
+
+#[derive(Debug)]
 pub enum Uniform{
     Float(f32),
     Int(i32),
@@ -10,7 +12,7 @@ pub enum Uniform{
     Matrix4x4(),
     Matrix3x3()
 }
-#[derive(Default)]
+#[derive(Default,Debug)]
 pub struct ShaderUniformSettings{
     uniformValues: FnvHashMap<String,Uniform>
 }

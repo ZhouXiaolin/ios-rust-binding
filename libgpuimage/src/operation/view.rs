@@ -7,6 +7,7 @@ use super::*;
 
 
 #[repr(C)]
+#[derive(Debug)]
 pub struct XHeyView {
     displayFramebuffer: Cell<GLuint>,
     displayRenderbuffer: Cell<GLuint>,

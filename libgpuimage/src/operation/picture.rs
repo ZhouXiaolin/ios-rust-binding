@@ -6,6 +6,7 @@ use std::os::raw::c_void;
 use std::rc::Rc;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
+#[derive(Debug)]
 pub struct XheyPicture{
     framebuffer: Rc<Framebuffer>,
     head_node: Cell<u32>,
@@ -34,7 +35,7 @@ impl XheyPicture {
 
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
-        let framebuffer = sharedImageProcessingContext.frameubfferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
+        let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);

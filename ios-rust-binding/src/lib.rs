@@ -97,7 +97,7 @@ impl UIView {
 
 }
 
-
+#[derive(Debug)]
 pub struct CALayer {
     _priv : ()
 }

@@ -68,6 +68,20 @@ impl Drawable for XHeyView{
 impl Drop for XHeyView {
     fn drop(&mut self){
         println!("Drop XHeyView");
+
+
+        unsafe {
+            let mut displayFramebuffer = self.displayFramebuffer.get();
+
+            if displayFramebuffer > 0{
+                glDeleteFramebuffers(1,&mut displayFramebuffer);
+            }
+            let mut displayRenderbuffer = self.displayRenderbuffer.get();
+            if displayRenderbuffer > 0 {
+                glDeleteRenderbuffers(1,&mut displayRenderbuffer);
+            }
+        }
+
     }
 
 }
@@ -95,7 +109,7 @@ impl XHeyView {
 
     fn activateDisplayFramebuffer(&self) {
         unsafe {
-            glBindBuffer(GL_FRAMEBUFFER,self.displayRenderbuffer.get());
+            glBindBuffer(GL_FRAMEBUFFER,self.displayFramebuffer.get());
             glViewport(0,0,self.backingSize.get().width,self.backingSize.get().height);
         }
     }
@@ -162,7 +176,7 @@ impl Edge for XHeyView {
         1
     }
 
-    /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返回一个占位符占位符
+    /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
         self.render(&xs[0]);
         None

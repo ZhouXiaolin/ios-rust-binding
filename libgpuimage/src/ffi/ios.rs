@@ -22,22 +22,43 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
     let box_picture = source.as_ref().unwrap();
     let box_view = view.as_ref().unwrap();
     let box_filter = filter.as_ref().unwrap();
-    let box_filter2 = filter2.as_ref().unwrap();
-    let combine = filter3.as_ref().unwrap();
+//    let box_filter2 = filter2.as_ref().unwrap();
+//    let combine = filter3.as_ref().unwrap();
 
     let pic = box_graph.add_input("picture",box_picture);
     let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
-    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
-    let vi = box_graph.add_function("view",&[filter3],box_view);
+//    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
+//    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
+    let vi = box_graph.add_function("view",&[filter1],box_view);
 
 
 }
 
 #[no_mangle]
 pub extern "C" fn xhey_context_release(){
-    sharedImageProcessingContext.frameubfferCache.purgeAllUnassignedFramebuffer();
+    sharedImageProcessingContext.framebufferCache.purgeAllUnassignedFramebuffer();
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_picture(source: *mut XheyPicture){
+    drop(Box::from_raw(source));
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_view(source: *mut XHeyView){
+    drop(Box::from_raw(source));
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_basic_filter(source: *mut XHeyBasicFilter){
+    drop(Box::from_raw(source));
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_combine_filter(source: *mut XHeyCombineFilter){
+    drop(Box::from_raw(source));
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
     let box_graph = graph.as_mut().unwrap();

@@ -10,7 +10,7 @@ pub struct GlContext{
     pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,
-    pub frameubfferCache: FramebufferCache,
+    pub framebufferCache: FramebufferCache,
     pub textureVBOs: Vec<GLuint>
 
 }
@@ -19,7 +19,7 @@ pub struct GlContext{
 pub struct GlContext{
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,
-    pub frameubfferCache: FramebufferCache,
+    pub framebufferCache: FramebufferCache,
     pub textureVBOs: Vec<GLuint>
 }
 
@@ -66,7 +66,7 @@ impl GlContext {
             context:generatedContext,
             standardImageVBO:standardImageVBO,
             passthroughShader:program,
-            frameubfferCache: FramebufferCache::default(),
+            framebufferCache: FramebufferCache::default(),
             textureVBOs: textureVBOs
         }
     }
@@ -83,7 +83,7 @@ impl GlContext {
         GlContext{
             standardImageVBO:standardImageVBO,
             passthroughShader:program,
-            frameubfferCache: FramebufferCache::default(),
+            framebufferCache: FramebufferCache::default(),
             textureVBOs: textureVBOs
         }
     }

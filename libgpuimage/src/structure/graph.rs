@@ -124,14 +124,12 @@ impl<'a,T:Tensor> Graph<'a,T> {
             //  如果in_edge的arity为0，为input节点，不会进入这个循环
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
-                let f = inner_node.f.borrow();
-                let fbo = f.last().unwrap();
+                let mut fbo_vec = inner_node.f.borrow_mut();
+                let fbo = fbo_vec.pop().unwrap();
                 xs.insert(ti,fbo.clone());
+                fbo_vec.push(fbo);
 
             }
-
-
-
 
 
             if let Some(v) = in_edge.forward(&xs) {

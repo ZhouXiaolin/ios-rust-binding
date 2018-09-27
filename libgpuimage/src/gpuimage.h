@@ -34,6 +34,10 @@ extern "C" {
     void xhey_combine_value(void* , float);
 
 
+    void xhey_release_picture(void*);
+    void xhey_release_view(void*);
+    void xhey_release_basic_filter(void*);
+    void xhey_release_combine_filter(void*);
     void xhey_context_release();
 
 #if __cplusplus

@@ -10,7 +10,7 @@ pub struct Color {
 
 impl Color{
     pub fn new(redComponent: f32, greenComponent: f32, blueComponent: f32, alphaComponent: f32) -> Self{
-        Color{redComponent:redComponent,greenComponent:greenComponent,blueComponent:blueComponent,alphaComponent:alphaComponent}
+        Color{redComponent,greenComponent,blueComponent,alphaComponent}
     }
 
     pub fn black() -> Self {

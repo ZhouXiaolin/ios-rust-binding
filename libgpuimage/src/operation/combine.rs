@@ -61,7 +61,7 @@ impl XHeyCombineFilter {
 
         XHeyCombineFilter{
             maximumInputs:2,
-            shader: shader,
+            shader,
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),

@@ -63,10 +63,10 @@ impl GlContext {
 
         GlContext{
             context:generatedContext,
-            standardImageVBO:standardImageVBO,
+            standardImageVBO,
             passthroughShader:program,
             framebufferCache: FramebufferCache::default(),
-            textureVBOs: textureVBOs
+            textureVBOs
         }
     }
 
@@ -79,10 +79,10 @@ impl GlContext {
         let textureVBOs = generateTextureVBOs();
 
         GlContext{
-            standardImageVBO:standardImageVBO,
+            standardImageVBO,
             passthroughShader:program,
             framebufferCache: FramebufferCache::default(),
-            textureVBOs: textureVBOs
+            textureVBOs
         }
     }
 

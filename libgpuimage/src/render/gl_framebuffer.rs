@@ -100,13 +100,13 @@ impl Framebuffer {
         };
 
         Framebuffer{
-            size: size,
+            size,
             orientation:Cell::new(orientation),
-            textureOptions:textureOptions,
-            hashString:hashString,
-            textureOverride:textureOverride,
-            framebuffer:framebuffer,
-            texture: texture,
+            textureOptions,
+            hashString,
+            textureOverride,
+            framebuffer,
+            texture,
             locked: Cell::from(0)
         }
 

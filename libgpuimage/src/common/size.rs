@@ -12,6 +12,6 @@ pub struct GLSize {
 }
 impl GLSize {
     pub fn new(width: i32, height: i32) -> Self {
-        GLSize{width:width,height:height}
+        GLSize{width,height}
     }
 }

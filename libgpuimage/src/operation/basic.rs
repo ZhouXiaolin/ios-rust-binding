@@ -23,7 +23,7 @@ impl XHeyBasicFilter {
         let shader = GLProgram::new(vertex,fragment);
         XHeyBasicFilter{
             maximumInputs:numberOfInputs,
-            shader: shader,
+            shader,
             inputFramebuffers:RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),

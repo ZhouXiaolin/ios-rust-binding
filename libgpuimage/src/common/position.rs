@@ -7,7 +7,7 @@ pub struct Position{
 
 impl Position{
     pub fn new(x: f32, y: f32, z: f32) -> Self {
-        Position{x:x,y:y,z:z}
+        Position{x,y,z}
     }
     pub fn center() -> Self {
         Position::new(0.5,0.5,0.0)

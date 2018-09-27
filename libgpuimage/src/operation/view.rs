@@ -50,7 +50,7 @@ impl XHeyView {
             displayFramebuffer:Cell::default(),
             displayRenderbuffer:Cell::default(),
             backingSize:Cell::default(),
-            layer:layer,
+            layer,
             orientation: ImageOrientation::portrait,
             head_node:Cell::default(),
             tail:RefCell::default(),

@@ -12,9 +12,6 @@ pub struct XHeyBasicFilter{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
-    value:Cell<f32>
-
-
 }
 
 impl XHeyBasicFilter {
@@ -28,8 +25,6 @@ impl XHeyBasicFilter {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            value:Cell::from(0.0)
-
         }
     }
     pub fn new() -> Self {
@@ -68,8 +63,6 @@ impl XHeyBasicFilter {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            value:Cell::from(0.0)
-
         }
     }
 
@@ -125,18 +118,15 @@ impl Renderable for XHeyBasicFilter {
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
         sharedImageProcessingContext.makeCurrentContext();
 
-
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
         let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-        println!("solaren current renderFramebuffer texture {}",renderFramebuffer.texture);
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
-                println!("solaren current inputFramebuffer : {}  texture_id {}",inputFramebuffer.framebuffer, inputFramebuffer.texture);
                 inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
             }
             inputTextureProperties
@@ -144,17 +134,8 @@ impl Renderable for XHeyBasicFilter {
 
         renderFramebuffer.activateFramebufferForRendering();
 
-        let v = self.value.get();
-        if v > 1.0 {
-            self.value.set(0.0);
-        }else{
-            self.value.set(v+0.1);
-        }
 
-        let v = self.value.get();
-
-
-        clearFramebufferWithColor(Color::new(v,1.0,0.0,1.0));
+        clearFramebufferWithColor(Color::black());
 
         let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 

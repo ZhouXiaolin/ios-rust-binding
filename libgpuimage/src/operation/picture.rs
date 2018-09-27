@@ -31,8 +31,6 @@ impl XheyPicture {
 
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
-
-
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
         let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);

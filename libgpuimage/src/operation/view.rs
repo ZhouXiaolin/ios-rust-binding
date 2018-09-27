@@ -17,8 +17,6 @@ pub struct XHeyView {
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
-    value:Cell<f32>
-
 }
 
 impl Drop for XHeyView {
@@ -55,8 +53,6 @@ impl XHeyView {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            value:Cell::default()
-
         }
     }
 
@@ -156,15 +152,7 @@ impl Drawable for XHeyView{
 
         self.activateDisplayFramebuffer();
 
-        let v = self.value.get();
-        if v > 1.0 {
-            self.value.set(0.0);
-        }else{
-            self.value.set(v+0.1);
-        }
-
-        let v = self.value.get();
-        clearFramebufferWithColor(Color::new(1.0,v,1.0,1.0));
+        clearFramebufferWithColor(Color::black());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 

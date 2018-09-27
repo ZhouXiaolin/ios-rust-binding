@@ -953,8 +953,8 @@
                      location = "group:gpuimage-1hccy5uwgdczj"
                      name = "gpuimage-1hccy5uwgdczj">
                      <Group
-                        location = "group:s-f55nqlh2bn-1g9e2vi-1hxydfnhtf4ds"
-                        name = "s-f55nqlh2bn-1g9e2vi-1hxydfnhtf4ds">
+                        location = "group:s-f56puncp93-33cb00-2ri9rxgputbuh"
+                        name = "s-f56puncp93-33cb00-2ri9rxgputbuh">
                         <FileRef
                            location = "group:13rurqp7rmjhkd8g.o">
                         </FileRef>
@@ -1085,6 +1085,9 @@
                            location = "group:7box5q683g6d4q5.o">
                         </FileRef>
                         <FileRef
+                           location = "group:pi35zhxsxgilpl.o">
+                        </FileRef>
+                        <FileRef
                            location = "group:qr7s2y6eflr7ekm.o">
                         </FileRef>
                         <FileRef
@@ -1139,6 +1142,9 @@
                            location = "group:499uiiah69voedj4.o">
                         </FileRef>
                         <FileRef
+                           location = "group:20wc4s18tusktk0e.o">
+                        </FileRef>
+                        <FileRef
                            location = "group:2w0hmws9ksnaagjy.o">
                         </FileRef>
                         <FileRef
@@ -1191,7 +1197,7 @@
                         </FileRef>
                      </Group>
                      <FileRef
-                        location = "group:s-f55nqlh2bn-1g9e2vi.lock">
+                        location = "group:s-f56puncp93-33cb00.lock">
                      </FileRef>
                   </Group>
                </Group>
@@ -1213,6 +1219,9 @@
                      location = "group:libaho_corasick-6ce37779c7549942.rlib">
                   </FileRef>
                   <FileRef
+                     location = "group:foreign_types_shared-19d16599e373dd79.d">
+                  </FileRef>
+                  <FileRef
                      location = "group:memchr-2a79554844f85afd.d">
                   </FileRef>
                   <FileRef
@@ -1220,6 +1229,9 @@
                   </FileRef>
                   <FileRef
                      location = "group:libcore_foundation_sys-e0d5f2bbe3ce3aaa.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libforeign_types-3064960b859ab03b.rlib">
                   </FileRef>
                   <FileRef
                      location = "group:utf8_ranges-34b3f7cb96db82d6.d">
@@ -1393,10 +1405,16 @@
                      location = "group:libregex-f969d6136cfcf18b.rlib">
                   </FileRef>
                   <FileRef
+                     location = "group:foreign_types-3064960b859ab03b.d">
+                  </FileRef>
+                  <FileRef
                      location = "group:objc_id-3574a89707f3401b.d">
                   </FileRef>
                   <FileRef
                      location = "group:libblock-cc08dc9ca9ba1380.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbitflags-208a58edf1bea075.rlib">
                   </FileRef>
                   <FileRef
                      location = "group:libmemchr-2a79554844f85afd.rlib">
@@ -1409,6 +1427,9 @@
                   </FileRef>
                   <FileRef
                      location = "group:objc_id-acd48376b01fc8eb.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libforeign_types_shared-19d16599e373dd79.rlib">
                   </FileRef>
                   <FileRef
                      location = "group:libfnv-3d0089f3c8b6a984.rlib">
@@ -1454,6 +1475,9 @@
                   </FileRef>
                   <FileRef
                      location = "group:log-2ef5c1c60aec55a3.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:bitflags-208a58edf1bea075.d">
                   </FileRef>
                   <FileRef
                      location = "group:fnv-3d0089f3c8b6a984.d">

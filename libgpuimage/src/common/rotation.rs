@@ -1,5 +1,6 @@
 use super::{Position,Size};
 
+#[derive(Copy, Clone, Debug)]
 pub enum Rotation {
     noRotation,
     rotateCounterclockwise,

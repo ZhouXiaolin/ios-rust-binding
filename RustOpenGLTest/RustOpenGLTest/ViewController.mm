@@ -90,40 +90,26 @@
     xhey_graph_printgraphviz(graph);
     free(imageData);
     
-
-    
-    xhey_combine_value(filter3, 0.3);
-    xhey_graph_forward(graph);
-    
-    xhey_combine_value(filter3, 0.7);
-    xhey_graph_forward(graph);
-    
-    
-    xhey_combine_value(filter3, 0.3);
-    xhey_graph_forward(graph);
-    
-    xhey_combine_value(filter3, 0.7);
-    xhey_graph_forward(graph);
-    
-    
-    xhey_context_release();
+//
 //    xhey_combine_value(filter3, 0.7);
-//    xhey_graph_forward(graph);
+    
 
 
-//    __block float value = 0.9;
-//    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
-//
-//
-//
-//        if (value > 1.0) {
-//            value = 0.3;
-//        }else{
-//            value += 0.1;
-//        }
-//
-//
-//    }];
+
+    __block float value = 0.9;
+    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
+        
+        xhey_combine_value(filter3, value);
+        xhey_graph_forward(graph);
+
+        if (value > 1.0) {
+            value = 0.3;
+        }else{
+            value += 0.1;
+        }
+
+
+    }];
 
 
     

@@ -1,4 +1,6 @@
 type Float = f32;
+
+#[derive(Copy, Clone, Debug, Default)]
 pub struct Matrix3x3 {
     m11:Float, m12:Float, m13:Float,
     m21:Float, m22:Float, m23:Float,

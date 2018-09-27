@@ -1,7 +1,7 @@
 use gles_rust_binding::*;
 
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub struct GPUTextureOptions {
     pub minFilter : GLenum,
     pub magFilter : GLenum,

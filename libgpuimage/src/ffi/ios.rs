@@ -26,10 +26,10 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
     let combine = filter3.as_ref().unwrap();
 
     let pic = box_graph.add_input("picture",box_picture);
-//    let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-//    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
-//    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
-    let vi = box_graph.add_function("view",&[pic],box_view);
+    let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
+    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
+    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
+    let vi = box_graph.add_function("view",&[filter3],box_view);
 
 
 }

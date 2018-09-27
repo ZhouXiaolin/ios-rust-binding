@@ -67,12 +67,7 @@ impl Edge for XheyPicture{
 
     /// 返回输入序列
     fn tail_nodes(&self) -> Vec<u32>{
-        let inputs = self.tail.borrow();
-        let mut outputs = Vec::new();
-        for input in inputs.iter() {
-            outputs.push(input.clone());
-        }
-        outputs
+        self.tail.borrow().clone()
     }
 
     /// 节点在图中的序号

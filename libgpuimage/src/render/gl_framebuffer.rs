@@ -27,14 +27,15 @@ impl InputTextureProperties {
 }
 
 
-/// 严格来讲，不该是Clone语义，但这里只是标记，Clone语义不会影响帧缓冲。
+// 在渲染中，可能同时使用多个相同属性的fbo，需要缓存，缓存策略
+#[derive(Debug)]
 pub struct Framebuffer {
     pub size : GLSize,
     pub orientation: Cell<ImageOrientation>,
     pub texture: u32,
     hashString: String,
     framebuffer: u32,
-    locked: Cell<bool>,
+    locked: Cell<i32>, // 引用计数
     textureOptions: GPUTextureOptions,
     textureOverride: bool,
 
@@ -44,10 +45,13 @@ pub struct Framebuffer {
 impl Tensor for Framebuffer{
     fn lock(&self){
 
-        self.locked.set(true);
+        let v = self.locked.get();
+        self.locked.set(v+1);
     }
     fn unlock(&self){
-        self.locked.set(false);
+        let v = self.locked.get();
+        self.locked.set(v-1);
+
 
 
     }
@@ -112,7 +116,7 @@ impl Default for Framebuffer {
             texture: 0,
             hashString: String::from(""),
             framebuffer: 0,
-            locked: Cell::from(false),
+            locked: Cell::from(0),
             textureOptions: GPUTextureOptions::default(),
             textureOverride: false,
         }
@@ -156,7 +160,7 @@ impl Framebuffer {
             textureOverride:textureOverride,
             framebuffer:framebuffer,
             texture: texture,
-            locked: Cell::from(false)
+            locked: Cell::from(0)
         }
 
     }
@@ -164,7 +168,7 @@ impl Framebuffer {
 
 
     pub fn valid(&self) -> bool {
-        self.locked.get() == false
+        self.locked.get() == 0
     }
 
 
@@ -230,6 +234,8 @@ impl Framebuffer {
 
 impl Drop for Framebuffer {
     fn drop(&mut self) {
+
+        println!("Drop Framebuffer");
         if self.textureOverride == false {
             unsafe {
                 glDeleteTextures(1,&mut self.texture);

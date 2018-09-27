@@ -2,7 +2,7 @@ use super::{Node,Tensor,Edge};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-// 使用Rc来保持Tensor引用，否则会触发Drop导致渲染错误
+// 使用Rc来保持Tensor引用
 
 #[repr(C)]
 pub struct Graph<'a,T:Tensor>{
@@ -106,7 +106,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
 
 
-    /// 渲染过程 前向计算  这个体系是计算图模型 xs的T需要被Rc包裹起来，否则会立即释放导致渲染错误
+    /// 渲染过程 前向计算
     pub fn forward(&self) {
 
         let nodes = &self.nodes;
@@ -116,13 +116,13 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
             let in_edge : &Box<&Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
-            println!("in_edge {}",in_edge.name());
+            println!("\nin_edge {}",in_edge.name());
+
 
             
             let mut xs = Vec::<Rc<T>>::with_capacity(in_edge.arity() as usize);
+            //  如果in_edge的arity为0，为input节点，不会进入这个循环
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
-
-
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
                 let f = inner_node.f.borrow();
                 let fbo = f.last().unwrap();
@@ -130,14 +130,26 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
             }
 
-            xs.iter().for_each(|x|x.lock());
 
-            // 在各个edge的forward计算中，须lock所有资源
+
+
+
             if let Some(v) = in_edge.forward(&xs) {
+                for _ in &node.out_edges {
+                    // 从当前节点出发，有多少target,就需要lock多少次
+                    v.lock();
+                }
                 node.f.borrow_mut().push(v)
             }
 
-            xs.iter().for_each(|x|x.unlock());
+            for x in xs {
+                x.unlock();
+            }
+
+
+
+
+
 
 
 

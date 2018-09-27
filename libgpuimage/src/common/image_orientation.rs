@@ -1,5 +1,5 @@
 use super::Rotation;
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub enum ImageOrientation{
     portrait,
     portraitUpsideDown,

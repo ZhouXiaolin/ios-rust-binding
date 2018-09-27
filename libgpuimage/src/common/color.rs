@@ -1,4 +1,6 @@
 use gles_rust_binding::*;
+
+#[derive(Copy, Clone, Debug, Default)]
 pub struct Color {
     pub redComponent: f32,
     pub greenComponent: f32,

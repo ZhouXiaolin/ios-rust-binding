@@ -1,5 +1,6 @@
 use super::GLSize;
 
+#[derive(Copy, Clone, Debug)]
 pub enum FillMode {
     stretch,
     preserveAspectRatio,

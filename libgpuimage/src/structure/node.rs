@@ -1,6 +1,6 @@
-use std::cell::{RefCell};
+use super::std::cell::{RefCell};
 use super::Tensor;
-use std::rc::Rc;
+use super::std::rc::Rc;
 
 pub struct Node<T:Tensor> {
 

@@ -1,6 +1,6 @@
 use super::{Color,Position,Size};
-use fnv::FnvHashMap;
-use gles_rust_binding::*;
+use super::fnv::FnvHashMap;
+use super::gles_rust_binding::*;
 
 #[derive(Debug)]
 pub enum Uniform{

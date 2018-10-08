@@ -1,6 +1,6 @@
 use super::{Node,Tensor,Edge};
-use std::cell::RefCell;
-use std::rc::Rc;
+use super::std::cell::RefCell;
+use super::std::rc::Rc;
 
 // 使用Rc来保持Tensor引用
 

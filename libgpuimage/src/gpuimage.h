@@ -4,6 +4,7 @@
 
 #ifndef LIBGPUIMAGE_GPUIMAGE_H
 #define LIBGPUIMAGE_GPUIMAGE_H
+
 #if __cplusplus
 extern "C" {
 #endif
@@ -43,4 +44,6 @@ extern "C" {
 #if __cplusplus
 }
 #endif
+
+
 #endif //LIBGPUIMAGE_GPUIMAGE_H

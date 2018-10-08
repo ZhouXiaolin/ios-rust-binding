@@ -16,7 +16,12 @@ pub use self::gl_shader_uniform_settings::*;
 use super::common::*;
 use super::structure::{Tensor,Context};
 
+extern crate std;
+extern crate fnv;
+extern crate gles_rust_binding;
 
+#[cfg(target_os = "ios")]
+extern crate ios_rust_binding;
 
 
 

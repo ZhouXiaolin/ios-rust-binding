@@ -1,10 +1,10 @@
 
 use super::*;
 
-use gles_rust_binding::*;
+use super::gles_rust_binding::*;
 use std::os::raw::c_void;
-use std::rc::Rc;
-use std::cell::{RefCell,Cell};
+use super::std::rc::Rc;
+use super::std::cell::{RefCell,Cell};
 #[repr(C)]
 #[derive(Debug)]
 pub struct XheyPicture{

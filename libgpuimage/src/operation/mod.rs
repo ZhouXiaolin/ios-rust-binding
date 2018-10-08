@@ -8,6 +8,9 @@ mod combine;
 #[cfg(target_os = "ios")]
 mod view;
 
+#[cfg(target_os = "android")]
+mod texture;
+
 pub use self::basic::*;
 pub use self::picture::*;
 pub use self::combine::*;
@@ -15,10 +18,16 @@ pub use self::combine::*;
 #[cfg(target_os = "ios")]
 pub use self::view::*;
 
+#[cfg(target_os = "android")]
+pub use self::texture::*;
+
 use super::common::*;
 use super::structure::*;
 use super::render::*;
 
+extern crate std;
+extern crate gles_rust_binding;
 
-
+#[cfg(target_os = "ios")]
+extern crate ios_rust_binding;
 

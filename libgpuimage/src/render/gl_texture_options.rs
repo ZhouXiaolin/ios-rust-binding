@@ -1,4 +1,4 @@
-use gles_rust_binding::*;
+use super::gles_rust_binding::*;
 
 
 #[derive(Debug, Copy, Clone)]

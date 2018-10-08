@@ -1,7 +1,7 @@
-use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
-use gles_rust_binding::*;
-use std::cell::{Cell,RefCell};
-use std::rc::Rc;
+use super::ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
+use super::gles_rust_binding::*;
+use super::std::cell::{Cell,RefCell};
+use super::std::rc::Rc;
 use super::*;
 
 

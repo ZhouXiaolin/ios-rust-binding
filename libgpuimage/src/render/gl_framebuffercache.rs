@@ -1,10 +1,10 @@
-use fnv::FnvHashMap;
-use std::cell::{RefCell,Ref};
+use super::fnv::FnvHashMap;
+use super::std::cell::{RefCell,Ref};
 
-use std::marker::Sync;
+use super::std::marker::Sync;
 use super::{Framebuffer,GPUTextureOptions,GLSize,ImageOrientation};
 use super::hashStringForFramebuffer;
-use std::rc::Rc;
+use super::std::rc::Rc;
 
 
 

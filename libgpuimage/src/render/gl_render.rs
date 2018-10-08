@@ -1,4 +1,4 @@
-use gles_rust_binding::*;
+use super::gles_rust_binding::*;
 use std::ptr;
 use super::Context;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};

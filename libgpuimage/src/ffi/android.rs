@@ -8,6 +8,12 @@ use self::jni::sys::{jint, jlong};
 use std::os::raw::c_void;
 
 #[no_mangle]
+pub extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_test(env: JNIEnv, _: JClass) -> jint {
+    return 67;
+}
+
+
+#[no_mangle]
 pub unsafe extern "C" fn xhey_init_basic_filter(env: JNIEnv, _: JClass) -> *mut XHeyBasicFilter {
     let filter = Box::new(XHeyBasicFilter::new());
     Box::into_raw(filter)

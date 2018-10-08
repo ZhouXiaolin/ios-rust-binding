@@ -1,5 +1,5 @@
 use super::gles_rust_binding::*;
-use std::mem;
+use super::std::mem;
 use super::{Rotation, FramebufferCache};
 use super::Context;
 

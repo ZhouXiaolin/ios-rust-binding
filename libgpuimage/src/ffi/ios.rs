@@ -1,10 +1,9 @@
 
-use ios_rust_binding::UIView;
-use std::os::raw::{c_char,c_void,c_uint,c_float};
-use std::ffi::{CStr};
-use std::mem::transmute;
-use ios_rust_binding::UIImage;
-use std::rc::Rc;
+use super::ios_rust_binding::{UIView,UIImage};
+use super::std::os::raw::{c_char,c_void,c_uint,c_float};
+use super::std::ffi::{CStr};
+use super::std::mem::transmute;
+use super::std::rc::Rc;
 
 use super::structure::{Graph,Edge};
 use super::render::{Framebuffer,sharedImageProcessingContext};

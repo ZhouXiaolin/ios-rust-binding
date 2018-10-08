@@ -8,3 +8,7 @@ pub mod android;
 
 
 pub use super::*;
+
+extern crate std;
+#[cfg(target_os = "ios")]
+extern crate ios_rust_binding;

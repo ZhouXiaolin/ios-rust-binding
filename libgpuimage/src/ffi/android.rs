@@ -5,7 +5,7 @@ use super::operation::*;
 use self::jni::JNIEnv;
 use self::jni::objects::{JClass, JString};
 use self::jni::sys::{jint, jlong};
-use std::os::raw::c_void;
+use super::std::os::raw::c_void;
 
 #[no_mangle]
 pub extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_test(env: JNIEnv, _: JClass) -> jint {

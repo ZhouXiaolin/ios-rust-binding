@@ -3,9 +3,8 @@ use super::sharedImageProcessingContext;
 use super::gl_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use super::std::cell::Cell;
-use std::ptr;
-use std::rc::Rc;
 use super::Tensor;
+use super::std::ptr;
 
 pub enum InputTextureStorageFormat {
     textureCoordinate([GLfloat;8]),

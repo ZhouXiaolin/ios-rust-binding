@@ -19,16 +19,4 @@ pub use self::matrix4x4::*;
 use super::render::Framebuffer;
 
 
-
-
-/// PlaceHolder
-use std::mem;
-use std::marker::PhantomData;
-pub struct PlaceHolder<T>{
-    _priv: PhantomData<T>
-}
-impl<T> PlaceHolder<T> {
-    pub fn new() -> T {
-        unsafe{mem::uninitialized()}
-    }
-}
+extern crate gles_rust_binding;

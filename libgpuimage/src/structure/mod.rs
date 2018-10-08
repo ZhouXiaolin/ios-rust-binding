@@ -16,6 +16,4 @@ pub use self::tensor::*;
 pub use self::expression::*;
 pub use self::context::*;
 
-use super::common::PlaceHolder;
-
 extern crate std;

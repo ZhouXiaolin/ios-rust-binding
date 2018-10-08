@@ -1,9 +1,9 @@
 use super::gles_rust_binding::*;
-use std::ptr;
 use super::Context;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};
 use super::sharedImageProcessingContext;
 use super::ShaderUniformSettings;
+use super::std::ptr;
 
 
 

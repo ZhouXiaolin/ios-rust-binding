@@ -1,6 +1,8 @@
 extern crate opengl_es_rs as gles;
 extern crate fnv;
 extern crate regex;
+#[macro_use]
+extern crate log;
 pub use gles::es20::ffi::*;
 pub use gles::consts::*;
 pub use gles::types::*;

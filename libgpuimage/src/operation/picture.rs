@@ -2,7 +2,7 @@
 use super::*;
 
 use super::gles_rust_binding::*;
-use std::os::raw::c_void;
+use super::std::os::raw::c_void;
 use super::std::rc::Rc;
 use super::std::cell::{RefCell,Cell};
 #[repr(C)]

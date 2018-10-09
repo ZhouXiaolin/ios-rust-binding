@@ -71,9 +71,15 @@ impl Tensor for Framebuffer{
 
 impl Framebuffer {
 
+
     pub fn new_default(orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Self {
         let default = GPUTextureOptions::default();
         Framebuffer::new(orientation,size,textureOnly,default,Option::None)
+    }
+
+    pub fn new_texture(orientation: ImageOrientation, size: GLSize, textureId:GLuint) -> Self {
+        let default = GPUTextureOptions::default();
+        Framebuffer::new(orientation,size,true,default,Some(textureId))
     }
 
     pub fn hashString (&self) -> String {
@@ -88,6 +94,7 @@ impl Framebuffer {
             Some(newTexture) => (true,newTexture),
             None => {
                 let texture = generateTexture(textureOptions);
+                info!("texture {}",texture);
                 (false, texture)
             }
         };
@@ -97,6 +104,7 @@ impl Framebuffer {
         }else{
             0
         };
+
 
         Framebuffer{
             size,
@@ -162,7 +170,7 @@ impl Framebuffer {
 
     pub fn activateFramebufferForRendering(&self){
         unsafe {
-            glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
+//            glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
             glViewport(0,0,self.size.width,self.size.height);
         }
     }
@@ -202,6 +210,7 @@ pub fn hashStringForFramebuffer(size:GLSize, textureOnly:bool, textureOptions: G
     }
 }
 
+#[inline]
 fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
     let mut texture:GLuint = 0;
 
@@ -220,6 +229,7 @@ fn generateTexture(textureOptions: GPUTextureOptions) -> GLuint {
     texture
 }
 
+#[inline]
 fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, textureOptions:GPUTextureOptions) -> GLuint{
     let mut framebuffer : GLuint = 0;
     unsafe {
@@ -232,6 +242,7 @@ fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, t
 
         let status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if status != GL_FRAMEBUFFER_COMPLETE {
+            info!("Error framebuffer fail {}",status);
             panic!("Error framebuffer fail {}",status);
         }
 

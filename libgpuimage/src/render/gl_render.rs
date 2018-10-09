@@ -93,7 +93,7 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
             let inputImageTexture = program.get_uniform(&inputImageTextureString);
             glActiveTexture(textureUnitForIndex(index));
-            glBindTexture(GL_TEXTURE_2D,inputTexture.texture);
+            glBindTexture(inputImageTexture.kind().toUniform(),inputTexture.texture);
             glUniform1i(inputImageTexture.location() as i32,index as i32);
         }
 

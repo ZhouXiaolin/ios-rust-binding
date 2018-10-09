@@ -12,6 +12,7 @@ pub struct GPUTextureOptions {
     pub _type : GLenum
 }
 
+#[cfg(target_os="ios")]
 impl Default for GPUTextureOptions {
     fn default() -> Self {
         GPUTextureOptions {
@@ -21,6 +22,20 @@ impl Default for GPUTextureOptions {
             wrapT: GL_CLAMP_TO_EDGE,
             internalFormat: GL_RGBA,
             format: GL_BGRA,
+            _type: GL_UNSIGNED_BYTE
+        }
+    }
+}
+#[cfg(target_os="android")]
+impl Default for GPUTextureOptions {
+    fn default() -> Self {
+        GPUTextureOptions {
+            minFilter: GL_LINEAR,
+            magFilter: GL_LINEAR,
+            wrapS: GL_CLAMP_TO_EDGE,
+            wrapT: GL_CLAMP_TO_EDGE,
+            internalFormat: GL_RGBA,
+            format: GL_RGBA,
             _type: GL_UNSIGNED_BYTE
         }
     }

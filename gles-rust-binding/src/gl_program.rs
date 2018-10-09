@@ -28,7 +28,9 @@ impl GLProgram {
             uniforms: FnvHashMap::default(),
             attributes: FnvHashMap::default(),
         };
+
         program.set(vertex, fragment);
+
         program
     }
 
@@ -116,8 +118,11 @@ impl GLProgram {
     #[inline]
     pub fn set(&mut self, vertex: &str, fragment: &str) -> &mut Self {
         let vs = compile_shader(vertex, GL_VERTEX_SHADER);
+
         let fs = compile_shader(fragment, GL_FRAGMENT_SHADER);
+
         let id = link_program(vs, fs);
+
         self.set_program_id(id)
     }
 
@@ -144,8 +149,11 @@ impl GLProgram {
             }
 
             self.id = id;
-            parse_uniforms(id, uniforms);
+
             parse_attributes(id, attributes);
+            parse_uniforms(id, uniforms);
+
+
         }
         self
     }
@@ -155,7 +163,7 @@ impl Drop for GLProgram {
     #[inline]
     fn drop(&mut self) {
         if self.id != 0 {
-            println!("glDeleteProgram(id = {})", self.id);
+            info!("glDeleteProgram(id = {})", self.id);
             unsafe {
                 glDeleteProgram(self.id);
             }
@@ -172,9 +180,9 @@ fn parse_uniforms(program: GLuint, uniforms: &mut FnvHashMap<String, GLUniform>)
         glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &mut max_length);
         glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &mut active_length);
     }
-    println!("max_length = {}", max_length);
+    info!("max_length = {}", max_length);
 
-    println!("active_length = {}", active_length);
+    info!("active_length = {}", active_length);
 
     for i in 0..active_length {
         let mut length = 0;
@@ -196,12 +204,17 @@ fn parse_uniforms(program: GLuint, uniforms: &mut FnvHashMap<String, GLUniform>)
                 buf_ptr,
             );
             buf.set_len(length as usize);
+
             location = glGetUniformLocation(program, buf_ptr);
         };
 
         let mut name = match string_from_utf8(&buf) {
-            Ok(string) => string,
-            Err(vec) => panic!("Could not convert uniform name from buffer: {:?}", vec),
+            Ok(string) => {
+                string
+            },
+            Err(vec) => {
+                panic!("Could not convert uniform name from buffer: {:?}", vec)
+            },
         };
 
         if name
@@ -225,10 +238,13 @@ fn parse_uniforms(program: GLuint, uniforms: &mut FnvHashMap<String, GLUniform>)
             };
         };
 
+        let u = GLUniform::new(kind.into(), count as usize, location as usize);
+
         uniforms.insert(
             name,
-            GLUniform::new(kind.into(), count as usize, location as usize),
+            u
         );
+
     }
 }
 

@@ -5,7 +5,7 @@ use super::std::marker::Sync;
 use super::{Framebuffer,GPUTextureOptions,GLSize,ImageOrientation};
 use super::hashStringForFramebuffer;
 use super::std::rc::Rc;
-
+use super::gles_rust_binding::*;
 
 
 // 缓存的策略 首先，这是一个哈希表
@@ -31,6 +31,7 @@ impl FramebufferCacheValue {
         if values.len() > 0 {
             values.pop().unwrap()
         }else{
+            info!("why ?");
             panic!("why ?")
         }
 
@@ -53,6 +54,7 @@ impl FramebufferCache {
         self.requestFramebufferWithProperties(orientation,size,textureOnly,default)
     }
 
+
     pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> Rc<Framebuffer> {
 
 
@@ -61,16 +63,16 @@ impl FramebufferCache {
 
         for i in cache.iter() {
             if i.0 == &hash {
-                println!("has key, find fbo vec");
+                info!("has key, find fbo vec");
                 let mut value_vec = i.1.value.borrow_mut();
                 for f in value_vec.iter() {
                     if f.valid() {
-                        println!("fbo valid return");
+                        info!("fbo valid return");
                         return f.clone();
                     }
                 }
 
-                println!("fbo unvalid new framebuffer");
+                info!("fbo unvalid new framebuffer");
                 let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
                 value_vec.push(f.clone());
                 return f;
@@ -78,8 +80,9 @@ impl FramebufferCache {
         }
 
 
-        println!("new framebuffer");
+        info!("new framebuffer");
         let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
+
         cache.insert(hash,FramebufferCacheValue::new(f.clone()));
         return f;
 

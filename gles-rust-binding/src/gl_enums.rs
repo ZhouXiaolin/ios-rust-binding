@@ -889,6 +889,7 @@ pub enum UniformKind {
     FloatMat4,
 
     Sampler2D,
+    SamplerExternalOES
 }
 
 impl From<GLenum> for UniformKind {
@@ -912,8 +913,19 @@ impl From<GLenum> for UniformKind {
             GL_FLOAT_MAT4 => UniformKind::FloatMat4,
 
             GL_SAMPLER_2D => UniformKind::Sampler2D,
-
+            GL_SAMPLER_EXTERNAL_OES => UniformKind::SamplerExternalOES,
             _ => panic!("Invalid GLenum {:?} for UniformKind", gl_enum),
+        }
+    }
+}
+
+impl UniformKind  {
+    #[inline]
+    pub fn toUniform(&self) -> GLenum {
+        match self {
+            UniformKind::Sampler2D => GL_TEXTURE_2D,
+            UniformKind::SamplerExternalOES => 0x8d65,
+            _ => unimplemented!()
         }
     }
 }
@@ -939,6 +951,7 @@ impl<'a> From<&'a UniformKind> for GLenum {
             &UniformKind::FloatMat4 => GL_FLOAT_MAT4,
 
             &UniformKind::Sampler2D => GL_SAMPLER_2D,
+            &UniformKind::SamplerExternalOES => 0x8D66,
         }
     }
 }

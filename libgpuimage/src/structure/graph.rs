@@ -91,14 +91,14 @@ impl<'a,T:Tensor> Graph<'a,T> {
                 var_names.push(String::from(inner_node.var_name()));
             }
 
-            println!("N{} [lable={} input{:?}]",nc,node.var_name(),var_names);
+            info!("N{} [lable={} input{:?}]",nc,node.var_name(),var_names);
             nc += 1;
 
         }
 
         for edge in edges.iter() {
             for ni in edge.tail_nodes().iter() {
-                println!("N{} ---> N{}",ni,edge.head_node());
+                info!("N{} ---> N{}",ni,edge.head_node());
             }
         }
 
@@ -116,7 +116,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
             let in_edge : &Box<&Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
-            println!("\nin_edge {}",in_edge.name());
+            info!("\nin_edge {}",in_edge.name());
 
 
             

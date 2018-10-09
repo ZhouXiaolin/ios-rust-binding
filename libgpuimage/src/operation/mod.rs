@@ -10,6 +10,8 @@ mod view;
 
 #[cfg(target_os = "android")]
 mod texture;
+#[cfg(target_os = "android")]
+mod surface_view;
 
 pub use self::basic::*;
 pub use self::picture::*;
@@ -20,6 +22,8 @@ pub use self::view::*;
 
 #[cfg(target_os = "android")]
 pub use self::texture::*;
+#[cfg(target_os = "android")]
+pub use self::surface_view::*;
 
 use super::common::*;
 use super::structure::*;

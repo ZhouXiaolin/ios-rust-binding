@@ -10,5 +10,7 @@ pub mod android;
 pub use super::*;
 
 extern crate std;
+extern crate log;
+
 #[cfg(target_os = "ios")]
 extern crate ios_rust_binding;

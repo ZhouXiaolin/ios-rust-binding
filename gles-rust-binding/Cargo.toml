@@ -7,7 +7,7 @@ authors = ["周晓林 <zhouxiaolinux@163.com>"]
 opengl_es_rs = { git = "https://github.com/Michael-Lfx/OpenGL_ES_Rust_Binding.git", branch = "master" }
 regex = "1.0.4"
 fnv = "1.0.6"
-
+log = "0.4.5"
 [lib]
 name = "gles_rust_binding"
 path = "src/lib.rs"

@@ -27,10 +27,15 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture, filter: *mut XHeyBasicFilter,surfaceView: *mut XheySurfaceView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-    let pic = box_graph.add_input("picture",box_texture);
+    let box_filter = filter.as_ref().unwrap();
+    let box_surfaceView = surfaceView.as_ref().unwrap();
+
+    let texture = box_graph.add_input("texture",box_texture);
+    let filter = box_graph.add_function("filter",&[texture],box_filter);
+    let view = box_graph.add_function("surface view",&[filter],box_surfaceView);
 
 }
 
@@ -58,6 +63,11 @@ pub unsafe extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
     Box::into_raw(filter)
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_surface_view() -> *mut XheySurfaceView {
+    let surfaceView = Box::new(XheySurfaceView::new());
+    Box::into_raw(surfaceView)
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLogger(env: JNIEnv, _: JClass){
@@ -85,6 +95,11 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initBasicfilter(e
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initSurfaceview(env: JNIEnv, _: JClass) -> jlong{
+    xhey_init_surface_view() as jlong
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateTexture(env: JNIEnv, _: JClass, texture_ptr: jlong, textureId: jint){
     xhey_oes_texture_update(texture_ptr as *mut XheyOESTexture,textureId as c_uint);
 }
@@ -96,21 +111,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphForward(env:
 }
 
 
-
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: JNIEnv, _: JClass, graph_ptr: jlong, texture_ptr: jlong){
-    xhey_graph(graph_ptr as *mut RenderGraph, texture_ptr as *mut XheyOESTexture);
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: JNIEnv, _: JClass, graph_ptr: jlong, texture_ptr: jlong, filter_ptr: jlong,view_ptr: jlong){
+    xhey_graph(graph_ptr as *mut RenderGraph, texture_ptr as *mut XheyOESTexture, filter_ptr as *mut XHeyBasicFilter,view_ptr as *mut XheySurfaceView);
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_bindFramebuffer(env: JNIEnv, _: JClass){
-//    glActiveTexture(GL_TEXTURE1);
-//    glGenTextures(1, &mut texture);
-//    glBindTexture(GL_TEXTURE_2D, texture);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureOptions.minFilter as i32);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureOptions.magFilter as i32);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureOptions.wrapS as i32);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureOptions.wrapT as i32);
-//
-//    glBindTexture(GL_TEXTURE_2D, 0);
-}

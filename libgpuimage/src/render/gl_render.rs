@@ -30,6 +30,15 @@ pub fn textureUnitForIndex(index: usize) -> GLenum {
 }
 
 
+fn inputTextureProperty(index: usize) -> (String,String) {
+    let (inputTextureCoordinateString,inputImageTextureString) = if index == 0 {
+        (format!("inputTextureCoordinate"),format!("inputImageTexture"))
+    }else{
+        (format!("inputTextureCoordinate{}",index+1),format!("inputImageTexture{}",index+1))
+    };
+    (inputTextureCoordinateString,inputImageTextureString)
+}
+
 pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
     sharedImageProcessingContext.makeCurrentContext();
@@ -62,11 +71,7 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
         for (index,inputTexture) in inputTextures.iter().enumerate(){
 
-            let (inputTextureCoordinateString,inputImageTextureString) = if index == 0 {
-                (format!("inputTextureCoordinate"),format!("inputImageTexture"))
-            }else{
-                (format!("inputTextureCoordinate{}",index+1),format!("inputImageTexture{}",index+1))
-            };
+            let (inputTextureCoordinateString,inputImageTextureString) = inputTextureProperty(index);
 
 
             if let Some(textureCoordinate) = program.get_attribute(&inputTextureCoordinateString) {
@@ -104,9 +109,14 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
             glBindBuffer(GL_ARRAY_BUFFER,0);
         }
 
-        for (index,_) in inputTextures.iter().enumerate() {
+        for (index,ino) in inputTextures.iter().enumerate() {
+
+            let (_,inputImageTextureString) = inputTextureProperty(index);
+
+            let inputImageTexture = program.get_uniform(&inputImageTextureString);
+
             glActiveTexture(textureUnitForIndex(index));
-            glBindTexture(GL_TEXTURE_2D,0);
+            glBindTexture(inputImageTexture.kind().toUniform(),0);
         }
 
     }

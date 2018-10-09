@@ -116,7 +116,6 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
             let in_edge : &Box<&Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
 
-            info!("\nin_edge {}",in_edge.name());
 
 
             

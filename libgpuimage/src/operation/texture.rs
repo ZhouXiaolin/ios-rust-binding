@@ -19,7 +19,7 @@ pub struct XheyOESTexture{
 
 impl Drop for XheyOESTexture {
     fn drop(&mut self){
-        println!("Drop XheyPicture");
+        info!("Drop XheyPicture");
     }
 }
 
@@ -103,7 +103,23 @@ impl Edge for XheyOESTexture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
-        Some(self.render(xs))
+        let size = self.size;
+
+        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::rotateCounterclockwise));
+
+        let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
+
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+
+        renderFramebuffer.activateFramebufferForRendering();
+
+        clearFramebufferWithColor(Color::black());
+
+        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+
+        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+        Some(renderFramebuffer)
 
     }
 
@@ -113,24 +129,3 @@ impl Edge for XheyOESTexture{
 }
 
 
-impl Renderable for XheyOESTexture {
-    type Item = Rc<Framebuffer>;
-    fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
-
-        let size = self.size;
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::rotateClockwise));
-
-        let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
-        renderFramebuffer.activateFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::red());
-
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
-
-        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
-
-        renderFramebuffer
-
-    }
-}

@@ -50,7 +50,7 @@ impl XHeyBasicFilter {
  void main()
  {
      vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = color;
+     gl_FragColor = vec4(color.r, 0.0, 0.0, 1.0);
  }
     "#;
         let shader = GLProgram::new(vertexString,fragmentString);

@@ -63,24 +63,19 @@ impl FramebufferCache {
 
         for i in cache.iter() {
             if i.0 == &hash {
-                info!("has key, find fbo vec");
                 let mut value_vec = i.1.value.borrow_mut();
                 for f in value_vec.iter() {
                     if f.valid() {
-                        info!("fbo valid return");
                         return f.clone();
                     }
                 }
 
-                info!("fbo unvalid new framebuffer");
                 let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
                 value_vec.push(f.clone());
                 return f;
             }
         }
 
-
-        info!("new framebuffer");
         let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
 
         cache.insert(hash,FramebufferCacheValue::new(f.clone()));

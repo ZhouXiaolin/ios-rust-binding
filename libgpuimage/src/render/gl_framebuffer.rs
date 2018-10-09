@@ -94,7 +94,6 @@ impl Framebuffer {
             Some(newTexture) => (true,newTexture),
             None => {
                 let texture = generateTexture(textureOptions);
-                info!("texture {}",texture);
                 (false, texture)
             }
         };
@@ -170,7 +169,7 @@ impl Framebuffer {
 
     pub fn activateFramebufferForRendering(&self){
         unsafe {
-//            glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
+            glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
             glViewport(0,0,self.size.width,self.size.height);
         }
     }

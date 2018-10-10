@@ -16,7 +16,9 @@ pub struct XHeyBasicFilter{
 impl XHeyBasicFilter {
     pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {
         sharedImageProcessingContext.makeCurrentContext();
+
         let shader = GLProgram::new(vertex,fragment);
+
         XHeyBasicFilter{
             maximumInputs:numberOfInputs,
             shader,
@@ -26,6 +28,26 @@ impl XHeyBasicFilter {
             uniformSettings:ShaderUniformSettings::default(),
         }
     }
+
+    pub fn new_shader_with_fragment(fragment: &str, maximumInputs: u32) -> Self {
+        let vertexString = r#"
+ attribute vec4 position;
+ attribute vec2 inputTextureCoordinate;
+
+ varying vec2 textureCoordinate;
+
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
+    "#;
+
+        Self::new_shader(vertexString,fragment,maximumInputs)
+
+
+    }
+
     pub fn new() -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let vertexString = r#"
@@ -50,19 +72,10 @@ impl XHeyBasicFilter {
  void main()
  {
      vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = vec4(color.r, 0.0, 0.0, 1.0);
+     gl_FragColor = color;
  }
     "#;
-        let shader = GLProgram::new(vertexString,fragmentString);
-
-        XHeyBasicFilter{
-            maximumInputs:1,
-            shader,
-            inputFramebuffers: RefCell::default(),
-            head_node:Cell::default(),
-            tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default(),
-        }
+        Self::new_shader(vertexString,fragmentString,1)
     }
 
 

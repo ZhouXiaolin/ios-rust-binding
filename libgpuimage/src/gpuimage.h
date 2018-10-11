@@ -23,10 +23,12 @@ extern "C" {
     struct XheyBasicFilter* xhey_init_basic_filter_2();
 
 
+    struct XheyLookupFilter;
+    struct XheyLookupFilter* xhey_init_lookup_filter();
 
     struct Graph;
     struct Graph * xhey_init_graph();
-    void xhey_graph(void* graph, void * source, void* filter,void* filter2, void* filter3,void* consumer);
+    void xhey_graph(void* graph, void * source, void* lookup_pic,void* lookup_filter, void* consumer);
     void xhey_graph_forward(void*);
     void xhey_graph_printgraphviz(void*);
 

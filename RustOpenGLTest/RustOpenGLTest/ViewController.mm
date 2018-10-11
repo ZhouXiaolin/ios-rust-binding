@@ -112,35 +112,33 @@ void initImageData(UIImage* image, GLubyte* imageData, int* width, int* height){
 //
     XheyView* view = xhey_init_view((__bridge void*)demoView);
     XheyPicture* picture = xhey_init_picture(imageData1, width1, height1);
-    XheyBasicFilter* filter = xhey_init_basic_filter();
-    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
-    XHeyCombineFilter* filter3 = xhey_init_combine_filter();
+    XheyPicture* lookup_pic = xhey_init_picture(imageData2, width2, height2);
+    
+    XheyLookupFilter* filter = xhey_init_lookup_filter();
+    
 
-    xhey_graph(graph, picture, filter, filter2, filter3, view);
+    xhey_graph(graph, picture, lookup_pic, filter, view);
 
 
     xhey_graph_printgraphviz(graph);
 
     
-    xhey_combine_value(filter3, 0.7);
-
 
 
 
     __block float value = 0.9;
     [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
 
-        xhey_combine_value(filter3, value);
         xhey_graph_forward(graph);
 
-        if (value > 1.0) {
-            value = 0.3;
-            xhey_update_picture(picture, imageData2, width2, height2);
-        }else{
-            value += 0.1;
-            xhey_update_picture(picture, imageData1, width1, height1);
-
-        }
+//        if (value > 1.0) {
+//            value = 0.3;
+//            xhey_update_picture(picture, imageData2, width2, height2);
+//        }else{
+//            value += 0.1;
+//            xhey_update_picture(picture, imageData1, width1, height1);
+//
+//        }
 
 
     }];

@@ -73,11 +73,19 @@ impl GlContext {
 
     #[cfg(target_os = "android")]
     pub fn new() -> Self{
+
+        info!("GlContext --------> 1");
+
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let standardImageVBO = generateVBO(&standardImageVertices);
 
+        info!("GlContext --------> 2");
+
         let program = GLProgram::new(vertexStr,fragmentStr);
+        info!("GlContext --------> 3");
+
         let textureVBOs = generateTextureVBOs();
+        info!("GlContext --------> 4");
 
         GlContext{
             standardImageVBO,
@@ -113,6 +121,7 @@ impl Context for GlContext {
 
     #[cfg(target_os = "android")]
     fn makeCurrentContext(&self){
+        info!("makeCurrentContext");
 
     }
 }

@@ -4,7 +4,7 @@
 mod basic;
 mod picture;
 mod combine;
-
+mod lookup;
 #[cfg(target_os = "ios")]
 mod view;
 
@@ -16,6 +16,7 @@ mod surface_view;
 pub use self::basic::*;
 pub use self::picture::*;
 pub use self::combine::*;
+pub use self::lookup::*;
 
 #[cfg(target_os = "ios")]
 pub use self::view::*;

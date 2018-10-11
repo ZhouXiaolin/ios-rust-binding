@@ -27,15 +27,17 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture, filter: *mut XHeyBasicFilter,surfaceView: *mut XheySurfaceView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XheySurfaceView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-    let box_filter = filter.as_ref().unwrap();
+//    let box_lookup_picture = lookup_picture.as_ref().unwrap();
+    let box_lookup_filter = lookup_filter.as_ref().unwrap();
     let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-    let filter = box_graph.add_function("filter",&[texture],box_filter);
-    let view = box_graph.add_function("surface view",&[filter],box_surfaceView);
+//    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
+    let lookup_filter = box_graph.add_function("lookup filter",&[texture,texture],box_lookup_filter);
+    let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
 
 }
 
@@ -72,7 +74,10 @@ pub unsafe extern "C" fn xhey_init_surface_view() -> *mut XheySurfaceView {
 
 #[no_mangle]
 pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture {
-    let picture = Box::new(XheyPicture::new(data,width,height));
+
+    info!("-----> xhey_init_picture {} {}",width,height);
+    let picture = XheyPicture::new(data,width,height);
+    let picture = Box::new(picture);
     Box::into_raw(picture)
 
 }
@@ -86,13 +91,26 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLogger(env: J
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicture(env: JNIEnv, _: JClass, data: jbyteArray, width: jint, height: jint) {
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicture(env: JNIEnv, _: JClass, data: jbyteArray, width: jint, height: jint) -> jlong {
+    let buf_pic = env.convert_byte_array(data).unwrap();
+
+    info!("hello picture width {} height {} count: {}",width, height, buf_pic.len());
+
+    xhey_init_picture(buf_pic.as_ptr() as *const _, width, height) as jlong
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updatePicture(env: JNIEnv, _: JClass, picture_ptr: jlong, data: jbyteArray, width: jint, height: jint) {
+
+    let picture = picture_ptr as *mut XheyPicture;
+    let picture = picture.as_ref().unwrap();
     let buf_pic = env.convert_byte_array(data).unwrap();
 
     info!("hello picture width {} height {}",width, height);
 
-//    xhey_init_picture(buf_pic.as_ptr() as *const _, width, height) as jlong
+    picture.update(buf_pic.as_ptr() as *const _, width, height);
 }
+
 
 
 
@@ -129,7 +147,22 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphForward(env:
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: JNIEnv, _: JClass, graph_ptr: jlong, texture_ptr: jlong, filter_ptr: jlong,view_ptr: jlong){
-    xhey_graph(graph_ptr as *mut RenderGraph, texture_ptr as *mut XheyOESTexture, filter_ptr as *mut XHeyBasicFilter,view_ptr as *mut XheySurfaceView);
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: JNIEnv, _: JClass, graph_ptr: jlong, texture_ptr: jlong,lookup_picture_ptr: jlong, filter_ptr: jlong,view_ptr: jlong){
+    xhey_graph(graph_ptr as *mut RenderGraph, texture_ptr as *mut XheyOESTexture, lookup_picture_ptr as *mut XheyPicture,filter_ptr as *mut XHeyLookupFilter,view_ptr as *mut XheySurfaceView);
 }
 
+
+
+
+#[no_mangle]
+pub extern "C" fn xhey_init_lookup_filter() -> *mut XHeyLookupFilter {
+
+    let filter = Box::new(XHeyLookupFilter::new());
+    Box::into_raw(filter)
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLookupfilter(env: JNIEnv, _: JClass) -> jlong{
+    xhey_init_lookup_filter() as jlong
+}

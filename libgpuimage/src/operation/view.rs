@@ -44,7 +44,7 @@ impl XHeyView {
         let layer = layer.share();
 
 
-        XHeyView{
+        Self{
             displayFramebuffer:Cell::default(),
             displayRenderbuffer:Cell::default(),
             backingSize:Cell::default(),

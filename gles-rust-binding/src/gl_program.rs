@@ -31,6 +31,7 @@ impl GLProgram {
 
         program.set(vertex, fragment);
 
+
         program
     }
 
@@ -76,7 +77,10 @@ impl GLProgram {
     pub fn get_uniform(&self, name: &str) -> &GLUniform {
         match self.uniforms.get(name) {
             Some(ref uniform) => uniform,
-            None => panic!("No uniform named {:?} found", name),
+            None => {
+
+                panic!("No uniform named {:?} found", name)
+            },
         }
     }
 
@@ -117,6 +121,7 @@ impl GLProgram {
 
     #[inline]
     pub fn set(&mut self, vertex: &str, fragment: &str) -> &mut Self {
+
         let vs = compile_shader(vertex, GL_VERTEX_SHADER);
 
         let fs = compile_shader(fragment, GL_FRAGMENT_SHADER);
@@ -163,7 +168,6 @@ impl Drop for GLProgram {
     #[inline]
     fn drop(&mut self) {
         if self.id != 0 {
-            info!("glDeleteProgram(id = {})", self.id);
             unsafe {
                 glDeleteProgram(self.id);
             }
@@ -180,9 +184,7 @@ fn parse_uniforms(program: GLuint, uniforms: &mut FnvHashMap<String, GLUniform>)
         glGetProgramiv(program, GL_ACTIVE_UNIFORM_MAX_LENGTH, &mut max_length);
         glGetProgramiv(program, GL_ACTIVE_UNIFORMS, &mut active_length);
     }
-    info!("max_length = {}", max_length);
 
-    info!("active_length = {}", active_length);
 
     for i in 0..active_length {
         let mut length = 0;
@@ -213,6 +215,7 @@ fn parse_uniforms(program: GLuint, uniforms: &mut FnvHashMap<String, GLUniform>)
                 string
             },
             Err(vec) => {
+
                 panic!("Could not convert uniform name from buffer: {:?}", vec)
             },
         };
@@ -291,7 +294,11 @@ fn parse_attributes(program: GLuint, attributes: &mut FnvHashMap<String, GLAttri
 
         let name = match string_from_utf8(&buf) {
             Ok(string) => string,
-            Err(vec) => panic!("Could not convert attribute name from buffer: {:?}", vec),
+            Err(vec) => {
+                info!("Could not convert attribute name from buffer: {:?}", vec);
+
+                panic!("Could not convert attribute name from buffer: {:?}", vec)
+            },
         };
 
         attributes.insert(
@@ -342,6 +349,7 @@ pub fn check_program_status(program: GLuint) -> GLuint {
                 buf.as_mut_ptr() as *mut GLchar,
             );
         }
+
         panic!(
             "{}",
             str::from_utf8(&buf)
@@ -358,11 +366,16 @@ pub fn compile_shader(source: &str, kind: GLenum) -> GLuint {
 
     unsafe {
         let ptr: *const GLchar = source.as_bytes().as_ptr() as *const GLchar;
+
         let len = source.len() as GLint;
+
         glShaderSource(shader, 1, &ptr, &len);
+
         glCompileShader(shader);
+
     }
     check_shader_status(shader)
+
 }
 
 #[inline]
@@ -384,11 +397,13 @@ pub fn compile_shaders(sources: &[&str], kind: GLenum) -> GLuint {
 pub fn check_shader_status(shader: GLuint) -> GLuint {
     let mut status = 0;
     unsafe { glGetShaderiv(shader, GL_COMPILE_STATUS, &mut status) };
+
     if status != (GL_TRUE as GLint) {
         let mut len = 0;
         unsafe {
             glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &mut len);
         }
+
         let mut buf = Vec::with_capacity(len as usize);
         unsafe {
             buf.set_len(len as usize);
@@ -399,6 +414,10 @@ pub fn check_shader_status(shader: GLuint) -> GLuint {
                 buf.as_mut_ptr() as *mut GLchar,
             );
         }
+
+        let uf = str::from_utf8(&buf).ok().expect("ShaderInfoLog not valid utf8");
+
+
         panic!(
             "{}",
             str::from_utf8(&buf)

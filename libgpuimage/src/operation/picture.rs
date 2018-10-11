@@ -21,6 +21,12 @@ impl Drop for XheyPicture {
     }
 
 }
+
+#[cfg(target_os="ios")]
+static  FORMAT : GLenum = GL_BGRA;
+#[cfg(target_os="android")]
+static  FORMAT : GLenum = GL_RGBA;
+
 impl XheyPicture {
 
     pub fn update(&self, data: *const c_void, width: i32, height: i32){
@@ -30,7 +36,7 @@ impl XheyPicture {
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D, self.framebuffer.texture);
-            glTexSubImage2D(GL_TEXTURE_2D,0,0,0,width,height,GL_BGRA,GL_UNSIGNED_BYTE,data as *const _);
+            glTexSubImage2D(GL_TEXTURE_2D,0,0,0,width,height,FORMAT,GL_UNSIGNED_BYTE,data as *const _);
             glBindTexture(GL_TEXTURE_2D,0);
         }
 
@@ -38,22 +44,28 @@ impl XheyPicture {
 
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
+        info!("----------> 0");
+
         sharedImageProcessingContext.makeCurrentContext();
 
+
+        info!("----------> 1");
+
+
         let size = GLSize::new(width,height);
+        info!("----------> 2");
+
         let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
-
-
-
-
-
+        info!("----------> 3");
 
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
-            glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA as i32,width,height,0,GL_BGRA,GL_UNSIGNED_BYTE,data as *const _);
+            glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA as i32,width,height,0,FORMAT,GL_UNSIGNED_BYTE,data as *const _);
             glBindTexture(GL_TEXTURE_2D,0);
         }
+        info!("----------> 4");
+
 
         XheyPicture{
             framebuffer,

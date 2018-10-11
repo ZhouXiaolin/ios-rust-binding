@@ -7,29 +7,26 @@ use super::std::rc::Rc;
 
 use super::structure::{Graph,Edge};
 use super::render::{Framebuffer,sharedImageProcessingContext};
-use super::operation::{XheyPicture,XHeyBasicFilter,XHeyView,XHeyCombineFilter};
+use super::operation::*;
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]
 pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
     let graph = Box::new(Graph::new());
     Box::into_raw(graph)
 }
+
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture ,filter: *mut XHeyBasicFilter, filter2: *mut XHeyBasicFilter,filter3: *mut XHeyCombineFilter, view: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
+    let box_texture = source.as_ref().unwrap();
+    let box_lookup_picture = lookup_picture.as_ref().unwrap();
+    let box_lookup_filter = lookup_filter.as_ref().unwrap();
+    let box_surfaceView = surfaceView.as_ref().unwrap();
 
-    let box_picture = source.as_ref().unwrap();
-    let box_view = view.as_ref().unwrap();
-    let box_filter = filter.as_ref().unwrap();
-    let box_filter2 = filter2.as_ref().unwrap();
-    let combine = filter3.as_ref().unwrap();
-
-    let pic = box_graph.add_input("picture",box_picture);
-    let filter1 = box_graph.add_function("filter1",&[pic],box_filter);
-    let filter2 = box_graph.add_function("filter2",&[pic],box_filter2);
-    let filter3 = box_graph.add_function("filter3",&[filter1,filter2],combine);
-    let vi = box_graph.add_function("view",&[filter3],box_view);
-
+    let texture = box_graph.add_input("texture",box_texture);
+    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
+    let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
+    let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
 
 }
 
@@ -126,50 +123,10 @@ pub extern "C" fn xhey_init_basic_filter_2() -> *mut XHeyBasicFilter {
     Box::into_raw(filter)
 }
 
-type XheyLookupFilter = XHeyBasicFilter;
 #[no_mangle]
-pub extern "C" fn xhey_init_lookup_filter() -> *mut XheyLookupFilter {
+pub extern "C" fn xhey_init_lookup_filter() -> *mut XHeyLookupFilter {
 
-    let fragmentString = r#"
- varying highp vec2 textureCoordinate;
- varying highp vec2 textureCoordinate2; // TODO: This is not used
-
- uniform sampler2D inputImageTexture;
- uniform sampler2D inputImageTexture2; // lookup texture
-
- const float intensity = 1.0;
-
- void main()
- {
-     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
-
-     highp float blueColor = textureColor.b * 63.0;
-
-     highp vec2 quad1;
-     quad1.y = floor(floor(blueColor) / 8.0);
-     quad1.x = floor(blueColor) - (quad1.y * 8.0);
-
-     highp vec2 quad2;
-     quad2.y = floor(ceil(blueColor) / 8.0);
-     quad2.x = ceil(blueColor) - (quad2.y * 8.0);
-
-     highp vec2 texPos1;
-     texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
-     texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
-
-     highp vec2 texPos2;
-     texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);
-     texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g);
-
-     lowp vec4 newColor1 = texture2D(inputImageTexture2, texPos1);
-     lowp vec4 newColor2 = texture2D(inputImageTexture2, texPos2);
-
-     lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
-     gl_FragColor = mix(textureColor, vec4(newColor.rgb, textureColor.w), intensity);
- }
-    "#;
-
-    let filter = Box::new(XHeyBasicFilter::new_shader_with_fragment(fragmentString,2));
+    let filter = Box::new(XHeyLookupFilter::new());
     Box::into_raw(filter)
 }
 #[no_mangle]

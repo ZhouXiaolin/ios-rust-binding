@@ -10,6 +10,7 @@ gles-rust-binding = { path = "../gles-rust-binding", version = "0.1.0"}
 lazy_static = "1.1.0"
 fnv = "1.0.6"
 log = "0.4.5"
+
 [features]
 
 [target.'cfg(target_os="ios")'.dependencies]

@@ -13,7 +13,7 @@ extern "C" {
 
     struct XheyPicture;
     struct XheyPicture* xhey_init_picture(void* data, int width, int height);
-    void xhey_process_picture(struct XheyPicture* picture);
+    void xhey_update_picture(struct XheyPicture* picture, void* data, int width, int height);
 
     struct XheyView;
     struct XheyView* xhey_init_view(void* source);
@@ -40,6 +40,8 @@ extern "C" {
     void xhey_release_basic_filter(void*);
     void xhey_release_combine_filter(void*);
     void xhey_context_release();
+    
+    void test(const char*);
 
 #if __cplusplus
 }

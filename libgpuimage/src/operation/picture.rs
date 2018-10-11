@@ -1,6 +1,6 @@
 
 use super::*;
-
+use super::std::path::Path;
 use super::gles_rust_binding::*;
 use super::std::os::raw::c_void;
 use super::std::rc::Rc;
@@ -11,6 +11,8 @@ pub struct XheyPicture{
     framebuffer: Rc<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
+    width: i32,
+    height: i32
 }
 
 impl Drop for XheyPicture {
@@ -19,21 +21,33 @@ impl Drop for XheyPicture {
     }
 
 }
-
 impl XheyPicture {
-    pub fn new_default() -> Self {
-        XheyPicture{
-            framebuffer:Rc::default(),
-            head_node: Cell::from(0),
-            tail: RefCell::default()
+
+    pub fn update(&self, data: *const c_void, width: i32, height: i32){
+        if self.width != width || self.height != height {
+            panic!("Error!");
         }
+
+        unsafe {
+            glBindTexture(GL_TEXTURE_2D, self.framebuffer.texture);
+            glTexSubImage2D(GL_TEXTURE_2D,0,0,0,width,height,GL_BGRA,GL_UNSIGNED_BYTE,data as *const _);
+            glBindTexture(GL_TEXTURE_2D,0);
+        }
+
     }
 
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
         sharedImageProcessingContext.makeCurrentContext();
+
         let size = GLSize::new(width,height);
         let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
+
+
+
+
+
+
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
@@ -42,9 +56,11 @@ impl XheyPicture {
         }
 
         XheyPicture{
-            framebuffer: framebuffer,
+            framebuffer,
             head_node:Cell::default(),
-            tail:RefCell::default()
+            tail:RefCell::default(),
+            width,
+            height
         }
     }
 

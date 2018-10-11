@@ -5,7 +5,7 @@ extern crate android_logger;
 use super::operation::*;
 use self::jni::JNIEnv;
 use self::jni::objects::{JClass, JString};
-use self::jni::sys::{jint, jlong};
+use self::jni::sys::*;
 use super::std::os::raw::{c_void,c_int,c_uint};
 use self::gles_rust_binding::*;
 use super::render::{Framebuffer};
@@ -69,12 +69,29 @@ pub unsafe extern "C" fn xhey_init_surface_view() -> *mut XheySurfaceView {
     Box::into_raw(surfaceView)
 }
 
+
+#[no_mangle]
+pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture {
+    let picture = Box::new(XheyPicture::new(data,width,height));
+    Box::into_raw(picture)
+
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLogger(env: JNIEnv, _: JClass){
     android_logger::init_once(
              Filter::default().with_min_level(Level::Trace),
              Some("solaren")
          );
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicture(env: JNIEnv, _: JClass, data: jbyteArray, width: jint, height: jint) {
+    let buf_pic = env.convert_byte_array(data).unwrap();
+
+    info!("hello picture width {} height {}",width, height);
+
+//    xhey_init_picture(buf_pic.as_ptr() as *const _, width, height) as jlong
 }
 
 

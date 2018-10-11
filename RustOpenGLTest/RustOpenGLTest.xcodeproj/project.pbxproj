@@ -16,6 +16,8 @@
 		9F8D48EB213EC7F40026B7EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48EA213EC7F40026B7EF /* main.m */; };
 		9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */; };
 		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
+		9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC94114216E14AA00BED96C /* GLKit.framework */; };
+		9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FC94116216F2F2700BED96C /* IMG_2333.JPG */; };
 		9FD4AFED2155D9570023C196 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD4AFEC2155D9560023C196 /* libgpuimage.a */; };
 		9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */; };
 /* End PBXBuildFile section */
@@ -38,6 +40,8 @@
 		9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9FB2F4032148E65E00806A1E /* IMG_1592.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1592.JPG; sourceTree = "<group>"; };
+		9FC94114216E14AA00BED96C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		9FC94116216F2F2700BED96C /* IMG_2333.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_2333.JPG; sourceTree = "<group>"; };
 		9FD4AFEC2155D9560023C196 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = "../libgpuimage/target/aarch64-apple-ios/debug/libgpuimage.a"; sourceTree = "<group>"; };
 		9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraEntry.m; sourceTree = "<group>"; };
 		9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraEntry.h; sourceTree = "<group>"; };
@@ -48,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */,
 				9FD4AFED2155D9570023C196 /* libgpuimage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,6 +90,7 @@
 				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
 				9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */,
 				9FB2F4032148E65E00806A1E /* IMG_1592.JPG */,
+				9FC94116216F2F2700BED96C /* IMG_2333.JPG */,
 				9F817381214759C000030F46 /* GLESUtils.h */,
 				9F817383214759C100030F46 /* GLESUtils.m */,
 				9F817382214759C000030F46 /* OpenGLView.h */,
@@ -100,6 +106,7 @@
 		9F8D4904213ED8870026B7EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9FC94114216E14AA00BED96C /* GLKit.framework */,
 				9FD4AFEC2155D9560023C196 /* libgpuimage.a */,
 			);
 			name = Frameworks;
@@ -164,6 +171,7 @@
 			files = (
 				9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */,
 				9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */,
+				9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */,
 				9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

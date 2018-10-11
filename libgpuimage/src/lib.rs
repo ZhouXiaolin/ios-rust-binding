@@ -20,8 +20,3 @@ pub mod structure;
 // 正常释放内存
 // 移除平台相关的代码，在平台相关直接使用GLKView或者GLSurfaceView
 // 添加更多滤镜
-// 对Graph进一步抽象 在生成Graph时加入Framebuffer的Cache
-// 要做Compute,可以在各平台重新实现一个context环境
-// 使用宏来减少代码 使用更rust的方式来减少转化损失
-// 抽象各个平台渲染接口 GFX 长远目标
-//

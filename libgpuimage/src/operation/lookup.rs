@@ -91,9 +91,6 @@ impl XHeyLookupFilter {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
     }
 
-//    pub fn set_value(&mut self, v : f32){
-//        self.uniformSettings.setValue("value",Uniform::Float(v));
-//    }
 }
 
 

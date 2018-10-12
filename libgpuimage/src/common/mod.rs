@@ -17,6 +17,3 @@ pub use self::matrix3x3::*;
 pub use self::matrix4x4::*;
 
 use super::render::Framebuffer;
-
-
-extern crate gles_rust_binding;

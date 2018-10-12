@@ -1,11 +1,11 @@
-use super::fnv::FnvHashMap;
-use super::std::cell::{RefCell,Ref};
+use fnv::FnvHashMap;
+use std::cell::{RefCell,Ref};
 
-use super::std::marker::Sync;
+use std::marker::Sync;
 use super::{Framebuffer,GPUTextureOptions,GLSize,ImageOrientation};
 use super::hashStringForFramebuffer;
-use super::std::rc::Rc;
-use super::gles_rust_binding::*;
+use std::rc::Rc;
+use gles_rust_binding::*;
 
 
 // 缓存的策略 首先，这是一个哈希表

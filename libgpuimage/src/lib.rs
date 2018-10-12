@@ -15,6 +15,13 @@ pub mod render;
 pub mod ffi;
 pub mod structure;
 
+extern crate fnv;
+extern crate gles_rust_binding;
+
+
+#[cfg(target_os = "ios")]
+extern crate ios_rust_binding;
+
 
 // 开发计划
 // 正常释放内存

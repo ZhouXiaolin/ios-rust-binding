@@ -16,5 +16,4 @@ pub use self::tensor::*;
 pub use self::expression::*;
 pub use self::context::*;
 
-extern crate std;
-extern crate log;
+

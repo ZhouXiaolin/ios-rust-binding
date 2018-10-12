@@ -1,10 +1,9 @@
 
 use super::*;
-use super::std::path::Path;
-use super::gles_rust_binding::*;
-use super::std::os::raw::c_void;
-use super::std::rc::Rc;
-use super::std::cell::{RefCell,Cell};
+use gles_rust_binding::*;
+use std::os::raw::c_void;
+use std::rc::Rc;
+use std::cell::{RefCell,Cell};
 #[repr(C)]
 #[derive(Debug)]
 pub struct XheyPicture{
@@ -44,19 +43,15 @@ impl XheyPicture {
 
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
-        info!("----------> 0");
 
         sharedImageProcessingContext.makeCurrentContext();
 
 
-        info!("----------> 1");
 
 
         let size = GLSize::new(width,height);
-        info!("----------> 2");
 
         let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
-        info!("----------> 3");
 
 
         unsafe {
@@ -64,7 +59,6 @@ impl XheyPicture {
             glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA as i32,width,height,0,FORMAT,GL_UNSIGNED_BYTE,data as *const _);
             glBindTexture(GL_TEXTURE_2D,0);
         }
-        info!("----------> 4");
 
 
         XheyPicture{

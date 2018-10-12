@@ -1,6 +1,6 @@
-use super::gles_rust_binding::*;
-use super::std::rc::Rc;
-use super::std::cell::{RefCell, Cell};
+use gles_rust_binding::*;
+use std::rc::Rc;
+use std::cell::{RefCell, Cell};
 use super::*;
 
 // 这个类需要update一个外部纹理，并使用oes扩展，单独绘制

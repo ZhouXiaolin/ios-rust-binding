@@ -30,9 +30,5 @@ use super::common::*;
 use super::structure::*;
 use super::render::*;
 
-extern crate std;
-extern crate gles_rust_binding;
 
-#[cfg(target_os = "ios")]
-extern crate ios_rust_binding;
 

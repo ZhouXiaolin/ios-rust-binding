@@ -1,10 +1,10 @@
-use super::gles_rust_binding::*;
+use gles_rust_binding::*;
 use super::sharedImageProcessingContext;
 use super::gl_texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
-use super::std::cell::Cell;
+use std::cell::Cell;
 use super::Tensor;
-use super::std::ptr;
+use std::ptr;
 
 pub enum InputTextureStorageFormat {
     textureCoordinate([GLfloat;8]),

@@ -1,19 +1,18 @@
 extern crate jni;
-extern crate gles_rust_binding;
 extern crate android_logger;
 
 use super::operation::*;
 use self::jni::JNIEnv;
 use self::jni::objects::{JClass, JString};
 use self::jni::sys::*;
-use super::std::os::raw::{c_void,c_int,c_uint};
-use self::gles_rust_binding::*;
+use std::os::raw::{c_void,c_int,c_uint};
+use gles_rust_binding::*;
 use super::render::{Framebuffer};
 use super::structure::{Graph,Edge};
 
 
-use super::log::Level;
-use self::android_logger::Filter;
+use log::Level;
+use android_logger::Filter;
 
 
 
@@ -30,13 +29,13 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XheySurfaceView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-//    let box_lookup_picture = lookup_picture.as_ref().unwrap();
+    let box_lookup_picture = lookup_picture.as_ref().unwrap();
     let box_lookup_filter = lookup_filter.as_ref().unwrap();
     let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-//    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
-    let lookup_filter = box_graph.add_function("lookup filter",&[texture,texture],box_lookup_filter);
+    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
+    let lookup_filter = box_graph.add_function("lookup filter",&[lookup_picture,lookup_picture],box_lookup_filter);
     let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
 
 }

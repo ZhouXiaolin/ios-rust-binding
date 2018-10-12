@@ -82,6 +82,7 @@ impl Framebuffer {
         Framebuffer::new(orientation,size,true,default,Some(textureId))
     }
 
+
     pub fn hashString (&self) -> String {
         self.hashString.clone()
     }

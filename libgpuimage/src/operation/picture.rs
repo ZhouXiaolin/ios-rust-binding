@@ -41,18 +41,31 @@ impl XheyPicture {
 
     }
 
+
+
+    pub fn new_texture(textureId: GLuint, width: i32, height: i32) -> Self {
+        sharedImageProcessingContext.makeCurrentContext();
+        let size = GLSize::new(width,height);
+        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
+        XheyPicture{
+            framebuffer,
+            head_node:Cell::default(),
+            tail:RefCell::default(),
+            width,
+            height
+        }
+    }
+
+
+
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
 
         sharedImageProcessingContext.makeCurrentContext();
 
-
-
-
         let size = GLSize::new(width,height);
 
         let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
-
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);

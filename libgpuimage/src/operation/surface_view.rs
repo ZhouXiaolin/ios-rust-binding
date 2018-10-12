@@ -29,7 +29,7 @@ impl XheySurfaceView {
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::portrait,
-            backingSize: GLSize::new(1080,1920)
+            backingSize: GLSize::new(720,1080)
         }
     }
 

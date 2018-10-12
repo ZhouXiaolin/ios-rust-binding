@@ -35,7 +35,7 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
     let texture = box_graph.add_input("texture",box_texture);
     let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
-    let lookup_filter = box_graph.add_function("lookup filter",&[lookup_picture,lookup_picture],box_lookup_filter);
+    let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
     let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
 
 }
@@ -73,9 +73,18 @@ pub unsafe extern "C" fn xhey_init_surface_view() -> *mut XheySurfaceView {
 
 #[no_mangle]
 pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32) ->  *mut XheyPicture {
-
     info!("-----> xhey_init_picture {} {}",width,height);
     let picture = XheyPicture::new(data,width,height);
+    let picture = Box::new(picture);
+    Box::into_raw(picture)
+
+}
+
+#[no_mangle]
+pub extern "C" fn xhey_init_picture_textureId(textureId: i32, width: i32, height: i32) ->  *mut XheyPicture {
+    info!("-----> xhey_init_picture {} {}",width,height);
+
+    let picture = XheyPicture::new_texture(textureId as GLuint,width,height);
     let picture = Box::new(picture);
     Box::into_raw(picture)
 
@@ -97,6 +106,13 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicture(env: 
 
     xhey_init_picture(buf_pic.as_ptr() as *const _, width, height) as jlong
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicturetexture(env: JNIEnv, _: JClass, textureId: jint, width: jint, height: jint) -> jlong {
+    xhey_init_picture_textureId(textureId,width,height) as jlong
+}
+
+
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updatePicture(env: JNIEnv, _: JClass, picture_ptr: jlong, data: jbyteArray, width: jint, height: jint) {

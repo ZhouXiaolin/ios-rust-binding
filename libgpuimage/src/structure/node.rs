@@ -8,7 +8,8 @@ pub struct Node<T:Tensor> {
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:RefCell<Vec<Rc<T>>>
+    pub f:RefCell<Vec<Rc<T>>> // 应该如何修改此处？
+
 }
 
 impl<T:Tensor> Node<T> {

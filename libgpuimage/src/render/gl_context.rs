@@ -4,7 +4,7 @@ use super::{Rotation, FramebufferCache};
 use super::Context;
 
 #[cfg(target_os = "ios")]
-use super::ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
+use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 
 #[cfg(target_os = "ios")]
 pub struct GlContext{

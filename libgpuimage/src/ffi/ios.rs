@@ -1,9 +1,9 @@
 
-use super::ios_rust_binding::{UIView,UIImage};
-use super::std::os::raw::{c_char,c_void,c_uint,c_float};
-use super::std::ffi::{CStr};
-use super::std::mem::transmute;
-use super::std::rc::Rc;
+use ios_rust_binding::{UIView,UIImage};
+use std::os::raw::{c_char,c_void,c_uint,c_float,c_long};
+use std::ffi::{CStr};
+use std::mem::transmute;
+use std::rc::Rc;
 
 use super::structure::{Graph,Edge};
 use super::render::{Framebuffer,sharedImageProcessingContext};
@@ -16,17 +16,17 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyPicture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPicture, filter: *mut XHeyBasicFilter,filter2: *mut XHeyBasicFilter,surfaceView: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-    let box_lookup_picture = lookup_picture.as_ref().unwrap();
-    let box_lookup_filter = lookup_filter.as_ref().unwrap();
-    let box_surfaceView = surfaceView.as_ref().unwrap();
+    let box_filter = filter.as_ref().unwrap();
+//    let box_filter2 = filter2.as_ref().unwrap();
+//    let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
-    let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
-    let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
+    let filter = box_graph.add_function("filter",&[texture],box_filter);
+//    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
+//    let view = box_graph.add_function("surface view",&[filter2],box_surfaceView);
 
 }
 
@@ -58,13 +58,18 @@ pub unsafe extern "C" fn xhey_release_combine_filter(source: *mut XHeyCombineFil
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
+pub unsafe extern "C" fn xhey_release_graph(s: *mut RenderGraph){
+    drop(Box::from_raw(s));
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph_forward(graph: *mut RenderGraph){
     let box_graph = graph.as_mut().unwrap();
     box_graph.forward();
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph_printgraphviz<'a>(graph: *mut RenderGraph<'a>){
+pub unsafe extern "C" fn xhey_graph_printgraphviz(graph: *mut RenderGraph){
     let box_graph = graph.as_mut().unwrap();
     box_graph.PrintGraphviz();
 }
@@ -162,3 +167,7 @@ pub extern "C" fn test(path: *const c_char){
         let a = a.to_str().unwrap();
     }
 }
+
+
+// new api
+

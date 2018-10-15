@@ -16,7 +16,7 @@ pub struct XheyPicture{
 
 impl Drop for XheyPicture {
     fn drop(&mut self){
-        info!("Drop XheyPicture");
+        println!("Drop XheyPicture");
     }
 
 }

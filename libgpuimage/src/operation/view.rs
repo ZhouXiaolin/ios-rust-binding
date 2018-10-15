@@ -21,10 +21,11 @@ pub struct XHeyView {
 
 impl Drop for XHeyView {
     fn drop(&mut self){
-        info!("Drop XHeyView");
+        println!("Drop XHeyView");
         unsafe {
             let mut displayFramebuffer = self.displayFramebuffer.get();
             if displayFramebuffer > 0{
+
                 glDeleteFramebuffers(1,&mut displayFramebuffer);
             }
 

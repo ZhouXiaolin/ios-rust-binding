@@ -192,9 +192,15 @@ impl Drop for Framebuffer {
                 println!("Delete texture at size {:?}",self.size);
             }
         }
-        unsafe {
-            glDeleteFramebuffers(1,&mut self.framebuffer);
+
+        if self.framebuffer > 0 {
+            unsafe {
+                glDeleteFramebuffers(1,&mut self.framebuffer);
+                println!("Delete Framebuffer");
+
+            }
         }
+
     }
 }
 

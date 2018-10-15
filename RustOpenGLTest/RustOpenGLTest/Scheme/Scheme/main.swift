@@ -98,8 +98,7 @@ extension Lexer {
                     self.tokens.append(Token.Unquote)
                     self.advance()
                 }else if c == "+" || c == "-" {
-                    if let p = self.peek() {
-                        
+                    switch self.peek() {
                     }
                 }
             

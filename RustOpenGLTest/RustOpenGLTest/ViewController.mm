@@ -94,54 +94,43 @@ void initImageData(UIImage* image, GLubyte* imageData, int* width, int* height){
     
     NSString* path2 = [[NSBundle mainBundle] pathForResource:@"IMG_2333" ofType:@"JPG"];
     
-    UIImage* image2 = [[UIImage alloc] initWithContentsOfFile:path2];
-    CGImage* newImageSource2 = [image2 CGImage];
-    int width2 = (int)CGImageGetWidth(newImageSource2);
-    int height2 = (int)CGImageGetHeight(newImageSource2);
+//    UIImage* image2 = [[UIImage alloc] initWithContentsOfFile:path2];
+//    CGImage* newImageSource2 = [image2 CGImage];
+//    int width2 = (int)CGImageGetWidth(newImageSource2);
+//    int height2 = (int)CGImageGetHeight(newImageSource2);
     
-    GLubyte *imageData2 = (GLubyte*)calloc(1, width2*height2*4);
-    CGColorSpaceRef genericRGBColorspace2 = CGColorSpaceCreateDeviceRGB();
-    CGContextRef imageContext2 = CGBitmapContextCreate(imageData2, width2, height2, 8, width2*4, genericRGBColorspace2, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    CGContextDrawImage(imageContext2, CGRectMake(0, 0, width2, height2), newImageSource2);
-    CGContextRelease(imageContext2);
-    CGColorSpaceRelease(genericRGBColorspace2);
+//    GLubyte *imageData2 = (GLubyte*)calloc(1, width2*height2*4);
+//    CGColorSpaceRef genericRGBColorspace2 = CGColorSpaceCreateDeviceRGB();
+//    CGContextRef imageContext2 = CGBitmapContextCreate(imageData2, width2, height2, 8, width2*4, genericRGBColorspace2, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+//    CGContextDrawImage(imageContext2, CGRectMake(0, 0, width2, height2), newImageSource2);
+//    CGContextRelease(imageContext2);
+//    CGColorSpaceRelease(genericRGBColorspace2);
 
-
-
-    Graph* graph = xhey_init_graph();
-//
+    
+    Graph* graph_ptr = xhey_init_graph();
     XheyView* view = xhey_init_view((__bridge void*)demoView);
     XheyPicture* picture = xhey_init_picture(imageData1, width1, height1);
-    XheyPicture* lookup_pic = xhey_init_picture(imageData2, width2, height2);
+    free(imageData1);
+
+    XheyBasicFilter* filter = xhey_init_basic_filter();
+    XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
     
-    XheyLookupFilter* filter = xhey_init_lookup_filter();
-    
-
-    xhey_graph(graph, picture, lookup_pic, filter, view);
-
-
-    xhey_graph_printgraphviz(graph);
-
+    xhey_graph(graph_ptr, picture, filter, filter2, nullptr);
     
 
+    xhey_graph_forward(graph_ptr);
+    
+    xhey_release_basic_filter(filter2);
+    xhey_release_basic_filter(filter);
+    xhey_release_picture(picture);
+    xhey_release_view(view);
+
+    xhey_context_release();
+    xhey_release_graph(graph_ptr);
 
 
-    __block float value = 0.9;
-    [NSTimer scheduledTimerWithTimeInterval:0.3 repeats:YES block:^(NSTimer * _Nonnull timer) {
 
-        xhey_graph_forward(graph);
-
-//        if (value > 1.0) {
-//            value = 0.3;
-//            xhey_update_picture(picture, imageData2, width2, height2);
-//        }else{
-//            value += 0.1;
-//            xhey_update_picture(picture, imageData1, width1, height1);
-//
-//        }
-
-
-    }];
+    
 
 #endif
     

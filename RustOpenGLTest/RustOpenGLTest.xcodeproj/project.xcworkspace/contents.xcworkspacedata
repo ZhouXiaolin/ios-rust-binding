@@ -14,6 +14,1444 @@
          location = "group:target"
          name = "target">
          <Group
+            location = "group:aarch64-linux-android"
+            name = "aarch64-linux-android">
+            <Group
+               location = "group:release"
+               name = "release">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:thread_local-822a140ab5c5b842.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-f56252e0d101dc26.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-bfdfebf489024b03.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-493ee5a370a46e99.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-ca8b524e5f3c1df5.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-f0e3d2b6d21c8c89.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-8bf663422994dcea.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-bba9fa850f3ae73c.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-822a140ab5c5b842.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-15be559ff23f391a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-196301b15519e465.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-493ee5a370a46e99.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-566f07c7d0068ea0.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-6e6cc84159e1bc3f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-6e6cc84159e1bc3f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:unreachable-f25c7a4d83659287.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-3d8957120fa19f2f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-d79822b960980bc8.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-8bf75ff0869a1a41.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-8bf75ff0869a1a41.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-8d1419813451049a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-8d1419813451049a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-d79822b960980bc8.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-98ea37ea512623ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-7496782415cc9963.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-7496782415cc9963.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-bf3d9a16d6fe866d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-3d8957120fa19f2f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-75269e681736abd2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-15be559ff23f391a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-75269e681736abd2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-9744192d70e6fc4a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-98ea37ea512623ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-f56252e0d101dc26.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-ca8b524e5f3c1df5.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-566f07c7d0068ea0.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-8bf663422994dcea.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-6b466ae58e2e49ce.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-04ebe86ac9024211.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-bf3d9a16d6fe866d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-9744192d70e6fc4a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-bba9fa850f3ae73c.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-1a3dbeae03bb6422.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-bfdfebf489024b03.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-6b466ae58e2e49ce.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-1a3dbeae03bb6422.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-4cc81609697b30a1.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-04ebe86ac9024211.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-4cc81609697b30a1.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-f25c7a4d83659287.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-f0e3d2b6d21c8c89.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-196301b15519e465.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:regex-4031377c68c300c3"
+                     name = "regex-4031377c68c300c3">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-4ff1cd58dd9ad014"
+                     name = "jni-4ff1cd58dd9ad014">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-87bd222a190710c2"
+                     name = "memchr-87bd222a190710c2">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:lazy_static-5d48e855eec48217"
+                     name = "lazy_static-5d48e855eec48217">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:debug"
+               name = "debug">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+                  <Group
+                     location = "group:gles_rust_binding-2kb04o3rmbmqk"
+                     name = "gles_rust_binding-2kb04o3rmbmqk">
+                     <FileRef
+                        location = "group:s-f5me087h3v-1f17oup.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5me087h3v-1f17oup-3ssbcwitwrpx8"
+                        name = "s-f5me087h3v-1f17oup-3ssbcwitwrpx8">
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.bc.z">
+                        </FileRef>
+                     </Group>
+                  </Group>
+                  <Group
+                     location = "group:gpuimage-1hccy5uwgdczj"
+                     name = "gpuimage-1hccy5uwgdczj">
+                     <FileRef
+                        location = "group:s-f5n8p3lsbi-1n80lx2.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5n8p3lsbi-1n80lx2-2hvmbyb9em2xl"
+                        name = "s-f5n8p3lsbi-1n80lx2-2hvmbyb9em2xl">
+                        <FileRef
+                           location = "group:3ukjtjek91iisqvn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13rurqp7rmjhkd8g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4pgxn8ed4ho0iftm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1zlani842yjtcilq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ab09tdb8991i77z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3an808o5sk4pemp5.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1jdd3y0py236nkbr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1lio4b7o2mnvo39m.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xg2mgpv51lpemjp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41m671t104brmv0r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:jwsr3qozchl0965.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35dxw9uo4nyresym.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:23eh37pgbntsph6d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uu9m86fpb3l8xs6.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:14miwzrdq1i9mrzz.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:435wj7tob75vso09.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bkvf7soq4ljm9av.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:j2vg2ruj0fi91my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4dozdha4sjaub7kx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4er2vl5iz0jbqn57.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ma9bpxy4jv6semk.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:190h4og4lbplexh7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:qvmqtvyvp1f4wm4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35ueohvhrb94pipv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:g1uatqr4ow3xcft.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bk81qnh9rxxsgwh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ffjfkr1gzhzxtwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2zsc9tzkq6ch1qth.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2drxxkl1762g8vmq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:58glho649by2ujbp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tcz0u7n27w683jg.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:aoy5lpkcxemflcv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4mzhkeqyht98zito.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:abv788ny6ygu37b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:289yfp4g67vszijv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:18kjdp89i2vl4rwo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1z3e8oggwgkmsrij.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:7ybjkoimwjis6am.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2ye24m5qyzfspu6k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3htpp3tuxesziwxn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:16g66d2tnysg6kwe.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4uwq9s3c6vdtdyyb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:42ge5crrjqac7ub9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49deb2rf14lda96b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:v28s70363r6l5g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:391tancafua3o9r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:mybg7x9tqagr74u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1ipeztn2yith1j20.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4b3a6kirczv2pf54.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4qq0iy7hdjgpkgeo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:44zlganv042mx3my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1gmqd0cv61w329sa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4w28d08tw6rftag0.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uj0ekqa6mc5ym2o.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:poy03o144mhtmvh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:48hv73dnv7vhcd4p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2e7aog8g7qfqzii1.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3507re2sen0fhofl.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2xd455s87snjocqo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:8cnj072pz5bv48u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:178s3gbbgl3nt8vm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1bqtxuf8x40ts7xp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vpzof4obtm0x9hj.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:499uiiah69voedj4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13x01vwjoylclfk2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2aljdhvljrhr70u4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2w0hmws9ksnaagjy.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3e8cj6rtdurbax3f.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1k2w9wlg1zpd3tvb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:s7zbzqkzcr29u2r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:580tr2v55tt3s39p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1a54kha6418vf9sq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:56m3w3ce1919ihyc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:t44thlyvcgf0hdo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49qxet4zo7h2b3n2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:52esh81vgus7aypa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4bkf9dwxv7pe34s7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3jwcxynte7jtas9h.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vvgc21xrnr09c52.o">
+                        </FileRef>
+                     </Group>
+                  </Group>
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:unreachable-bd35edcbfbc6aea6.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-d2bc836159a1ba63.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-7a5ea67ef43c0122.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-952ff41151063dc4.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-4605030d8cb2cf0e.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-39273ea58be913e9.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-c207d67cab732e02.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-450998b3a665599f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-832a7a852f6094cd.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-a7a8bdcabffd34ca.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-dd507cd42818ab2a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-082a1e0630f465d2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-c19da1f656de18bf.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-7bb4815a29cfc34d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-051d066b4b649f43.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-6519c73a1f1c04c7.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-7412413a790d4770.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-734c27191b84e698.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-585916eaabc4d7ac.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-bd35edcbfbc6aea6.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-e32dad3dfcf34e8e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-a7a8bdcabffd34ca.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-e9c26fb53695589f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-d50445c9cbaf2663.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-c207d67cab732e02.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-4605030d8cb2cf0e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-bfcc3597e79931e2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-082a1e0630f465d2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-952ff41151063dc4.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-734c27191b84e698.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-7bb4815a29cfc34d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-bdf0d7f33d7bc0ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-bdf0d7f33d7bc0ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-bfcc3597e79931e2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-450998b3a665599f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-585916eaabc4d7ac.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-7a5ea67ef43c0122.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-cb1116a4a2d9a875.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-832a7a852f6094cd.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-6519c73a1f1c04c7.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-cb1116a4a2d9a875.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-d50445c9cbaf2663.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-d2bc836159a1ba63.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-051d066b4b649f43.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-c19da1f656de18bf.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-e9c26fb53695589f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-7412413a790d4770.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:thread_local-bf42865c9467ea7a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-39273ea58be913e9.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-dd507cd42818ab2a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-bf42865c9467ea7a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-e32dad3dfcf34e8e.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:lazy_static-42a18372ec0ffc44"
+                     name = "lazy_static-42a18372ec0ffc44">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:regex-1777c7dfd6a93c62"
+                     name = "regex-1777c7dfd6a93c62">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-c6d490e0b8a7108a"
+                     name = "jni-c6d490e0b8a7108a">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-d678726d5fad4a83"
+                     name = "memchr-d678726d5fad4a83">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+         </Group>
+         <Group
+            location = "group:rls"
+            name = "rls">
+            <Group
+               location = "group:debug"
+               name = "debug">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+                  <Group
+                     location = "group:gles_rust_binding-npkchr9znsnk"
+                     name = "gles_rust_binding-npkchr9znsnk">
+                     <FileRef
+                        location = "group:s-f5nho60un6-1nhf122.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5nho60un6-1nhf122-3gj1dsjd87wco"
+                        name = "s-f5nho60un6-1nhf122-3gj1dsjd87wco">
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                     </Group>
+                  </Group>
+                  <Group
+                     location = "group:gles_rust_binding-2clzeu0dojpqd"
+                     name = "gles_rust_binding-2clzeu0dojpqd">
+                     <FileRef
+                        location = "group:s-f5nho5vt4k-1mr3uxp.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5nho5vt4k-1mr3uxp-4wfy1z0vhdmy"
+                        name = "s-f5nho5vt4k-1mr3uxp-4wfy1z0vhdmy">
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                     </Group>
+                  </Group>
+                  <Group
+                     location = "group:gpuimage-1wpv9dkcddahe"
+                     name = "gpuimage-1wpv9dkcddahe">
+                     <Group
+                        location = "group:s-f5nho7k9em-1v32lbh-working"
+                        name = "s-f5nho7k9em-1v32lbh-working">
+                     </Group>
+                     <FileRef
+                        location = "group:s-f5nho7k9em-1v32lbh.lock">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:gpuimage-3s9sob134uzcb"
+                     name = "gpuimage-3s9sob134uzcb">
+                     <FileRef
+                        location = "group:s-f5nho727lf-5o6eh4.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5nho727lf-5o6eh4-working"
+                        name = "s-f5nho727lf-5o6eh4-working">
+                     </Group>
+                  </Group>
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage-e7d2cc2ea24b1967.d">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:libregex_syntax-4bf830f31e02f549.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-a35f447553002e3b.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-a35f447553002e3b.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-876942e41df50e14.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-aa0c501309a756aa.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-56ba662625d34bc1.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-d8e9d6e93866e6c7.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-17c707f46b7d86d0.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-e0fcf61210a988b2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-876942e41df50e14.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-5d491ceb3b737d86.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-5d751133a048b15f.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-67f218dd20a63cd2.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-d04b4cca42807961.d">
+                  </FileRef>
+                  <Group
+                     location = "group:save-analysis"
+                     name = "save-analysis">
+                     <FileRef
+                        location = "group:libucd_util-54adac86dc91837b.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:liblazy_static-489de926fbfefd30.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libmemchr-cca9ce5533ab1023.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libopengl_es_rs-67f218dd20a63cd2.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libthread_local-9a4688e34d1d3bb8.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libaho_corasick-e35dba714b57c414.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libucd_util-e0fcf61210a988b2.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libcfg_if-03c16c0aa78ff2b2.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libmemchr-727de00ef395e848.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:liblazy_static-876942e41df50e14.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libregex-b2eaadc605d0f715.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libaho_corasick-97ba880c6ec1b978.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libgles_rust_binding-5d751133a048b15f.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libutf8_ranges-58f2cc12091a9646.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:liblog-aa0c501309a756aa.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:liblog-2e1ba6bb57e63ade.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libregex-90c9d4bec825a540.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libutf8_ranges-5d491ceb3b737d86.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libgles_rust_binding-d8e9d6e93866e6c7.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libthread_local-3432fff538efe197.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libversion_check-c8e203f6e95b9506.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libopengl_es_rs-d04b4cca42807961.json">
+                     </FileRef>
+                     <FileRef
+                        location = "group:libfnv-2381d395380a0b3c.json">
+                     </FileRef>
+                  </Group>
+                  <FileRef
+                     location = "group:thread_local-3432fff538efe197.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:version_check-c8e203f6e95b9506.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-cca9ce5533ab1023.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-aa0c501309a756aa.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-97ba880c6ec1b978.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-9717d72dbe51a49e.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-54adac86dc91837b.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-03c16c0aa78ff2b2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage-a3e0467aac0b83b4.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-b2eaadc605d0f715.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-2381d395380a0b3c.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-cca9ce5533ab1023.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-d04b4cca42807961.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-e0fcf61210a988b2.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-9a4688e34d1d3bb8.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-9717d72dbe51a49e.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-2e1ba6bb57e63ade.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-58f2cc12091a9646.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libversion_check-c8e203f6e95b9506.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-2e1ba6bb57e63ade.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-b2eaadc605d0f715.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-03c16c0aa78ff2b2.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-2381d395380a0b3c.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-d8e9d6e93866e6c7.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-489de926fbfefd30.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-5d491ceb3b737d86.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-727de00ef395e848.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-97ba880c6ec1b978.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-90c9d4bec825a540.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-1ff230b50ed238e5.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-17c707f46b7d86d0.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-67f218dd20a63cd2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-90c9d4bec825a540.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-e35dba714b57c414.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-e35dba714b57c414.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-4bf830f31e02f549.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage-e7d2cc2ea24b1967.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-5d751133a048b15f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-1ff230b50ed238e5.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-489de926fbfefd30.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-727de00ef395e848.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-3432fff538efe197.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:thread_local-9a4688e34d1d3bb8.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-56ba662625d34bc1.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-54adac86dc91837b.rmeta">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-58f2cc12091a9646.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:memchr-26786c2d0b525d02"
+                     name = "memchr-26786c2d0b525d02">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-c3e6edef80e1ff08"
+                     name = "memchr-c3e6edef80e1ff08">
+                     <Group
+                        location = "group:save-analysis"
+                        name = "save-analysis">
+                        <FileRef
+                           location = "group:build_script_build-c3e6edef80e1ff08.json">
+                        </FileRef>
+                     </Group>
+                     <FileRef
+                        location = "group:build_script_build-c3e6edef80e1ff08">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build-script-build">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build_script_build-c3e6edef80e1ff08.d">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build_script_build-c3e6edef80e1ff08.dSYM">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:lazy_static-0eda444820c3506d"
+                     name = "lazy_static-0eda444820c3506d">
+                     <FileRef
+                        location = "group:build_script_build-0eda444820c3506d.d">
+                     </FileRef>
+                     <Group
+                        location = "group:save-analysis"
+                        name = "save-analysis">
+                        <FileRef
+                           location = "group:build_script_build-0eda444820c3506d.json">
+                        </FileRef>
+                     </Group>
+                     <FileRef
+                        location = "group:build_script_build-0eda444820c3506d.dSYM">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build_script_build-0eda444820c3506d">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build-script-build">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:regex-ea1a3a3686468736"
+                     name = "regex-ea1a3a3686468736">
+                     <FileRef
+                        location = "group:build_script_build-ea1a3a3686468736.d">
+                     </FileRef>
+                     <Group
+                        location = "group:save-analysis"
+                        name = "save-analysis">
+                        <FileRef
+                           location = "group:build_script_build-ea1a3a3686468736.json">
+                        </FileRef>
+                     </Group>
+                     <FileRef
+                        location = "group:build_script_build-ea1a3a3686468736">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build_script_build-ea1a3a3686468736.dSYM">
+                     </FileRef>
+                     <FileRef
+                        location = "group:build-script-build">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:regex-7b5f470583dc4224"
+                     name = "regex-7b5f470583dc4224">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:lazy_static-f95b5827616871ee"
+                     name = "lazy_static-f95b5827616871ee">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+            </Group>
+         </Group>
+         <Group
             location = "group:release"
             name = "release">
             <Group
@@ -44,6 +1482,9 @@
                   location = "group:libsyn-155953a3c984ee85.rlib">
                </FileRef>
                <FileRef
+                  location = "group:same_file-96f72c283784ced2.d">
+               </FileRef>
+               <FileRef
                   location = "group:num_traits-ff0ca327c1a5db0a.d">
                </FileRef>
                <FileRef
@@ -51,6 +1492,9 @@
                </FileRef>
                <FileRef
                   location = "group:libquote-856013199f92c682.rlib">
+               </FileRef>
+               <FileRef
+                  location = "group:libsame_file-96f72c283784ced2.rlib">
                </FileRef>
                <FileRef
                   location = "group:quote-856013199f92c682.d">
@@ -62,10 +1506,16 @@
                   location = "group:syn-155953a3c984ee85.d">
                </FileRef>
                <FileRef
+                  location = "group:libwalkdir-8af90f4bf2600347.rlib">
+               </FileRef>
+               <FileRef
                   location = "group:num_derive-0955382ec2f3012c.d">
                </FileRef>
                <FileRef
                   location = "group:libnum_derive-0955382ec2f3012c.dylib">
+               </FileRef>
+               <FileRef
+                  location = "group:walkdir-8af90f4bf2600347.d">
                </FileRef>
                <FileRef
                   location = "group:proc_macro2-fb0aa07b70a04371.d">
@@ -272,6 +1722,19 @@
                   </FileRef>
                   <FileRef
                      location = "group:build_script_build-8fd05a3ddbc9568d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:build-script-build">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:jni-00438bae0c1a7284"
+                  name = "jni-00438bae0c1a7284">
+                  <FileRef
+                     location = "group:build_script_build-00438bae0c1a7284.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:build_script_build-00438bae0c1a7284">
                   </FileRef>
                   <FileRef
                      location = "group:build-script-build">
@@ -829,8 +2292,8 @@
                      location = "group:gles_rust_binding-2kb04o3rmbmqk"
                      name = "gles_rust_binding-2kb04o3rmbmqk">
                      <Group
-                        location = "group:s-f5l2xqwemg-gddl9k-35y5fcq47ei82"
-                        name = "s-f5l2xqwemg-gddl9k-35y5fcq47ei82">
+                        location = "group:s-f5qfg18gry-10hlh1e-37hkq8w5yyi4k"
+                        name = "s-f5qfg18gry-10hlh1e-37hkq8w5yyi4k">
                         <FileRef
                            location = "group:585z8f34q79j9vp9.o">
                         </FileRef>
@@ -998,15 +2461,18 @@
                         </FileRef>
                      </Group>
                      <FileRef
-                        location = "group:s-f5l2xqwemg-gddl9k.lock">
+                        location = "group:s-f5qfg18gry-10hlh1e.lock">
                      </FileRef>
                   </Group>
                   <Group
                      location = "group:gpuimage-1hccy5uwgdczj"
                      name = "gpuimage-1hccy5uwgdczj">
+                     <FileRef
+                        location = "group:s-f5qkmu1kpr-86jopr.lock">
+                     </FileRef>
                      <Group
-                        location = "group:s-f5lxegik7o-rz0ezp-1h8m4aoyf5fc8"
-                        name = "s-f5lxegik7o-rz0ezp-1h8m4aoyf5fc8">
+                        location = "group:s-f5qkmu1kpr-86jopr-1hjz45u66rft3"
+                        name = "s-f5qkmu1kpr-86jopr-1hjz45u66rft3">
                         <FileRef
                            location = "group:1709pajbrv0a5nqn.o">
                         </FileRef>
@@ -1065,10 +2531,10 @@
                            location = "group:3tj4md1suo6das82.o">
                         </FileRef>
                         <FileRef
-                           location = "group:3mh8uzdro3bz9pwv.o">
+                           location = "group:2uu9m86fpb3l8xs6.o">
                         </FileRef>
                         <FileRef
-                           location = "group:hbin29nn0wlxg3c.o">
+                           location = "group:3mh8uzdro3bz9pwv.o">
                         </FileRef>
                         <FileRef
                            location = "group:435wj7tob75vso09.o">
@@ -1078,6 +2544,9 @@
                         </FileRef>
                         <FileRef
                            location = "group:2odxe5pvav02wouq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:20b8g0xo8f4ry9m9.o">
                         </FileRef>
                         <FileRef
                            location = "group:4pzce1h2h831xufe.o">
@@ -1125,6 +2594,9 @@
                            location = "group:18kjdp89i2vl4rwo.o">
                         </FileRef>
                         <FileRef
+                           location = "group:7ybjkoimwjis6am.o">
+                        </FileRef>
+                        <FileRef
                            location = "group:4rcltshjtiqkqy8o.o">
                         </FileRef>
                         <FileRef
@@ -1138,12 +2610,6 @@
                         </FileRef>
                         <FileRef
                            location = "group:stq3nm9108drxl2.o">
-                        </FileRef>
-                        <FileRef
-                           location = "group:34d04cjlw8vffgdn.o">
-                        </FileRef>
-                        <FileRef
-                           location = "group:pi35zhxsxgilpl.o">
                         </FileRef>
                         <FileRef
                            location = "group:58zbnzlg2dx3jc1c.o">
@@ -1168,9 +2634,6 @@
                         </FileRef>
                         <FileRef
                            location = "group:2e7aog8g7qfqzii1.o">
-                        </FileRef>
-                        <FileRef
-                           location = "group:2b3jozz1whe86wpj.o">
                         </FileRef>
                         <FileRef
                            location = "group:3507re2sen0fhofl.o">
@@ -1263,9 +2726,6 @@
                            location = "group:273wsavxnivnpicx.o">
                         </FileRef>
                      </Group>
-                     <FileRef
-                        location = "group:s-f5lxegik7o-rz0ezp.lock">
-                     </FileRef>
                   </Group>
                   <Group
                      location = "group:ios_rust_binding-towx6pbpwhgs"
@@ -1859,6 +3319,1944 @@
             </Group>
          </Group>
          <Group
+            location = "group:i686-linux-android"
+            name = "i686-linux-android">
+            <Group
+               location = "group:release"
+               name = "release">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:thread_local-822a140ab5c5b842.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-f56252e0d101dc26.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-bfdfebf489024b03.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-493ee5a370a46e99.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-ca8b524e5f3c1df5.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-f0e3d2b6d21c8c89.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-8bf663422994dcea.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-bba9fa850f3ae73c.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-822a140ab5c5b842.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-15be559ff23f391a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-196301b15519e465.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-493ee5a370a46e99.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-566f07c7d0068ea0.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-6e6cc84159e1bc3f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-6e6cc84159e1bc3f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:unreachable-f25c7a4d83659287.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-3d8957120fa19f2f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-d79822b960980bc8.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-8bf75ff0869a1a41.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-8bf75ff0869a1a41.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-8d1419813451049a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-8d1419813451049a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-d79822b960980bc8.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-98ea37ea512623ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-7496782415cc9963.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-7496782415cc9963.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-bf3d9a16d6fe866d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-3d8957120fa19f2f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-75269e681736abd2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-15be559ff23f391a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-75269e681736abd2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-9744192d70e6fc4a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-98ea37ea512623ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-f56252e0d101dc26.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-ca8b524e5f3c1df5.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-566f07c7d0068ea0.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-8bf663422994dcea.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-6b466ae58e2e49ce.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-04ebe86ac9024211.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-bf3d9a16d6fe866d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-9744192d70e6fc4a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-bba9fa850f3ae73c.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-1a3dbeae03bb6422.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-bfdfebf489024b03.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-6b466ae58e2e49ce.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-1a3dbeae03bb6422.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-4cc81609697b30a1.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-04ebe86ac9024211.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-4cc81609697b30a1.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-f25c7a4d83659287.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-f0e3d2b6d21c8c89.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-196301b15519e465.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:regex-4031377c68c300c3"
+                     name = "regex-4031377c68c300c3">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-4ff1cd58dd9ad014"
+                     name = "jni-4ff1cd58dd9ad014">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-87bd222a190710c2"
+                     name = "memchr-87bd222a190710c2">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:lazy_static-5d48e855eec48217"
+                     name = "lazy_static-5d48e855eec48217">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:debug"
+               name = "debug">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+                  <Group
+                     location = "group:gles_rust_binding-2kb04o3rmbmqk"
+                     name = "gles_rust_binding-2kb04o3rmbmqk">
+                     <FileRef
+                        location = "group:s-f5me0chq97-1cpc9q3.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5me0chq97-1cpc9q3-kdfas5xbju98"
+                        name = "s-f5me0chq97-1cpc9q3-kdfas5xbju98">
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.bc.z">
+                        </FileRef>
+                     </Group>
+                  </Group>
+                  <Group
+                     location = "group:gpuimage-1hccy5uwgdczj"
+                     name = "gpuimage-1hccy5uwgdczj">
+                     <FileRef
+                        location = "group:s-f5n8p7inuv-13bjrn2.lock">
+                     </FileRef>
+                     <Group
+                        location = "group:s-f5n8p7inuv-13bjrn2-3gbmlrtm9ebd7"
+                        name = "s-f5n8p7inuv-13bjrn2-3gbmlrtm9ebd7">
+                        <FileRef
+                           location = "group:3ukjtjek91iisqvn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13rurqp7rmjhkd8g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4pgxn8ed4ho0iftm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1zlani842yjtcilq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ab09tdb8991i77z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3an808o5sk4pemp5.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1jdd3y0py236nkbr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1lio4b7o2mnvo39m.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xg2mgpv51lpemjp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41m671t104brmv0r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:jwsr3qozchl0965.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35dxw9uo4nyresym.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:23eh37pgbntsph6d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uu9m86fpb3l8xs6.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:14miwzrdq1i9mrzz.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:435wj7tob75vso09.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bkvf7soq4ljm9av.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:j2vg2ruj0fi91my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4dozdha4sjaub7kx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4er2vl5iz0jbqn57.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ma9bpxy4jv6semk.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:190h4og4lbplexh7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:qvmqtvyvp1f4wm4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35ueohvhrb94pipv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:g1uatqr4ow3xcft.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bk81qnh9rxxsgwh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ffjfkr1gzhzxtwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2zsc9tzkq6ch1qth.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2drxxkl1762g8vmq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:58glho649by2ujbp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tcz0u7n27w683jg.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:aoy5lpkcxemflcv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4mzhkeqyht98zito.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:abv788ny6ygu37b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:289yfp4g67vszijv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:18kjdp89i2vl4rwo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1z3e8oggwgkmsrij.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:7ybjkoimwjis6am.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2ye24m5qyzfspu6k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3htpp3tuxesziwxn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:16g66d2tnysg6kwe.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4uwq9s3c6vdtdyyb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:42ge5crrjqac7ub9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49deb2rf14lda96b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:v28s70363r6l5g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:391tancafua3o9r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:mybg7x9tqagr74u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1ipeztn2yith1j20.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4b3a6kirczv2pf54.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4qq0iy7hdjgpkgeo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:44zlganv042mx3my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1gmqd0cv61w329sa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4w28d08tw6rftag0.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uj0ekqa6mc5ym2o.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:poy03o144mhtmvh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:48hv73dnv7vhcd4p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2e7aog8g7qfqzii1.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3507re2sen0fhofl.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2xd455s87snjocqo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:8cnj072pz5bv48u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:178s3gbbgl3nt8vm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1bqtxuf8x40ts7xp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vpzof4obtm0x9hj.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:499uiiah69voedj4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13x01vwjoylclfk2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2aljdhvljrhr70u4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2w0hmws9ksnaagjy.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3e8cj6rtdurbax3f.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1k2w9wlg1zpd3tvb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:s7zbzqkzcr29u2r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:580tr2v55tt3s39p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1a54kha6418vf9sq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:56m3w3ce1919ihyc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:t44thlyvcgf0hdo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49qxet4zo7h2b3n2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:52esh81vgus7aypa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4bkf9dwxv7pe34s7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3jwcxynte7jtas9h.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vvgc21xrnr09c52.o">
+                        </FileRef>
+                     </Group>
+                  </Group>
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:unreachable-bd35edcbfbc6aea6.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-d2bc836159a1ba63.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-7a5ea67ef43c0122.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-952ff41151063dc4.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-4605030d8cb2cf0e.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-39273ea58be913e9.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-c207d67cab732e02.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-450998b3a665599f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-832a7a852f6094cd.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-a7a8bdcabffd34ca.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-dd507cd42818ab2a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-082a1e0630f465d2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-c19da1f656de18bf.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-7bb4815a29cfc34d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-051d066b4b649f43.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-6519c73a1f1c04c7.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-7412413a790d4770.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-734c27191b84e698.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-585916eaabc4d7ac.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-bd35edcbfbc6aea6.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-e32dad3dfcf34e8e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-a7a8bdcabffd34ca.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-e9c26fb53695589f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-d50445c9cbaf2663.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-c207d67cab732e02.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-4605030d8cb2cf0e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-bfcc3597e79931e2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-082a1e0630f465d2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-952ff41151063dc4.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-734c27191b84e698.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-7bb4815a29cfc34d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-bdf0d7f33d7bc0ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-bdf0d7f33d7bc0ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-bfcc3597e79931e2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-450998b3a665599f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-585916eaabc4d7ac.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-7a5ea67ef43c0122.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-cb1116a4a2d9a875.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-832a7a852f6094cd.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-6519c73a1f1c04c7.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-cb1116a4a2d9a875.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-d50445c9cbaf2663.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-d2bc836159a1ba63.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-051d066b4b649f43.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-c19da1f656de18bf.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-e9c26fb53695589f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-7412413a790d4770.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:thread_local-bf42865c9467ea7a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-39273ea58be913e9.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-dd507cd42818ab2a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-bf42865c9467ea7a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-e32dad3dfcf34e8e.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:lazy_static-42a18372ec0ffc44"
+                     name = "lazy_static-42a18372ec0ffc44">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:regex-1777c7dfd6a93c62"
+                     name = "regex-1777c7dfd6a93c62">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-c6d490e0b8a7108a"
+                     name = "jni-c6d490e0b8a7108a">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-d678726d5fad4a83"
+                     name = "memchr-d678726d5fad4a83">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+         </Group>
+         <Group
+            location = "group:armv7-linux-androideabi"
+            name = "armv7-linux-androideabi">
+            <Group
+               location = "group:release"
+               name = "release">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:thread_local-822a140ab5c5b842.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-f56252e0d101dc26.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-bfdfebf489024b03.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-493ee5a370a46e99.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-ca8b524e5f3c1df5.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-f0e3d2b6d21c8c89.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-8bf663422994dcea.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-bba9fa850f3ae73c.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-822a140ab5c5b842.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-15be559ff23f391a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-196301b15519e465.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-493ee5a370a46e99.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-566f07c7d0068ea0.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-6e6cc84159e1bc3f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-6e6cc84159e1bc3f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:unreachable-f25c7a4d83659287.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-3d8957120fa19f2f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-d79822b960980bc8.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-8bf75ff0869a1a41.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-8bf75ff0869a1a41.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-8d1419813451049a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-8d1419813451049a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-d79822b960980bc8.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-98ea37ea512623ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-7496782415cc9963.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-7496782415cc9963.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-bf3d9a16d6fe866d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-3d8957120fa19f2f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-75269e681736abd2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-15be559ff23f391a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-75269e681736abd2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-9744192d70e6fc4a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-98ea37ea512623ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-f56252e0d101dc26.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-ca8b524e5f3c1df5.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-566f07c7d0068ea0.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-8bf663422994dcea.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-6b466ae58e2e49ce.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-04ebe86ac9024211.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-bf3d9a16d6fe866d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-9744192d70e6fc4a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-bba9fa850f3ae73c.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-1a3dbeae03bb6422.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-bfdfebf489024b03.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-6b466ae58e2e49ce.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-1a3dbeae03bb6422.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-4cc81609697b30a1.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-04ebe86ac9024211.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-4cc81609697b30a1.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-f25c7a4d83659287.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-f0e3d2b6d21c8c89.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-196301b15519e465.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:regex-4031377c68c300c3"
+                     name = "regex-4031377c68c300c3">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-4ff1cd58dd9ad014"
+                     name = "jni-4ff1cd58dd9ad014">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-87bd222a190710c2"
+                     name = "memchr-87bd222a190710c2">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:lazy_static-5d48e855eec48217"
+                     name = "lazy_static-5d48e855eec48217">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:debug"
+               name = "debug">
+               <Group
+                  location = "group:incremental"
+                  name = "incremental">
+                  <Group
+                     location = "group:gles_rust_binding-2kb04o3rmbmqk"
+                     name = "gles_rust_binding-2kb04o3rmbmqk">
+                     <Group
+                        location = "group:s-f5me0al140-1jf8xsi-2g0ot4by058zs"
+                        name = "s-f5me0al140-1jf8xsi-2g0ot4by058zs">
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1qfb1cb8w0p6ci3r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:26kljvg4xf75f77d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1t5sn6uyfboxw5a9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4729zuirr950191i.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3ovdcohxjn4i77zb.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:94pjeqlxq1w3n50.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4kubva3u4q9ccgtc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:51xtaxa3cis1v40v.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fva09xv8d1k7azr.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4x7g4imdvwn67o9k.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3mrymam85k6dmdia.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3r61ku7a1bo3b1g9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1buxu2vm7t1wtnm9.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bume9p9v4d2kjum.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:17uskm0fv48twcwm.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xfsor783oj5vrho.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4rdicat3anvt45zt.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2z7px16x9tr6iwzd.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tscpu1o2dbyyh9c.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:38ntdnhzcw5itjzc.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41gv0e4xjp1j7vwq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2tvjdlryonfl36wv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3fxps49v4no6vp0z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1fnrclm141tqqmqs.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4f2lbmfvge1pgrvx.bc.z">
+                        </FileRef>
+                        <FileRef
+                           location = "group:55jn771p68sbhpbo.bc.z">
+                        </FileRef>
+                     </Group>
+                     <FileRef
+                        location = "group:s-f5me0al140-1jf8xsi.lock">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:gpuimage-1hccy5uwgdczj"
+                     name = "gpuimage-1hccy5uwgdczj">
+                     <Group
+                        location = "group:s-f5n8p5ypau-l6lft6-1ux3ju95nyd61"
+                        name = "s-f5n8p5ypau-l6lft6-1ux3ju95nyd61">
+                        <FileRef
+                           location = "group:3ukjtjek91iisqvn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13rurqp7rmjhkd8g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4pgxn8ed4ho0iftm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1zlani842yjtcilq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ab09tdb8991i77z.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3an808o5sk4pemp5.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1jdd3y0py236nkbr.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1lio4b7o2mnvo39m.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3xg2mgpv51lpemjp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:41m671t104brmv0r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:jwsr3qozchl0965.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35dxw9uo4nyresym.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:23eh37pgbntsph6d.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uu9m86fpb3l8xs6.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:14miwzrdq1i9mrzz.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:435wj7tob75vso09.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bkvf7soq4ljm9av.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:j2vg2ruj0fi91my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4dozdha4sjaub7kx.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4er2vl5iz0jbqn57.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ma9bpxy4jv6semk.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:190h4og4lbplexh7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:qvmqtvyvp1f4wm4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:35ueohvhrb94pipv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:g1uatqr4ow3xcft.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2bk81qnh9rxxsgwh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4ffjfkr1gzhzxtwm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2zsc9tzkq6ch1qth.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2drxxkl1762g8vmq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:58glho649by2ujbp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1tcz0u7n27w683jg.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:aoy5lpkcxemflcv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4mzhkeqyht98zito.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:abv788ny6ygu37b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:289yfp4g67vszijv.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:18kjdp89i2vl4rwo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1z3e8oggwgkmsrij.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:7ybjkoimwjis6am.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2ye24m5qyzfspu6k.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3htpp3tuxesziwxn.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:16g66d2tnysg6kwe.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4uwq9s3c6vdtdyyb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:42ge5crrjqac7ub9.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49deb2rf14lda96b.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:v28s70363r6l5g.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:391tancafua3o9r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:mybg7x9tqagr74u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1ipeztn2yith1j20.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4b3a6kirczv2pf54.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4qq0iy7hdjgpkgeo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:44zlganv042mx3my.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:query-cache.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1gmqd0cv61w329sa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4w28d08tw6rftag0.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2uj0ekqa6mc5ym2o.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:poy03o144mhtmvh.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:48hv73dnv7vhcd4p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2e7aog8g7qfqzii1.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3507re2sen0fhofl.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2xd455s87snjocqo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:8cnj072pz5bv48u.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:178s3gbbgl3nt8vm.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1bqtxuf8x40ts7xp.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vpzof4obtm0x9hj.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:dep-graph.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:499uiiah69voedj4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:13x01vwjoylclfk2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2aljdhvljrhr70u4.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:2w0hmws9ksnaagjy.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3e8cj6rtdurbax3f.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1k2w9wlg1zpd3tvb.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:s7zbzqkzcr29u2r.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:580tr2v55tt3s39p.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:work-products.bin">
+                        </FileRef>
+                        <FileRef
+                           location = "group:1a54kha6418vf9sq.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:56m3w3ce1919ihyc.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:t44thlyvcgf0hdo.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:49qxet4zo7h2b3n2.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:52esh81vgus7aypa.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:4bkf9dwxv7pe34s7.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:3jwcxynte7jtas9h.o">
+                        </FileRef>
+                        <FileRef
+                           location = "group:vvgc21xrnr09c52.o">
+                        </FileRef>
+                     </Group>
+                     <FileRef
+                        location = "group:s-f5n8p5ypau-l6lft6.lock">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <Group
+                  location = "group:native"
+                  name = "native">
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.a">
+               </FileRef>
+               <Group
+                  location = "group:examples"
+                  name = "examples">
+               </Group>
+               <Group
+                  location = "group:deps"
+                  name = "deps">
+                  <FileRef
+                     location = "group:unreachable-bd35edcbfbc6aea6.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcombine-d2bc836159a1ba63.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:error_chain-7a5ea67ef43c0122.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_log_sys-952ff41151063dc4.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:opengl_es_rs-4605030d8cb2cf0e.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:fnv-39273ea58be913e9.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex-c207d67cab732e02.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_logger-450998b3a665599f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:regex_syntax-832a7a852f6094cd.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:aho_corasick-a7a8bdcabffd34ca.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cfg_if-dd507cd42818ab2a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libvoid-082a1e0630f465d2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni_sys-c19da1f656de18bf.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:cesu8-7bb4815a29cfc34d.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgles_rust_binding-051d066b4b649f43.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni-6519c73a1f1c04c7.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.a">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libbyteorder-7412413a790d4770.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:lazy_static-734c27191b84e698.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:either-585916eaabc4d7ac.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libunreachable-bd35edcbfbc6aea6.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libucd_util-e32dad3dfcf34e8e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libaho_corasick-a7a8bdcabffd34ca.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libc-e9c26fb53695589f.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libutf8_ranges-d50445c9cbaf2663.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex-c207d67cab732e02.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libopengl_es_rs-4605030d8cb2cf0e.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:memchr-bfcc3597e79931e2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:void-082a1e0630f465d2.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gpuimage.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:android_log_sys-952ff41151063dc4.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblazy_static-734c27191b84e698.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcesu8-7bb4815a29cfc34d.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ascii-bdf0d7f33d7bc0ff.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libascii-bdf0d7f33d7bc0ff.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libmemchr-bfcc3597e79931e2.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libandroid_logger-450998b3a665599f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libeither-585916eaabc4d7ac.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liberror_chain-7a5ea67ef43c0122.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblog-cb1116a4a2d9a875.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libregex_syntax-832a7a852f6094cd.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:jni-6519c73a1f1c04c7.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:log-cb1116a4a2d9a875.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:utf8_ranges-d50445c9cbaf2663.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:combine-d2bc836159a1ba63.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:gles_rust_binding-051d066b4b649f43.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libjni_sys-c19da1f656de18bf.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:liblibc-e9c26fb53695589f.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:byteorder-7412413a790d4770.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:thread_local-bf42865c9467ea7a.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libgpuimage.so">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libfnv-39273ea58be913e9.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libcfg_if-dd507cd42818ab2a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:libthread_local-bf42865c9467ea7a.rlib">
+                  </FileRef>
+                  <FileRef
+                     location = "group:ucd_util-e32dad3dfcf34e8e.d">
+                  </FileRef>
+               </Group>
+               <Group
+                  location = "group:build"
+                  name = "build">
+                  <Group
+                     location = "group:lazy_static-42a18372ec0ffc44"
+                     name = "lazy_static-42a18372ec0ffc44">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:regex-1777c7dfd6a93c62"
+                     name = "regex-1777c7dfd6a93c62">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:jni-c6d490e0b8a7108a"
+                     name = "jni-c6d490e0b8a7108a">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+                  <Group
+                     location = "group:memchr-d678726d5fad4a83"
+                     name = "memchr-d678726d5fad4a83">
+                     <Group
+                        location = "group:out"
+                        name = "out">
+                     </Group>
+                     <FileRef
+                        location = "group:stderr">
+                     </FileRef>
+                     <FileRef
+                        location = "group:output">
+                     </FileRef>
+                     <FileRef
+                        location = "group:root-output">
+                     </FileRef>
+                  </Group>
+               </Group>
+               <FileRef
+                  location = "group:libgpuimage.d">
+               </FileRef>
+               <FileRef
+                  location = "group:libgpuimage.so">
+               </FileRef>
+            </Group>
+         </Group>
+         <Group
             location = "group:debug"
             name = "debug">
             <Group
@@ -1904,13 +5302,25 @@
                   location = "group:libversion_check-c8e203f6e95b9506.rlib">
                </FileRef>
                <FileRef
+                  location = "group:same_file-922db902f7397c98.d">
+               </FileRef>
+               <FileRef
                   location = "group:libsyn-3b71b61a8795bf06.rlib">
+               </FileRef>
+               <FileRef
+                  location = "group:libsame_file-922db902f7397c98.rlib">
                </FileRef>
                <FileRef
                   location = "group:libnum_traits-376ff74648d655cf.rlib">
                </FileRef>
                <FileRef
                   location = "group:libunicode_xid-1849d1f01d80e2cb.rlib">
+               </FileRef>
+               <FileRef
+                  location = "group:libwalkdir-fe4368a2986e80b9.rlib">
+               </FileRef>
+               <FileRef
+                  location = "group:walkdir-fe4368a2986e80b9.d">
                </FileRef>
                <FileRef
                   location = "group:libnum_derive-2a872169d48ed569.dylib.dSYM">
@@ -2123,6 +5533,22 @@
                   </FileRef>
                </Group>
                <Group
+                  location = "group:jni-0cc4937ce37960da"
+                  name = "jni-0cc4937ce37960da">
+                  <FileRef
+                     location = "group:build_script_build-0cc4937ce37960da.d">
+                  </FileRef>
+                  <FileRef
+                     location = "group:build_script_build-0cc4937ce37960da.dSYM">
+                  </FileRef>
+                  <FileRef
+                     location = "group:build_script_build-0cc4937ce37960da">
+                  </FileRef>
+                  <FileRef
+                     location = "group:build-script-build">
+                  </FileRef>
+               </Group>
+               <Group
                   location = "group:num-traits-e7739ad76cc8d560"
                   name = "num-traits-e7739ad76cc8d560">
                   <FileRef
@@ -2170,6 +5596,9 @@
          <Group
             location = "group:operation"
             name = "operation">
+            <FileRef
+               location = "group:lookup.rs">
+            </FileRef>
             <FileRef
                location = "group:combine.rs">
             </FileRef>

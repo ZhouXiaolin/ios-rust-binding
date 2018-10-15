@@ -28,7 +28,7 @@ extern "C" {
 
     struct Graph;
     struct Graph * xhey_init_graph();
-    void xhey_graph(void* graph, void * source, void* lookup_pic,void* lookup_filter, void* consumer);
+    void xhey_graph(void* graph, void * source, void* filter,void* filter2, void* consumer);
     void xhey_graph_forward(void*);
     void xhey_graph_printgraphviz(void*);
 
@@ -42,7 +42,7 @@ extern "C" {
     void xhey_release_basic_filter(void*);
     void xhey_release_combine_filter(void*);
     void xhey_context_release();
-    
+    void xhey_release_graph(void*);
     void test(const char*);
 
 #if __cplusplus

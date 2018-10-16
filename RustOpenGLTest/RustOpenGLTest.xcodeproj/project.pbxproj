@@ -18,7 +18,7 @@
 		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
 		9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC94114216E14AA00BED96C /* GLKit.framework */; };
 		9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FC94116216F2F2700BED96C /* IMG_2333.JPG */; };
-		9FCAC9A521749E82008B8105 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FCAC9A421749E82008B8105 /* libgpuimage.a */; };
+		9FCAC9A8217583BE008B8105 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD4AFEC2155D9560023C196 /* libgpuimage.a */; };
 		9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +42,6 @@
 		9FB2F4032148E65E00806A1E /* IMG_1592.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1592.JPG; sourceTree = "<group>"; };
 		9FC94114216E14AA00BED96C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		9FC94116216F2F2700BED96C /* IMG_2333.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_2333.JPG; sourceTree = "<group>"; };
-		9FCAC9A421749E82008B8105 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = ../libgpuimage/target/universal/release/libgpuimage.a; sourceTree = "<group>"; };
 		9FD4AFEC2155D9560023C196 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgpuimage.a; path = "../libgpuimage/target/aarch64-apple-ios/debug/libgpuimage.a"; sourceTree = "<group>"; };
 		9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraEntry.m; sourceTree = "<group>"; };
 		9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraEntry.h; sourceTree = "<group>"; };
@@ -53,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FCAC9A521749E82008B8105 /* libgpuimage.a in Frameworks */,
+				9FCAC9A8217583BE008B8105 /* libgpuimage.a in Frameworks */,
 				9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -107,7 +106,6 @@
 		9F8D4904213ED8870026B7EF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				9FCAC9A421749E82008B8105 /* libgpuimage.a */,
 				9FC94114216E14AA00BED96C /* GLKit.framework */,
 				9FD4AFEC2155D9560023C196 /* libgpuimage.a */,
 			);
@@ -332,7 +330,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = /Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/universal/release;
+				LIBRARY_SEARCH_PATHS = "/Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/aarch64-apple-ios/debug";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mfasta.RustOpenGLTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -352,7 +350,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = /Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/universal/release;
+				LIBRARY_SEARCH_PATHS = "/Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/aarch64-apple-ios/debug";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mfasta.RustOpenGLTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

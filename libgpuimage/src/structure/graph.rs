@@ -2,7 +2,9 @@ use super::{Node,Tensor,Edge};
 use std::cell::RefCell;
 use std::rc::Rc;
 
-// 使用Rc来保持Tensor引用
+/// 使用Rc来保持Tensor引用
+/// Graph应当和Context分离
+///
 
 #[repr(C)]
 pub struct Graph<'a,T:Tensor>{
@@ -30,10 +32,6 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
     /// 清空关系图 一般用于重新构建一个图
     pub fn reset(&mut self) {
-
-
-
-
         self.nodes.clear();
         self.edges.clear();
     }

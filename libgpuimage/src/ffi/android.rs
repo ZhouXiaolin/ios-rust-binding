@@ -65,8 +65,8 @@ pub unsafe extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_init_surface_view() -> *mut XheySurfaceView {
-    let surfaceView = Box::new(XheySurfaceView::new());
+pub unsafe extern "C" fn xhey_init_surface_view(width: i32, height: i32) -> *mut XheySurfaceView {
+    let surfaceView = Box::new(XheySurfaceView::new(width,height));
     Box::into_raw(surfaceView)
 }
 
@@ -145,8 +145,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initBasicfilter(e
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initSurfaceview(env: JNIEnv, _: JClass) -> jlong{
-    xhey_init_surface_view() as jlong
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initSurfaceview(env: JNIEnv, _: JClass, width: jint, height: jint) -> jlong{
+    xhey_init_surface_view(width,height) as jlong
 }
 
 #[no_mangle]

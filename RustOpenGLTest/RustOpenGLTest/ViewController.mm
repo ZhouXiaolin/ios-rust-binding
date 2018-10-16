@@ -108,6 +108,8 @@ void initImageData(UIImage* image, GLubyte* imageData, int* width, int* height){
 
     
     Graph* graph_ptr = xhey_init_graph();
+    
+    
     XheyView* view = xhey_init_view((__bridge void*)demoView);
     XheyPicture* picture = xhey_init_picture(imageData1, width1, height1);
     free(imageData1);
@@ -115,7 +117,7 @@ void initImageData(UIImage* image, GLubyte* imageData, int* width, int* height){
     XheyBasicFilter* filter = xhey_init_basic_filter();
     XheyBasicFilter* filter2 = xhey_init_basic_filter_2();
     
-    xhey_graph(graph_ptr, picture, filter, filter2, nullptr);
+    xhey_graph(graph_ptr, picture, filter, filter2, view);
     
 
     xhey_graph_forward(graph_ptr);

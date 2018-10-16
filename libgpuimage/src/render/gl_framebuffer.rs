@@ -177,7 +177,6 @@ impl Framebuffer {
 
 
 
-
 }
 
 
@@ -188,14 +187,18 @@ impl Drop for Framebuffer {
         println!("Drop Framebuffer");
         if self.textureOverride == false {
             unsafe {
-                glDeleteTextures(1,&mut self.texture);
+                let mutableTexture = self.texture;
+
+                glDeleteTextures(1,&mutableTexture);
                 println!("Delete texture at size {:?}",self.size);
             }
         }
 
         if self.framebuffer > 0 {
             unsafe {
-                glDeleteFramebuffers(1,&mut self.framebuffer);
+                let mutableFramebuffer = self.framebuffer;
+
+                glDeleteFramebuffers(1,&mutableFramebuffer);
                 println!("Delete Framebuffer");
 
             }

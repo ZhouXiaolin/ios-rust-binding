@@ -22,14 +22,14 @@ impl Drop for XheySurfaceView {
     }
 }
 impl XheySurfaceView {
-    pub fn new() -> Self {
+    pub fn new(width: i32, height: i32) -> Self {
 
         XheySurfaceView{
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::portrait,
-            backingSize: GLSize::new(720,1080)
+            backingSize: GLSize::new(width,height)
         }
     }
 
@@ -87,7 +87,7 @@ impl Drawable for XheySurfaceView {
 
         let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 
-        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
+        let scaledVertices = FillMode::preserveAspectRatioAndFill.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
 
         let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
 

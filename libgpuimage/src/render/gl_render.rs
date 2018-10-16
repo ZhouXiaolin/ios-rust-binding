@@ -1,5 +1,4 @@
 use gles_rust_binding::*;
-use super::Context;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};
 use super::sharedImageProcessingContext;
 use super::ShaderUniformSettings;

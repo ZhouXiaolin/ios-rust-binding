@@ -6,7 +6,8 @@ use std::mem::transmute;
 use std::rc::Rc;
 
 use super::structure::{Graph,Edge};
-use super::render::{Framebuffer,sharedImageProcessingContext};
+use super::render::{Framebuffer,sharedImageProcessingContext,GlContext};
+
 use super::operation::*;
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]
@@ -20,13 +21,13 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPic
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
     let box_filter = filter.as_ref().unwrap();
-//    let box_filter2 = filter2.as_ref().unwrap();
-//    let box_surfaceView = surfaceView.as_ref().unwrap();
+    let box_filter2 = filter2.as_ref().unwrap();
+    let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
     let filter = box_graph.add_function("filter",&[texture],box_filter);
-//    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
-//    let view = box_graph.add_function("surface view",&[filter2],box_surfaceView);
+    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
+    let view = box_graph.add_function("surface view",&[filter2],box_surfaceView);
 
 }
 
@@ -158,6 +159,10 @@ pub extern "C" fn xhey_update_picture(picture: *const XheyPicture, data: *const 
     picture.update(data,width,height);
 }
 
+#[no_mangle]
+pub extern "C" fn xhey_init_glcontext() -> *mut GlContext {
+    Box::into_raw(Box::new(GlContext::new()))
+}
 
 
 #[no_mangle]

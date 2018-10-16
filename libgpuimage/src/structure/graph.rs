@@ -144,9 +144,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
                 }
 
                 let mut f = node.f.borrow_mut();
-                if f.len() > 0 {
-                    f.pop();
-                }
+                if f.len() > 0 { f.pop(); }
 
                 f.push(v)
             }

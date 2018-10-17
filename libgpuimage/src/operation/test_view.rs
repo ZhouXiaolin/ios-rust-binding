@@ -1,4 +1,4 @@
-use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer};
+use ios_rust_binding::{UIView,NSUInteger,ShareId,CALayer,EAGLContext};
 use gles_rust_binding::*;
 use std::cell::{Cell,RefCell};
 use std::rc::Rc;
@@ -24,6 +24,7 @@ impl Drop for XheyTestView {
     fn drop(&mut self) {
         println!("Drop");
         self.destroyDisplayFramebuffer();
+
     }
 }
 

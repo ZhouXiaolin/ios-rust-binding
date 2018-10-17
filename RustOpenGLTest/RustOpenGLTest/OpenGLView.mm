@@ -68,6 +68,7 @@ NSString* const kFragmentString = SHADER_STRING
 
 - (void)setupLayer
 {
+    
     _eaglLayer = (CAEAGLLayer*) self.layer;
     
     // CALayer 默认是透明的，必须将它设为不透明才能让其可见

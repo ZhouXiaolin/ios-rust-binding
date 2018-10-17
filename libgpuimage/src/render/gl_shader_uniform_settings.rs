@@ -1,4 +1,4 @@
-use super::{Color,Position,Size};
+use super::{Color,Position,Size, Matrix3x3, Matrix4x4};
 use fnv::FnvHashMap;
 use gles_rust_binding::*;
 
@@ -9,8 +9,8 @@ pub enum Uniform{
     Color(Color),
     Position(Position),
     Size(Size),
-    Matrix4x4(),
-    Matrix3x3()
+    Matrix4x4(Matrix4x4),
+    Matrix3x3(Matrix3x3)
 }
 #[derive(Default,Debug)]
 pub struct ShaderUniformSettings{
@@ -42,11 +42,11 @@ impl ShaderUniformSettings {
                 Uniform::Size(s) => {
 
                 },
-                Uniform::Matrix3x3() => {
-
+                Uniform::Matrix3x3(m) => {
+                    unsafe {glUniformMatrix3fv(uniform.location() as i32, 1, GL_FALSE, m.toRowMajorGLArray().as_ptr())};
                 },
-                Uniform::Matrix4x4() => {
-
+                Uniform::Matrix4x4(m) => {
+                    unsafe {glUniformMatrix4fv(uniform.location() as i32, 1, GL_FALSE, m.toRowMajorGLArray().as_ptr())};
                 }
             }
         }

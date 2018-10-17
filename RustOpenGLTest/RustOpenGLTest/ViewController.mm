@@ -39,6 +39,7 @@
 }
 
 - (void)dealloc {
+    [EAGLContext setCurrentContext:nil];
     NSLog(@"%s",__func__);
 }
 
@@ -59,9 +60,9 @@
     
 
     
-    DemoView* demoView = [[DemoView alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    demoView.center = self.view.center;
-    [self.view addSubview:demoView];
+//    DemoView* demoView = [[DemoView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+//    demoView.center = self.view.center;
+//    [self.view addSubview:demoView];
 
     
     
@@ -70,28 +71,30 @@
 //
 //
 //#if 1
-    NSString* path1 = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
-
-    UIImage* image1 = [[UIImage alloc] initWithContentsOfFile:path1];
-    CGImage* newImageSource1 = [image1 CGImage];
-    int width1 = (int)CGImageGetWidth(newImageSource1);
-    int height1 = (int)CGImageGetHeight(newImageSource1);
-
-    GLubyte *imageData1 = (GLubyte*)calloc(1, width1*height1*4);
-    CGColorSpaceRef genericRGBColorspace1 = CGColorSpaceCreateDeviceRGB();
-    CGContextRef imageContext1 = CGBitmapContextCreate(imageData1, width1, height1, 8, width1*4, genericRGBColorspace1, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-    CGContextDrawImage(imageContext1, CGRectMake(0, 0, width1, height1), newImageSource1);
-    CGContextRelease(imageContext1);
-    CGColorSpaceRelease(genericRGBColorspace1);
-    
-    
-    XheyTestView* view = xhey_init_test_view((__bridge void*)demoView, imageData1, width1, height1);
-    free(imageData1);
-    xhey_test_view_display(view);
-    
-    
-    
+//    NSString* path1 = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+//
+//    UIImage* image1 = [[UIImage alloc] initWithContentsOfFile:path1];
+//    CGImage* newImageSource1 = [image1 CGImage];
+//    int width1 = (int)CGImageGetWidth(newImageSource1);
+//    int height1 = (int)CGImageGetHeight(newImageSource1);
+//
+//    GLubyte *imageData1 = (GLubyte*)calloc(1, width1*height1*4);
+//    CGColorSpaceRef genericRGBColorspace1 = CGColorSpaceCreateDeviceRGB();
+//    CGContextRef imageContext1 = CGBitmapContextCreate(imageData1, width1, height1, 8, width1*4, genericRGBColorspace1, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+//    CGContextDrawImage(imageContext1, CGRectMake(0, 0, width1, height1), newImageSource1);
+//    CGContextRelease(imageContext1);
+//    CGColorSpaceRelease(genericRGBColorspace1);
+//
+//
+//    XheyTestView* view = xhey_init_test_view((__bridge void*)demoView, imageData1, width1, height1);
+//    free(imageData1);
+//    xhey_test_view_display(view);
+//
+//
+//
 //    xhey_release_test_view(view);
+//    [demoView removeFromSuperview];
+    
     
     
     

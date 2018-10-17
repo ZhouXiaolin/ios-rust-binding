@@ -9,7 +9,6 @@ use objc::declare::{ClassDecl,ProtocolDecl};
 use objc::{Encode, Encoding,Message};
 use objc::runtime::{BOOL, Class, NO, Object, Sel, YES, Protocol};
 
-
 pub type id = *mut Object;
 pub const UIViewAutoresizingFlexibleWidth: NSUInteger = 1 << 1;
 pub const UIViewAutoresizingFlexibleHeight: NSUInteger = 1 << 4;
@@ -199,6 +198,12 @@ impl EAGLContext {
 
         unsafe { msg_send![cls, setCurrentContext:&*(*context)]}
     }
+
+//    pub fn setCurrentContextNil() -> BOOL {
+//        let cls = Self::class();
+//
+//        unsafe {msg_send![cls, setCurrentContext: ]}
+//    }
 
     pub fn makeCurrentContext(context: &ShareId<Self>){
         let cls = Self::class();

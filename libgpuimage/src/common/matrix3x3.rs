@@ -1,5 +1,5 @@
+use gles_rust_binding::*;
 type Float = f32;
-
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Matrix3x3 {
     m11:Float, m12:Float, m13:Float,
@@ -8,7 +8,7 @@ pub struct Matrix3x3 {
 }
 
 impl Matrix3x3{
-    fn new(rowMajorValues:[f32;9]) -> Self {
+    pub fn new(rowMajorValues:[f32;9]) -> Self {
         Matrix3x3{
             m11:rowMajorValues[0], m12:rowMajorValues[1], m13:rowMajorValues[2],
             m21:rowMajorValues[3], m22:rowMajorValues[4], m23:rowMajorValues[5],
@@ -16,14 +16,20 @@ impl Matrix3x3{
         }
     }
 
-    fn identity() -> Self {
+    pub fn identity() -> Self {
         Self::new([1.0,0.0,0.0,
                                 0.0,1.0,0.0,
                                 0.0,0.0,1.0])
     }
-    fn centerOnly() -> Self {
+    pub fn centerOnly() -> Self {
         Self::new([0.0,0.0,0.0,
                                 0.0,1.0,0.0,
                                 0.0,0.0,0.0])
+    }
+
+    pub fn toRowMajorGLArray(&self) -> [GLfloat;9] {
+        [self.m11, self.m12, self.m13,
+         self.m21, self.m22, self.m23,
+         self.m31, self.m32, self.m33]
     }
 }

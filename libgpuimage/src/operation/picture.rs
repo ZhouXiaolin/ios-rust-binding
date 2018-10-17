@@ -117,7 +117,6 @@ impl Edge for XheyPicture{
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
         Some(self.framebuffer.clone())
-
     }
 
     fn name(&self) -> &str {

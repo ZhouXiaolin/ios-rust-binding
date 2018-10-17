@@ -17,7 +17,7 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPicture, filter: *mut XHeyBasicFilter,filter2: *mut XHeyBasicFilter,surfaceView: *mut XHeyView){
+pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPicture, filter: *mut XHeyBasicFilter,filter2: *mut XHeyBasicFilter,surfaceView: *mut XheySurfaceView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
 //    let box_filter = filter.as_ref().unwrap();
@@ -43,10 +43,10 @@ pub unsafe extern "C" fn xhey_release_picture(source: *mut XheyPicture){
     drop(Box::from_raw(source));
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn xhey_release_view(source: *mut XHeyView){
-    drop(Box::from_raw(source));
-}
+//#[no_mangle]
+//pub unsafe extern "C" fn xhey_release_view(source: *mut XHeyView){
+//    drop(Box::from_raw(source));
+//}
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_release_basic_filter(source: *mut XHeyBasicFilter){
@@ -135,12 +135,22 @@ pub extern "C" fn xhey_init_lookup_filter() -> *mut XHeyLookupFilter {
     let filter = Box::new(XHeyLookupFilter::new());
     Box::into_raw(filter)
 }
-#[no_mangle]
-pub extern "C" fn xhey_init_view(source: *const UIView) -> *mut XHeyView{
-    let _source = unsafe{source.as_ref().unwrap()};
-    let view = XHeyView::new(_source);
-    Box::into_raw(Box::new(view))
+//#[no_mangle]
+//pub extern "C" fn xhey_init_view(source: *const UIView) -> *mut XHeyView{
+//    let _source = unsafe{source.as_ref().unwrap()};
+//    let view = XHeyView::new(_source);
+//    Box::into_raw(Box::new(view))
+//
+//}
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_surface_view(width: i32, height: i32) -> *mut XheySurfaceView {
+    let surfaceView = Box::new(XheySurfaceView::new(width,height));
+    Box::into_raw(surfaceView)
+}
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_surface_view(source: *mut XheySurfaceView){
+    drop(Box::from_raw(source));
 }
 
 

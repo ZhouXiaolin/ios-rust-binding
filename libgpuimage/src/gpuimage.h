@@ -43,8 +43,10 @@ extern "C" {
     void xhey_release_combine_filter(void*);
     void xhey_context_release();
     void xhey_release_graph(void*);
-    
 
+    struct XheySurfaceView;
+    struct XheySurfaceView* xhey_init_surface_view(int width, int height);
+    void xhey_release_surface_view(void*);
 
 #if __cplusplus
 }

@@ -60,7 +60,7 @@ impl Edge for XheySurfaceView {
 
     /// 指定输入最大个数
     fn arity(&self) -> u32{
-        1
+        0
     }
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返
@@ -78,10 +78,10 @@ impl Drawable for XheySurfaceView {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+//        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
 
 
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::red());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 

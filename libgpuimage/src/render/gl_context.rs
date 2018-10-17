@@ -11,7 +11,7 @@ use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 #[repr(C)]
 #[derive(Debug)]
 pub struct GlContext{
-    pub context: ShareId<EAGLContext>,
+//    pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,
     pub framebufferCache: FramebufferCache,
@@ -57,9 +57,9 @@ const fragmentStr: &str = r#"
 impl GlContext {
     #[cfg(target_os = "ios")]
     pub fn new() -> Self{
-        let generatedContext = EAGLContext::withApi(2);
-        let generatedContext = generatedContext.share();
-        EAGLContext::setCurrentContext(&generatedContext);
+//        let generatedContext = EAGLContext::withApi(2);
+//        let generatedContext = generatedContext.share();
+//        EAGLContext::setCurrentContext(&generatedContext);
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let standardImageVBO = generateVBO(&standardImageVertices);
@@ -68,7 +68,7 @@ impl GlContext {
         let textureVBOs = generateTextureVBOs();
 
         Self{
-            context:generatedContext,
+//            context:generatedContext,
             standardImageVBO,
             passthroughShader:program,
             framebufferCache: FramebufferCache::default(),
@@ -98,12 +98,12 @@ impl GlContext {
 
     #[cfg(target_os = "ios")]
     pub fn presentBufferForDisplay(&self){
-        self.context.presentRenderBuffer(GL_RENDERBUFFER as NSUInteger);
+//        self.context.presentRenderBuffer(GL_RENDERBUFFER as NSUInteger);
     }
 
     #[cfg(target_os = "ios")]
     pub fn makeCurrentContext(&self){
-        EAGLContext::makeCurrentContext(&self.context);
+//        EAGLContext::makeCurrentContext(&self.context);
     }
 
 

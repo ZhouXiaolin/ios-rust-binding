@@ -2,14 +2,15 @@ extern crate jni;
 extern crate android_logger;
 
 use super::operation::*;
-use self::jni::JNIEnv;
-use self::jni::objects::{JClass, JString};
-use self::jni::sys::*;
+use jni::JNIEnv;
+use jni::objects::{JClass, JString};
+use jni::sys::*;
 use std::os::raw::{c_void,c_int,c_uint};
 use gles_rust_binding::*;
 use super::render::{Framebuffer};
+use super::common::Matrix4x4;
 use super::structure::{Graph,Edge};
-
+use super::render::sharedImageProcessingContext;
 
 use log::Level;
 use android_logger::Filter;
@@ -26,7 +27,7 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut XheyOESTexture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XheySurfaceView){
+pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOESTexture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter,surfaceView: *mut XheySurfaceView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
     let box_lookup_picture = lookup_picture.as_ref().unwrap();
@@ -38,6 +39,18 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
     let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
     let view = box_graph.add_function("surface view",&[lookup_filter],box_surfaceView);
 
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, source: *mut XheyPicture, lookup_picture: *mut XheyPicture, lookup_filter: *mut XHeyLookupFilter) {
+    let box_graph = graph.as_mut().unwrap();
+    let box_picture = source.as_mut().unwrap();
+    let box_lookup_picture = lookup_picture.as_mut().unwrap();
+    let box_lookup_filter = lookup_filter.as_mut().unwrap();
+
+    let pic = box_graph.add_input("picture", box_picture);
+    let lut_pic = box_graph.add_input("lut pic",box_lookup_picture);
+    let lut_filter = box_graph.add_function("lut filter",&[pic, lut_pic], box_lookup_filter);
 }
 
 #[no_mangle]
@@ -89,6 +102,8 @@ pub extern "C" fn xhey_init_picture_textureId(textureId: i32, width: i32, height
     Box::into_raw(picture)
 
 }
+
+
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLogger(env: JNIEnv, _: JClass){
@@ -153,7 +168,17 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initSurfaceview(e
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateTexture(env: JNIEnv, _: JClass, texture_ptr: jlong, textureId: jint){
     xhey_oes_texture_update(texture_ptr as *mut XheyOESTexture,textureId as c_uint);
 }
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateTexturematrix(env: JNIEnv, _: JClass, texture_ptr: jlong, matrix: jfloatArray) {
+    let mut array : [jfloat;16] = [0.0;16];
+    let _ = env.get_float_array_region(matrix,0,&mut array);
 
+    info!("array {:?}", array);
+
+    let texture = (texture_ptr as *mut XheyOESTexture).as_mut().unwrap();
+    texture.updateMatrix(Matrix4x4::new(array));
+
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphForward(env: JNIEnv, _: JClass, graph_ptr: jlong){
@@ -180,4 +205,45 @@ pub extern "C" fn xhey_init_lookup_filter() -> *mut XHeyLookupFilter {
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLookupfilter(env: JNIEnv, _: JClass) -> jlong{
     xhey_init_lookup_filter() as jlong
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseGraph(env: JNIEnv, _: JClass, graph_ptr: jlong) {
+
+    drop(Box::from_raw(graph_ptr as *mut RenderGraph));
+
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseTexture(env: JNIEnv, _: JClass, texture_ptr: jlong) {
+    drop(Box::from_raw(texture_ptr as *mut XheyOESTexture))
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseSurfaceview(env: JNIEnv, _: JClass, surface_view_ptr: jlong) {
+    drop(Box::from_raw(surface_view_ptr as *mut XheySurfaceView))
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseBasicfilter(env: JNIEnv, _: JClass, basic_filter_ptr: jlong) {
+    drop(Box::from_raw(basic_filter_ptr as *mut XHeyBasicFilter))
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releasePicture(env: JNIEnv, _: JClass, picture_ptr: jlong) {
+    drop(Box::from_raw(picture_ptr as *mut XheyPicture))
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseLookupfilter(env: JNIEnv, _: JClass, lookup_filter_ptr: jlong) {
+    drop(Box::from_raw(lookup_filter_ptr as *mut XHeyLookupFilter))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseContext(env: JNIEnv, _: JClass){
+    sharedImageProcessingContext.framebufferCache.purgeAllUnassignedFramebuffer();
 }

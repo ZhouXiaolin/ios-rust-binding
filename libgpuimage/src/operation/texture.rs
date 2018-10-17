@@ -31,14 +31,15 @@ impl XheyOESTexture {
 
         let vertexString = r#"
  attribute vec4 position;
- attribute vec2 inputTextureCoordinate;
+ attribute vec4 inputTextureCoordinate;
 
  varying vec2 textureCoordinate;
 
+ uniform mat4 uTexMatrix;
  void main()
  {
      gl_Position = position;
-     textureCoordinate = inputTextureCoordinate.xy;
+     textureCoordinate = (uTexMatrix * inputTextureCoordinate).xy;
  }
         "#;
         let fragmentString = r#"
@@ -71,6 +72,10 @@ impl XheyOESTexture {
     pub fn update(&mut self, textureId: GLuint){
         self.textureId = textureId;
     }
+    pub fn updateMatrix(&mut self, matrix: Matrix4x4){
+        self.uniformSettings.setValue("uTexMatrix", Uniform::Matrix4x4(matrix));
+    }
+
 }
 
 
@@ -105,7 +110,7 @@ impl Edge for XheyOESTexture{
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
         let size = self.size;
 
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::rotateCounterclockwise));
+        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::rotateClockwiseAndFlipVertically));
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 

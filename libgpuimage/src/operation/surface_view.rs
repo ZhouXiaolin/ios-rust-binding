@@ -81,13 +81,13 @@ impl Drawable for XheySurfaceView {
         unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
 
 
-        clearFramebufferWithColor(Color::blue());
+        clearFramebufferWithColor(Color::black());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 
         let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 
-        let scaledVertices = FillMode::preserveAspectRatioAndFill.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
+        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
 
         let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
 

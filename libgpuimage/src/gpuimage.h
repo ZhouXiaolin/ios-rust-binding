@@ -43,13 +43,8 @@ extern "C" {
     void xhey_release_combine_filter(void*);
     void xhey_context_release();
     void xhey_release_graph(void*);
-    void test(const char*);
     
-    
-    struct XheyTestView;
-    struct XheyTestView* xhey_init_test_view(void*, void*, int, int);
-    void xhey_test_view_display(void*);
-    void xhey_release_test_view(void*);
+
 
 #if __cplusplus
 }

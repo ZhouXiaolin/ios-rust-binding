@@ -8,10 +8,6 @@ mod lookup;
 
 
 #[cfg(target_os = "ios")]
-mod test_view;
-
-
-#[cfg(target_os = "ios")]
 mod view;
 
 #[cfg(target_os = "android")]
@@ -24,9 +20,6 @@ pub use self::picture::*;
 pub use self::combine::*;
 pub use self::lookup::*;
 
-
-#[cfg(target_os = "ios")]
-pub use self::test_view::*;
 
 #[cfg(target_os = "ios")]
 pub use self::view::*;

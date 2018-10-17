@@ -84,6 +84,14 @@
     CGColorSpaceRelease(genericRGBColorspace1);
 
 
+    
+    Graph* g = xhey_init_graph();
+    XheyPicture* pic = xhey_init_picture(imageData1, width1, height1);
+    free(imageData1);
+    XheyView* view = xhey_init_view((__bridge void*)demoView);
+    xhey_graph(g, pic, nullptr, nullptr, view);
+    
+    xhey_graph_forward(g);
 
     
 

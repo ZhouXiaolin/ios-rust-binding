@@ -173,24 +173,5 @@ pub extern "C" fn test(path: *const c_char){
     }
 }
 
-
-#[no_mangle]
-pub unsafe extern "C" fn xhey_init_test_view(source: *const UIView, data: *const c_void, width: i32, height: i32) -> *mut XheyTestView {
-    let _source = source.as_ref().unwrap();
-    let view = XheyTestView::new(_source,data,width,height);
-    Box::into_raw(Box::new(view))
-}
-
-
-#[no_mangle]
-pub unsafe extern "C" fn xhey_test_view_display(view: *const XheyTestView){
-    let _view = view.as_ref().unwrap();
-    _view.display();
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn xhey_release_test_view(source: *mut XheyTestView){
-    drop(Box::from_raw(source));
-}
 // new api
 

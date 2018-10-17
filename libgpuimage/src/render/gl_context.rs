@@ -9,6 +9,7 @@ use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
 
 #[cfg(target_os = "ios")]
 #[repr(C)]
+#[derive(Debug)]
 pub struct GlContext{
     pub context: ShareId<EAGLContext>,
     pub standardImageVBO: GLuint,
@@ -20,6 +21,7 @@ pub struct GlContext{
 
 #[cfg(target_os = "android")]
 #[repr(C)]
+#[derive(Debug)]
 pub struct GlContext{
     pub standardImageVBO: GLuint,
     pub passthroughShader: GLProgram,

@@ -174,7 +174,7 @@ pub const kEAGLRenderingAPIOpenGLES1 : EAGLRenderingAPI = 1;
 pub const kEAGLRenderingAPIOpenGLES2 : EAGLRenderingAPI = 2;
 pub const kEAGLRenderingAPIOpenGLES3 : EAGLRenderingAPI = 3;
 
-
+#[derive(Debug)]
 pub struct EAGLContext {
     _priv:()
 }

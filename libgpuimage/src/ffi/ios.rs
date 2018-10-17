@@ -20,14 +20,14 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPicture, filter: *mut XHeyBasicFilter,filter2: *mut XHeyBasicFilter,surfaceView: *mut XHeyView){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-    let box_filter = filter.as_ref().unwrap();
-    let box_filter2 = filter2.as_ref().unwrap();
+//    let box_filter = filter.as_ref().unwrap();
+//    let box_filter2 = filter2.as_ref().unwrap();
     let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-    let filter = box_graph.add_function("filter",&[texture],box_filter);
-    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
-    let view = box_graph.add_function("surface view",&[filter2],box_surfaceView);
+//    let filter = box_graph.add_function("filter",&[texture],box_filter);
+//    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
+    let view = box_graph.add_function("surface view",&[texture],box_surfaceView);
 
 }
 
@@ -174,5 +174,23 @@ pub extern "C" fn test(path: *const c_char){
 }
 
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_test_view(source: *const UIView, data: *const c_void, width: i32, height: i32) -> *mut XheyTestView {
+    let _source = source.as_ref().unwrap();
+    let view = XheyTestView::new(_source,data,width,height);
+    Box::into_raw(Box::new(view))
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_test_view_display(view: *const XheyTestView){
+    let _view = view.as_ref().unwrap();
+    _view.display();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_release_test_view(source: *mut XheyTestView){
+    drop(Box::from_raw(source));
+}
 // new api
 

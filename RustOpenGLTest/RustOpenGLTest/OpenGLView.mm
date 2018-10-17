@@ -45,7 +45,9 @@ NSString* const kFragmentString = SHADER_STRING
 
 // 使用匿名 category 来声明私有成员
 @interface OpenGLView()
-
+{
+    GLuint imageTexture;
+}
 - (void)setupLayer;
 - (void)setupContext;
 - (void)setupProgram;
@@ -152,7 +154,6 @@ NSString* const kFragmentString = SHADER_STRING
    
     
     
-    GLuint imageTexture = 0;
     glGenTextures(1, &imageTexture);
     glBindTexture(GL_TEXTURE_2D, imageTexture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -217,7 +218,6 @@ NSString* const kFragmentString = SHADER_STRING
     [_context presentRenderbuffer:GL_RENDERBUFFER];
     
     
-    glDeleteTextures(1, &imageTexture);
     
 }
 
@@ -252,5 +252,10 @@ NSString* const kFragmentString = SHADER_STRING
     // Drawing code
 }
 */
+
+- (void)dealloc{
+    [self destoryBuffers];
+    glDeleteTextures(1, &imageTexture);
+}
 
 @end

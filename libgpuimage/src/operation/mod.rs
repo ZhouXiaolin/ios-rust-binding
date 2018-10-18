@@ -6,14 +6,10 @@ mod picture;
 mod combine;
 mod lookup;
 
-
-//#[cfg(target_os = "ios")]
-//mod view;
+mod surface_view;
 
 #[cfg(target_os = "android")]
 mod texture;
-//#[cfg(target_os = "android")]
-mod surface_view;
 
 pub use self::basic::*;
 pub use self::picture::*;
@@ -21,13 +17,10 @@ pub use self::combine::*;
 pub use self::lookup::*;
 
 
-//#[cfg(target_os = "ios")]
-//pub use self::view::*;
+pub use self::surface_view::*;
 
 #[cfg(target_os = "android")]
 pub use self::texture::*;
-//#[cfg(target_os = "android")]
-pub use self::surface_view::*;
 
 use super::common::*;
 use super::structure::*;

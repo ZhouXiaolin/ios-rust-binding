@@ -78,9 +78,6 @@ impl Drawable for XheySurfaceView {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
-//        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
-
-
         clearFramebufferWithColor(Color::red());
 
         let program = &sharedImageProcessingContext.passthroughShader;

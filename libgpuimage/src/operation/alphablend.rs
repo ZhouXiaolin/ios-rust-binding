@@ -137,6 +137,8 @@ impl Renderable for XHeyAlphaBlendFilter {
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
+        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
         renderFramebuffer
     }
 }

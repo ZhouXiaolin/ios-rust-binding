@@ -2,24 +2,6 @@ use gles_rust_binding::*;
 use std::mem;
 use super::{Rotation, FramebufferCache};
 
-#[cfg(target_os = "ios")]
-use ios_rust_binding::{EAGLContext,NSUInteger,ShareId};
-
-
-
-#[cfg(target_os = "ios")]
-#[repr(C)]
-#[derive(Debug)]
-pub struct GlContext{
-//    pub context: ShareId<EAGLContext>,
-    pub standardImageVBO: GLuint,
-    pub passthroughShader: GLProgram,
-    pub framebufferCache: FramebufferCache,
-    pub textureVBOs: Vec<GLuint>
-
-}
-
-#[cfg(target_os = "android")]
 #[repr(C)]
 #[derive(Debug)]
 pub struct GlContext{
@@ -27,7 +9,9 @@ pub struct GlContext{
     pub passthroughShader: GLProgram,
     pub framebufferCache: FramebufferCache,
     pub textureVBOs: Vec<GLuint>
+
 }
+
 
 const vertexStr: &str = r#"
  attribute vec4 position;
@@ -55,37 +39,12 @@ const fragmentStr: &str = r#"
     "#;
 
 impl GlContext {
-    #[cfg(target_os = "ios")]
     pub fn new() -> Self{
-//        let generatedContext = EAGLContext::withApi(2);
-//        let generatedContext = generatedContext.share();
-//        EAGLContext::setCurrentContext(&generatedContext);
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let standardImageVBO = generateVBO(&standardImageVertices);
 
         let program = GLProgram::new(vertexStr,fragmentStr);
-        let textureVBOs = generateTextureVBOs();
-
-        Self{
-//            context:generatedContext,
-            standardImageVBO,
-            passthroughShader:program,
-            framebufferCache: FramebufferCache::default(),
-            textureVBOs
-        }
-    }
-
-    #[cfg(target_os = "android")]
-    pub fn new() -> Self{
-
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let standardImageVBO = generateVBO(&standardImageVertices);
-
-
-        let program = GLProgram::new(vertexStr,fragmentStr);
-
         let textureVBOs = generateTextureVBOs();
 
         Self{
@@ -96,27 +55,12 @@ impl GlContext {
         }
     }
 
-    #[cfg(target_os = "ios")]
+
     pub fn presentBufferForDisplay(&self){
-//        self.context.presentRenderBuffer(GL_RENDERBUFFER as NSUInteger);
     }
 
-    #[cfg(target_os = "ios")]
     pub fn makeCurrentContext(&self){
-//        EAGLContext::makeCurrentContext(&self.context);
     }
-
-
-    #[cfg(target_os = "android")]
-    pub fn presentBufferForDisplay(&self){
-
-    }
-
-    #[cfg(target_os = "android")]
-    pub fn makeCurrentContext(&self){
-
-    }
-
 
 
 

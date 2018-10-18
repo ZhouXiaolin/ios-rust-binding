@@ -19,10 +19,6 @@ extern crate fnv;
 extern crate gles_rust_binding;
 
 
-#[cfg(target_os = "ios")]
-extern crate ios_rust_binding;
-
-
 // 开发计划
 // 内存释放检查 iOS上内存不释放的问题是由EAGLContext导致的，在Rust内部操作EAGLContext是非常不方便的，这一步将在移除平台相关代码中修复
 // 统一Android iOS接口

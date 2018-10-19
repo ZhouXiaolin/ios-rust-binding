@@ -12,7 +12,9 @@ pub struct XheyPictureOutput{
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
     orientation: ImageOrientation,
-    backingSize:GLSize
+    backingSize:GLSize,
+    displayFramebuffer: Cell<GLuint>,
+    displayRenderbuffer: Cell<GLuint>,
 
 }
 
@@ -29,12 +31,47 @@ impl XheyPictureOutput {
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::portrait,
-            backingSize: GLSize::new(width,height)
+            backingSize: GLSize::new(width,height),
+            displayFramebuffer:Cell::default(),
+            displayRenderbuffer:Cell::default(),
         }
     }
 
-    pub 
+    pub fn createDisplayFramebuffer(&self) {
+        unsafe {
+            let mut frameBuffer : GLuint = 0;
+            glGenFramebuffers(1,&mut frameBuffer);
+            self.displayFramebuffer.set(frameBuffer);
+            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
 
+
+            let mut colorRenderBuffer : GLuint = 0;
+            glGenRenderbuffers(1,&mut colorRenderBuffer);
+            self.displayRenderbuffer.set(colorRenderBuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER,colorRenderBuffer);
+            glRenderbufferStorage(GL_RENDERBUFFER,GL_RGBA,self.backingSize.width,self.backingSize.height);
+
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderBuffer);
+
+
+            if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE {
+                info!("Image Handler initImageFBO failed!");
+                panic!("Image Handler initImageFBO failed")
+            }
+
+        }
+    }
+
+    fn activateDisplayFramebuffer(&self) {
+        unsafe {
+            glBindFramebuffer(GL_FRAMEBUFFER,self.displayFramebuffer.get());
+            glViewport(0,0,self.backingSize.width,self.backingSize.height);
+        }
+    }
+
+    fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
+        inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
+    }
 }
 
 
@@ -62,7 +99,7 @@ impl Edge for XheyPictureOutput {
 
     /// 指定输入最大个数
     fn arity(&self) -> u32{
-        0
+        1
     }
 
     /// 前向计算 在XheyView中实现这个Trait，应该做的是将xs的Framebuffer绘制到View上，返
@@ -81,8 +118,22 @@ impl Drawable for XheyPictureOutput {
     fn render(&self, framebuffer:&Self::Item){
 
 
+//        if self.displayFramebuffer.get() == 0 {
+//            self.createDisplayFramebuffer();
+//        }
+//
+//        self.activateDisplayFramebuffer();
 
-        clearFramebufferWithColor(Color::black());
+        let inputFramebuffer: &Framebuffer = framebuffer;
+
+        let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
+
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+
+
+        renderFramebuffer.activateFramebufferForRendering();
+
+        clearFramebufferWithColor(Color::red());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 

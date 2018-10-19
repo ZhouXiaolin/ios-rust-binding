@@ -48,6 +48,9 @@ extern "C" {
     struct XheySurfaceView* xhey_init_surface_view(int width, int height);
     void xhey_release_surface_view(void*);
 
+    struct XheyPictureOutput;
+    struct XheyPictureOutput* xhey_init_picture_output(int width, int height);
+
 #if __cplusplus
 }
 #endif

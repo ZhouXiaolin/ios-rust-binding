@@ -58,6 +58,7 @@ NSString* const kFragmentString = SHADER_STRING
     XheyPicture* pic;
     XheySurfaceView* surface;
     XheyBasicFilter* basic;
+    XheyPictureOutput* output;
 
 }
 @end
@@ -66,28 +67,7 @@ NSString* const kFragmentString = SHADER_STRING
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect{
    
-    xhey_graph_forward(g);
     
-    CGSize _size = CGSizeMake(720, 1280);
-    
-    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
-    
-    GLubyte *rawImagePixels;
-    
-    CGDataProviderRef dataProvider = NULL;
-    
-    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
-    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
-    
-    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-    
-    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
-    
-    
-    int i = 0;
     
 }
 
@@ -106,9 +86,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
     currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
-    glView = [[GLKView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
-    glView.delegate = self;
-    [self.view addSubview:glView];
+//    glView = [[GLKView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
+//    glView.delegate = self;
+//    [self.view addSubview:glView];
     
     
     
@@ -132,8 +112,33 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     pic = xhey_init_picture(imageData1, width1, height1);
     free(imageData1);
     basic = xhey_init_basic_filter_2();
-    surface = xhey_init_surface_view(720, 720);
-    xhey_graph(g, pic, basic, nullptr, nullptr);
+//    surface = xhey_init_surface_view(720, 720);
+    output = xhey_init_picture_output(width1, height1);
+    xhey_graph(g, pic, nullptr, nullptr, output);
+    
+    
+    xhey_graph_forward(g);
+    
+    CGSize _size = CGSizeMake(width1, height1);
+    
+    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
+    
+    GLubyte *rawImagePixels;
+    
+    CGDataProviderRef dataProvider = NULL;
+    
+    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
+    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
+    
+    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+    
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
+    
+    
+    int i = 0;
     [EAGLContext setCurrentContext:nil];
     
 

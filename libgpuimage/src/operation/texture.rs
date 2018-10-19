@@ -110,11 +110,11 @@ impl Edge for XheyOESTexture{
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
         let size = self.size;
 
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::rotateClockwiseAndFlipVertically));
+        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::flipHorizontally));
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portraitUpsideDown,size,false);
 
         renderFramebuffer.activateFramebufferForRendering();
 

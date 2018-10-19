@@ -7,6 +7,7 @@ mod combine;
 mod lookup;
 
 mod surface_view;
+mod picture_output;
 
 #[cfg(target_os = "android")]
 mod texture;
@@ -15,7 +16,7 @@ pub use self::basic::*;
 pub use self::picture::*;
 pub use self::combine::*;
 pub use self::lookup::*;
-
+pub use self::picture_output::*;
 
 pub use self::surface_view::*;
 

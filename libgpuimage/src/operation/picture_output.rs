@@ -7,7 +7,7 @@ use super::*;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XheySurfaceView{
+pub struct XheyPictureOutput{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
@@ -16,15 +16,15 @@ pub struct XheySurfaceView{
 
 }
 
-impl Drop for XheySurfaceView {
+impl Drop for XheyPictureOutput {
     fn drop(&mut self){
-        info!("Drop XheyPicture");
+        info!("Drop XheyPictureOutput");
     }
 }
-impl XheySurfaceView {
+impl XheyPictureOutput {
     pub fn new(width: i32, height: i32) -> Self {
 
-        XheySurfaceView{
+        XheyPictureOutput{
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
@@ -33,10 +33,12 @@ impl XheySurfaceView {
         }
     }
 
+    pub 
+
 }
 
 
-impl Edge for XheySurfaceView {
+impl Edge for XheyPictureOutput {
     type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
@@ -74,9 +76,11 @@ impl Edge for XheySurfaceView {
     }
 }
 
-impl Drawable for XheySurfaceView {
+impl Drawable for XheyPictureOutput {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
+
+
 
         clearFramebufferWithColor(Color::black());
 

@@ -134,9 +134,6 @@ NSString* const kFragmentString = SHADER_STRING
 - (void)render
 {
     
-    
-    
-    
     [EAGLContext setCurrentContext:_context];
     
     
@@ -168,7 +165,6 @@ NSString* const kFragmentString = SHADER_STRING
     newImageSource = nil;
     image = nil;
     path = nil;
-    
     
     
     // Create program, attach shaders, compile and link program

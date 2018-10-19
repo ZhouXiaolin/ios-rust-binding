@@ -42,15 +42,15 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, source: *mut XheyPicture, lookup_picture: *mut XheyPicture, lookup_filter: *mut XHeyLookupFilter) {
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, source: *mut XheyPicture, lookup_picture: *mut XheyPicture, lookup_filter: *mut XHeyBasicFilter) {
     let box_graph = graph.as_mut().unwrap();
     let box_picture = source.as_mut().unwrap();
-    let box_lookup_picture = lookup_picture.as_mut().unwrap();
+//    let box_lookup_picture = lookup_picture.as_mut().unwrap();
     let box_lookup_filter = lookup_filter.as_mut().unwrap();
 
     let pic = box_graph.add_input("picture", box_picture);
-    let lut_pic = box_graph.add_input("lut pic",box_lookup_picture);
-    let lut_filter = box_graph.add_function("lut filter",&[pic, lut_pic], box_lookup_filter);
+//    let lut_pic = box_graph.add_input("lut pic",box_lookup_picture);
+    let lut_filter = box_graph.add_function("lut filter",&[pic], box_lookup_filter);
 }
 
 #[no_mangle]
@@ -192,7 +192,10 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: 
 }
 
 
-
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lookup_picture_ptr: jlong, lookup_filter: jlong) {
+    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lookup_picture_ptr as *mut XheyPicture, lookup_filter as *mut XHeyBasicFilter)
+}
 
 #[no_mangle]
 pub extern "C" fn xhey_init_lookup_filter() -> *mut XHeyLookupFilter {

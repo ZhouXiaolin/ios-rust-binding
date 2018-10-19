@@ -249,6 +249,7 @@ fn generateFramebufferForTexture(texture: GLuint, width: GLint, height: GLint, t
         glTexImage2D(GL_TEXTURE_2D,0,textureOptions.internalFormat as i32,width,height,0,textureOptions.format,textureOptions._type,ptr::null());
         glFramebufferTexture2D(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,GL_TEXTURE_2D,texture,0);
 
+
         let status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if status != GL_FRAMEBUFFER_COMPLETE {
             info!("Error framebuffer fail {}",status);

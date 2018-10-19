@@ -57,13 +57,7 @@ NSString* const kFragmentString = SHADER_STRING
     Graph* g;
     XheyPicture* pic;
     XheySurfaceView* surface;
-    
-    
-    GLuint _programHandle;
-    GLuint _positionSlot;
-    GLuint _inputTextureCoordinateSlot;
-    GLuint _inputImageTexture;
-    GLuint imageTexture;
+    XheyBasicFilter* basic;
 
 }
 @end
@@ -73,8 +67,35 @@ NSString* const kFragmentString = SHADER_STRING
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect{
    
     xhey_graph_forward(g);
+    
+    CGSize _size = CGSizeMake(720, 1280);
+    
+    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
+    
+    GLubyte *rawImagePixels;
+    
+    CGDataProviderRef dataProvider = NULL;
+    
+    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
+    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
+    
+    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+    
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
+    
+    
+    int i = 0;
+    
 }
 
+
+void dataProviderReleaseCallback (void *info, const void *data, size_t size)
+{
+    free((void *)data);
+}
 
 
 - (void)viewDidLoad {
@@ -110,8 +131,9 @@ NSString* const kFragmentString = SHADER_STRING
     g = xhey_init_graph();
     pic = xhey_init_picture(imageData1, width1, height1);
     free(imageData1);
-    surface = xhey_init_surface_view(720, 1280);
-    xhey_graph(g, pic, nullptr, nullptr, surface);
+    basic = xhey_init_basic_filter_2();
+    surface = xhey_init_surface_view(720, 720);
+    xhey_graph(g, pic, basic, nullptr, nullptr);
     [EAGLContext setCurrentContext:nil];
     
 

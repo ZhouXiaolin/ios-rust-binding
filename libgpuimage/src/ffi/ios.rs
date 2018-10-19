@@ -20,14 +20,14 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPicture, filter: *mut XHeyBasicFilter,filter2: *mut XHeyBasicFilter,surfaceView: *mut XheyPictureOutput){
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-//    let box_filter = filter.as_ref().unwrap();
+    let box_filter = filter.as_ref().unwrap();
 //    let box_filter2 = filter2.as_ref().unwrap();
     let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-//    let filter = box_graph.add_function("filter",&[texture],box_filter);
+    let filter = box_graph.add_function("filter",&[texture],box_filter);
 //    let filter2 = box_graph.add_function("filter2",&[filter],box_filter2);
-    let view = box_graph.add_function("surface view",&[texture],box_surfaceView);
+    let view = box_graph.add_function("surface view",&[filter],box_surfaceView);
 
 }
 

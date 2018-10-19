@@ -92,7 +92,7 @@
         <entry file="file://$PROJECT_DIR$/src/ffi/ios.rs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="299">
-              <caret line="29" column="62" selection-start-line="29" selection-start-column="62" selection-end-line="29" selection-end-column="62" />
+              <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -323,8 +323,8 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-275" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="-322" />
     <option name="y" value="-1057" />
     <option name="width" value="1920" />
     <option name="height" value="1057" />
@@ -518,7 +518,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-322" y="-1057" width="1920" height="1057" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="right" id="Cargo" order="3" />
@@ -528,10 +527,10 @@
       <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50532484" side_tool="true" weight="0.30208334" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4946752" visible="true" weight="0.321875" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.4946752" visible="true" weight="0.321875" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20553781" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.20553781" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -924,7 +923,7 @@
     <entry file="file://$PROJECT_DIR$/src/ffi/ios.rs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
-          <caret line="29" column="62" selection-start-line="29" selection-start-column="62" selection-end-line="29" selection-end-column="62" />
+          <caret line="29" column="61" selection-start-line="29" selection-start-column="61" selection-end-line="29" selection-end-column="61" />
         </state>
       </provider>
     </entry>

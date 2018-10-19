@@ -114,7 +114,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     basic = xhey_init_basic_filter_2();
 //    surface = xhey_init_surface_view(720, 720);
     output = xhey_init_picture_output(width1, height1);
-    xhey_graph(g, pic, nullptr, nullptr, output);
+    xhey_graph(g, pic, basic, nullptr, output);
     
     
     xhey_graph_forward(g);

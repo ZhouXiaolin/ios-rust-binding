@@ -13,8 +13,7 @@ pub struct XheyPictureOutput{
     uniformSettings: ShaderUniformSettings,
     orientation: ImageOrientation,
     backingSize:GLSize,
-    displayFramebuffer: Cell<GLuint>,
-    displayRenderbuffer: Cell<GLuint>,
+    textureId: Cell<GLuint>
 
 }
 
@@ -32,45 +31,17 @@ impl XheyPictureOutput {
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::portrait,
             backingSize: GLSize::new(width,height),
-            displayFramebuffer:Cell::default(),
-            displayRenderbuffer:Cell::default(),
+            textureId:Cell::default()
         }
     }
 
-    pub fn createDisplayFramebuffer(&self) {
-        unsafe {
-            let mut frameBuffer : GLuint = 0;
-            glGenFramebuffers(1,&mut frameBuffer);
-            self.displayFramebuffer.set(frameBuffer);
-            glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-
-
-            let mut colorRenderBuffer : GLuint = 0;
-            glGenRenderbuffers(1,&mut colorRenderBuffer);
-            self.displayRenderbuffer.set(colorRenderBuffer);
-            glBindRenderbuffer(GL_RENDERBUFFER,colorRenderBuffer);
-            glRenderbufferStorage(GL_RENDERBUFFER,GL_RGBA,self.backingSize.width,self.backingSize.height);
-
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderBuffer);
-
-
-            if glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE {
-                info!("Image Handler initImageFBO failed!");
-                panic!("Image Handler initImageFBO failed")
-            }
-
-        }
-    }
-
-    fn activateDisplayFramebuffer(&self) {
-        unsafe {
-            glBindFramebuffer(GL_FRAMEBUFFER,self.displayFramebuffer.get());
-            glViewport(0,0,self.backingSize.width,self.backingSize.height);
-        }
-    }
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
+    }
+
+    pub fn textureId(&self) -> GLuint {
+        self.textureId.get()
     }
 }
 
@@ -117,19 +88,13 @@ impl Drawable for XheyPictureOutput {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
-
-//        if self.displayFramebuffer.get() == 0 {
-//            self.createDisplayFramebuffer();
-//        }
-//
-//        self.activateDisplayFramebuffer();
-
         let inputFramebuffer: &Framebuffer = framebuffer;
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
         let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
+        self.textureId.set(renderFramebuffer.texture);
 
         renderFramebuffer.activateFramebufferForRendering();
 
@@ -146,7 +111,6 @@ impl Drawable for XheyPictureOutput {
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
         renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
-
 
 
     }

@@ -50,7 +50,7 @@ extern "C" {
 
     struct XheyPictureOutput;
     struct XheyPictureOutput* xhey_init_picture_output(int width, int height);
-
+    unsigned int xhey_picture_output_get_texture_id(void*);
 #if __cplusplus
 }
 #endif

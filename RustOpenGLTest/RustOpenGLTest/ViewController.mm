@@ -59,6 +59,12 @@ NSString* const kFragmentString = SHADER_STRING
     XheySurfaceView* surface;
     XheyBasicFilter* basic;
     XheyPictureOutput* output;
+    
+    
+    GLuint _programHandle;
+    GLuint _positionSlot;
+    GLuint _inputTextureCoordinateSlot;
+    GLuint _inputImageTexture;
 
 }
 @end
@@ -67,7 +73,50 @@ NSString* const kFragmentString = SHADER_STRING
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect{
    
+    // Create program, attach shaders, compile and link program
+    //
+    _programHandle = [GLESUtils loadProgramString:kVertexString withFragmentShaderString:kFragmentString];
+    if (_programHandle == 0) {
+        NSLog(@" >> Error: Failed to setup program.");
+        return;
+    }
     
+    glUseProgram(_programHandle);
+    
+    // Get attribute slot from program
+    //
+    _positionSlot = glGetAttribLocation(_programHandle, "position");
+    _inputTextureCoordinateSlot = glGetAttribLocation(_programHandle, "inputTextureCoordinate");
+    _inputImageTexture = glGetUniformLocation(_programHandle, "inputImageTexture");
+    
+    glClearColor(0, 1.0, 0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    // Setup viewport
+    //
+    
+    GLfloat vertices[] = {
+        -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
+    GLfloat textureCoordinates[] = {
+        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
+    };
+    
+    // Load the vertex data
+    //
+    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
+    glEnableVertexAttribArray(_positionSlot);
+    
+    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glEnableVertexAttribArray(_inputTextureCoordinateSlot);
+    
+    
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,xhey_picture_output_get_texture_id(output));
+    glUniform1i(0,_inputImageTexture);
+    // Draw triangle
+    //
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
 }
 
@@ -86,9 +135,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
     currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
-//    glView = [[GLKView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
-//    glView.delegate = self;
-//    [self.view addSubview:glView];
+    glView = [[GLKView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
+    glView.delegate = self;
+    [self.view addSubview:glView];
     
     
     

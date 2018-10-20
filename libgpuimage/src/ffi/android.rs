@@ -172,9 +172,6 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateTexture(env
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateTexturematrix(env: JNIEnv, _: JClass, texture_ptr: jlong, matrix: jfloatArray) {
     let mut array : [jfloat;16] = [0.0;16];
     let _ = env.get_float_array_region(matrix,0,&mut array);
-
-    info!("array {:?}", array);
-
     let texture = (texture_ptr as *mut XheyOESTexture).as_mut().unwrap();
     texture.updateMatrix(Matrix4x4::new(array));
 

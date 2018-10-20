@@ -38,6 +38,12 @@ pub extern "C" fn xhey_init_picture_output(width: i32, height: i32) -> *mut Xhey
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn xhey_picture_output_get_texture_id(source: *mut XheyPictureOutput) -> u32 {
+    let box_output = source.as_ref().unwrap();
+    box_output.textureId()
+}
+
+#[no_mangle]
 pub extern "C" fn xhey_context_release(){
     sharedImageProcessingContext.framebufferCache.purgeAllUnassignedFramebuffer();
 }

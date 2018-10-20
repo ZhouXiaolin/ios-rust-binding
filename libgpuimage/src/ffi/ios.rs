@@ -53,10 +53,6 @@ pub unsafe extern "C" fn xhey_release_picture(source: *mut XheyPicture){
     drop(Box::from_raw(source));
 }
 
-//#[no_mangle]
-//pub unsafe extern "C" fn xhey_release_view(source: *mut XHeyView){
-//    drop(Box::from_raw(source));
-//}
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_release_basic_filter(source: *mut XHeyBasicFilter){

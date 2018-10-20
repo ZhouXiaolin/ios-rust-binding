@@ -30,8 +30,8 @@ pub trait Renderable{
 }
 
 
-/// 绘制到屏幕 或者 文件
-/// 如果一个Edge是Drawable的，其forward的参数长度必定为1，返回值为PlaceHolder，
+/// 绘制到屏幕 或者 文件 （在当前GL框架中，可以直接通过ReadPixel来实现Drawable效果）
+/// 如果一个Edge是Drawable的，其forward的参数长度必定为1，
 pub trait Drawable{
     type Item;
     fn render(&self, x:&Self::Item);

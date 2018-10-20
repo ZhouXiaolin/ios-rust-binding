@@ -45,12 +45,12 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, source: *mut XheyPicture, filter: *mut XHeyBasicFilter, output: *mut XheyPictureOutput) {
     let box_graph = graph.as_mut().unwrap();
     let box_picture = source.as_mut().unwrap();
-//    let box_basic_filter = filter.as_mut().unwrap();
+    let box_basic_filter = filter.as_mut().unwrap();
     let box_output = output.as_mut().unwrap();
 
     let pic = box_graph.add_input("picture", box_picture);
-//    let filter = box_graph.add_function("basic filter",&[pic],box_basic_filter);
-    let output = box_graph.add_function("output",&[pic], box_output);
+    let filter = box_graph.add_function("basic filter",&[pic],box_basic_filter);
+    let output = box_graph.add_function("output",&[filter], box_output);
 }
 
 #[no_mangle]

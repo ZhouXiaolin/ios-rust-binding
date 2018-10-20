@@ -20,12 +20,9 @@ extern crate gles_rust_binding;
 
 
 // 开发计划
-// 内存释放检查 iOS上内存不释放的问题是由EAGLContext导致的，在Rust内部操作EAGLContext是非常不方便的，这一步将在移除平台相关代码中修复
 // 统一Android iOS接口
-// 抽取共享环境
-// 移除平台相关的代码，在平台相关直接使用GLKView或者GLSurfaceView
 // 添加更多Filter
-// 考虑移除Node接口，(或者使用新的Graph去渲染 创建Graph与释放Graph代价很低，Node节点包含共享环境)
-// 考虑实现SubGraph (实现特殊效果时需要这个Operation)
-// 考虑实现ImageGenerator (纯渲染接口)
-// 为今后引入抽象图形API(GFX)留下接入空间
+// 移除Node接口 这个remove可能会很复杂，破坏图的结构，性价比不如使用新的Graph去渲染
+// 创建Graph与释放Graph代价很低，只有在forward计算中才会产生FBO
+// 考虑实现SubGraph ???
+// 考虑实现ImageGenerator

@@ -113,5 +113,7 @@ impl Drawable for XheyPictureOutput {
         renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
 
 
+        info!("picture output finish");
+
     }
 }

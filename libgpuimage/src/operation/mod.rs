@@ -5,7 +5,7 @@ mod basic;
 mod picture;
 mod combine;
 mod lookup;
-
+mod alpha_blend;
 mod surface_view;
 mod picture_output;
 
@@ -17,7 +17,7 @@ pub use self::picture::*;
 pub use self::combine::*;
 pub use self::lookup::*;
 pub use self::picture_output::*;
-
+pub use self::alpha_blend::*;
 pub use self::surface_view::*;
 
 #[cfg(target_os = "android")]

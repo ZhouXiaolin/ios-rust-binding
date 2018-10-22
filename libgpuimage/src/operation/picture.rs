@@ -43,10 +43,10 @@ impl XheyPicture {
 
 
 
-    pub fn new_texture(textureId: GLuint, width: i32, height: i32) -> Self {
+    pub fn new_texture(textureId: GLuint, width: i32, height: i32, orientation: i32) -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
-        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
+        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::fromInt(orientation),size,textureId));
         XheyPicture{
             framebuffer,
             head_node:Cell::default(),

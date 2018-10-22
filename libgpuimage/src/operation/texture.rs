@@ -14,6 +14,7 @@ pub struct XheyOESTexture{
     textureId:GLuint,
     size: GLSize,
     uniformSettings:ShaderUniformSettings,
+    orientation: ImageOrientation
 
 }
 
@@ -25,7 +26,7 @@ impl Drop for XheyOESTexture {
 
 impl XheyOESTexture {
 
-    pub fn new(width: i32, height: i32) -> Self {
+    pub fn new(width: i32, height: i32, orient: i32) -> Self {
 
         sharedImageProcessingContext.makeCurrentContext();
 
@@ -65,7 +66,8 @@ impl XheyOESTexture {
             shader,
             textureId:0,
             size,
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            orientation: ImageOrientation::fromInt(orient)
         }
     }
 
@@ -114,7 +116,7 @@ impl Edge for XheyOESTexture{
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portraitUpsideDown,size,false);
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation,size,false);
 
         renderFramebuffer.activateFramebufferForRendering();
 

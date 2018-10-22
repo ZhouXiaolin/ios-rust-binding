@@ -168,26 +168,26 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     xhey_graph_forward(g);
     
-    CGSize _size = CGSizeMake(width1, height1);
-    
-    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
-    
-    GLubyte *rawImagePixels;
-    
-    CGDataProviderRef dataProvider = NULL;
-    
-    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
-    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
-    
-    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
-    
-    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-    
-    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
-    
-    
-    int i = 0;
+//    CGSize _size = CGSizeMake(width1, height1);
+//    
+//    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
+//    
+//    GLubyte *rawImagePixels;
+//    
+//    CGDataProviderRef dataProvider = NULL;
+//    
+//    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
+//    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+//    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
+//    
+//    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
+//    
+//    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+//    
+//    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
+//    
+//    
+//    int i = 0;
     [EAGLContext setCurrentContext:nil];
     
 
@@ -206,8 +206,8 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     NSLog(@"TTTTTTTTTTTT");
     xhey_context_release();
-    xhey_release_surface_view(surface);
     xhey_release_picture(pic);
+    xhey_release_basic_filter(basic);
     xhey_release_graph(g);
     currentContext = nil;
     [EAGLContext setCurrentContext:nil];

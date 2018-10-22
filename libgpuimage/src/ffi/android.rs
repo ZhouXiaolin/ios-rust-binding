@@ -42,15 +42,21 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, source: *mut XheyPicture, filter: *mut XHeyBasicFilter, output: *mut XheyPictureOutput) {
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mark: *mut XheyPicture, blend_filter: *mut XHeyAlphaBlendFilter, output: *mut XheyPictureOutput) {
     let box_graph = graph.as_mut().unwrap();
-    let box_picture = source.as_mut().unwrap();
-    let box_basic_filter = filter.as_mut().unwrap();
+    let box_picture = picture.as_mut().unwrap();
+    let box_lut = lut.as_mut().unwrap();
+    let box_lut_filter = lut_filter.as_mut().unwrap();
+    let box_water_mark = water_mark.as_mut().unwrap();
+    let box_alpha_blend = blend_filter.as_mut().unwrap();
     let box_output = output.as_mut().unwrap();
 
     let pic = box_graph.add_input("picture", box_picture);
-    let filter = box_graph.add_function("basic filter",&[pic],box_basic_filter);
-    let output = box_graph.add_function("output",&[filter], box_output);
+    let lut = box_graph.add_input("lut", box_lut);
+    let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
+    let water_mark = box_graph.add_input("water mark",box_water_mark);
+    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
+    let output = box_graph.add_function("output",&[alpha_blend], box_output);
 }
 
 #[no_mangle]
@@ -60,10 +66,17 @@ pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
 }
 
 #[no_mangle]
-pub extern "C" fn xhey_init_oes_texture(width: c_int, height: c_int) -> *mut XheyOESTexture {
-    let texture = Box::new(XheyOESTexture::new(width,height));
+pub extern "C" fn xhey_init_oes_texture(width: c_int, height: c_int, orient: c_int) -> *mut XheyOESTexture {
+    let texture = Box::new(XheyOESTexture::new(width,height,orient));
     Box::into_raw(texture)
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_alpha_blend() -> *mut XHeyAlphaBlendFilter {
+    let filter = Box::new(XHeyAlphaBlendFilter::new());
+    Box::into_raw(filter)
+}
+
 
 #[no_mangle]
 pub extern "C" fn xhey_oes_texture_update(texture: *mut XheyOESTexture, textureId: c_uint){
@@ -94,10 +107,10 @@ pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32
 }
 
 #[no_mangle]
-pub extern "C" fn xhey_init_picture_textureId(textureId: i32, width: i32, height: i32) ->  *mut XheyPicture {
+pub extern "C" fn xhey_init_picture_textureId(textureId: i32, width: i32, height: i32, orient: i32) ->  *mut XheyPicture {
     info!("-----> xhey_init_picture {} {}",width,height);
 
-    let picture = XheyPicture::new_texture(textureId as GLuint,width,height);
+    let picture = XheyPicture::new_texture(textureId as GLuint,width,height,orient);
     let picture = Box::new(picture);
     Box::into_raw(picture)
 
@@ -123,8 +136,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicture(env: 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicturetexture(env: JNIEnv, _: JClass, textureId: jint, width: jint, height: jint) -> jlong {
-    xhey_init_picture_textureId(textureId,width,height) as jlong
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPicturetexture(env: JNIEnv, _: JClass, textureId: jint, width: jint, height: jint, orient: jint) -> jlong {
+    xhey_init_picture_textureId(textureId,width,height,orient) as jlong
 }
 
 
@@ -150,8 +163,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initGraph(env: JN
 
 }
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initTexture(env: JNIEnv, _: JClass, width: jint, height: jint) -> jlong{
-    xhey_init_oes_texture(width,height) as jlong
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initTexture(env: JNIEnv, _: JClass, width: jint, height: jint, orient: jint) -> jlong{
+    xhey_init_oes_texture(width,height,orient) as jlong
 }
 
 #[no_mangle]
@@ -190,8 +203,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: 
 
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, filter_ptr: jlong, output_ptr: jlong) {
-    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, filter_ptr as *mut XHeyBasicFilter, output_ptr as *mut XheyPictureOutput)
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong, water_mark_ptr: jlong, blend_filter_ptr:jlong,output_ptr:jlong) {
+    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, water_mark_ptr as *mut XheyPicture, blend_filter_ptr as *mut XHeyAlphaBlendFilter, output_ptr as *mut XheyPictureOutput);
 }
 
 #[no_mangle]
@@ -211,6 +224,13 @@ pub extern "C" fn xhey_init_picture_output(width: i32, height: i32) -> *mut Xhey
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initLookupfilter(env: JNIEnv, _: JClass) -> jlong{
     xhey_init_lookup_filter() as jlong
 }
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initAlphablendfilter(env: JNIEnv, _: JClass) -> jlong{
+    xhey_init_alpha_blend() as jlong
+}
+
+
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPictureoutput(env: JNIEnv, _: JClass, width: jint, height: jint) -> jlong{
     xhey_init_picture_output(width, height) as jlong

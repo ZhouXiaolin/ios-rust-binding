@@ -15,6 +15,23 @@ pub enum Rotation {
 
 
 impl Rotation {
+
+    pub fn fromInt(value: i32) -> Self {
+        match value {
+            0 => Rotation::noRotation,
+            1 => Rotation::rotateCounterclockwise,
+            2 => Rotation::rotateClockwise,
+            3 => Rotation::rotate180,
+            4 => Rotation::flipHorizontally,
+            5 => Rotation::flipVertically,
+            6 => Rotation::rotateClockwiseAndFlipVertically,
+            7 => Rotation::rotateClockwiseAndFlipHorizontally,
+            _ => {
+                panic!("Error")
+            }
+        }
+    }
+
     pub fn toRawValue(&self) -> usize {
         match self {
             Rotation::noRotation => 0,

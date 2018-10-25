@@ -10,8 +10,10 @@ pub struct XheyPicture{
     framebuffer: Rc<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    width: i32,
-    height: i32
+    size: GLSize,
+    rotation:Rotation,
+    orientation: ImageOrientation,
+    uniformSettings: ShaderUniformSettings
 }
 
 impl Drop for XheyPicture {
@@ -29,9 +31,7 @@ static  FORMAT : GLenum = GL_RGBA;
 impl XheyPicture {
 
     pub fn update(&self, data: *const c_void, width: i32, height: i32){
-        if self.width != width || self.height != height {
-            panic!("Error!");
-        }
+
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D, self.framebuffer.texture);
@@ -43,16 +43,18 @@ impl XheyPicture {
 
 
 
-    pub fn new_texture(textureId: GLuint, width: i32, height: i32, orientation: i32) -> Self {
+    pub fn new_texture(textureId: GLuint, width: i32, height: i32, rotation: i32) -> Self {
         sharedImageProcessingContext.makeCurrentContext();
         let size = GLSize::new(width,height);
-        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::fromInt(orientation),size,textureId));
+        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
         XheyPicture{
             framebuffer,
             head_node:Cell::default(),
             tail:RefCell::default(),
-            width,
-            height
+            size: GLSize::new(width, height),
+            rotation: Rotation::fromInt(rotation),
+            orientation: ImageOrientation::portrait,
+            uniformSettings: ShaderUniformSettings::default()
         }
     }
 
@@ -78,9 +80,16 @@ impl XheyPicture {
             framebuffer,
             head_node:Cell::default(),
             tail:RefCell::default(),
-            width,
-            height
+            size: GLSize::new(width, height),
+            rotation: Rotation::noRotation,
+            orientation:ImageOrientation::portrait,
+            uniformSettings: ShaderUniformSettings::default()
         }
+    }
+
+
+    pub fn updateOrientation(&mut self, orient: i32) {
+        self.orientation = ImageOrientation::fromInt(orient);
     }
 
 }
@@ -116,7 +125,30 @@ impl Edge for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
-        Some(self.framebuffer.clone())
+
+
+        let size = self.size;
+        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
+        let textureProperties = vec![InputTextureProperties::new(storage,self.framebuffer.texture)];
+
+
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
+
+        renderFramebuffer.activateFramebufferForRendering();
+
+        clearFramebufferWithColor(Color::black());
+
+        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+
+        let shader = &sharedImageProcessingContext.passthroughShader;
+
+        renderQuadWithShader(shader,&self.uniformSettings,&textureProperties,vertex);
+
+
+        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
+
+        Some(renderFramebuffer)
     }
 
     fn name(&self) -> &str {

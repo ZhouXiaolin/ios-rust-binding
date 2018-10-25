@@ -121,7 +121,7 @@ impl Renderable for XHeyAlphaBlendFilter {
 
         sharedImageProcessingContext.makeCurrentContext();
 
-        let inputFramebuffer = inputFramebuffers.first().unwrap();
+        let inputFramebuffer: &Framebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
@@ -129,6 +129,8 @@ impl Renderable for XHeyAlphaBlendFilter {
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                let inputFramebuffer: &Framebuffer = inputFramebuffer;
+
                 inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
             }
             inputTextureProperties

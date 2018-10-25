@@ -110,13 +110,16 @@ impl Edge for XheyOESTexture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
+
+
+
         let size = self.size;
 
         let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::flipHorizontally));
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation,size,false);
+        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
         renderFramebuffer.activateFramebufferForRendering();
 
@@ -125,6 +128,9 @@ impl Edge for XheyOESTexture{
         let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+
+        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
 
         Some(renderFramebuffer)
 

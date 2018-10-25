@@ -11,7 +11,7 @@ pub struct XheyPictureOutput{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
-    orientation: ImageOrientation,
+    rotation: Rotation,
     backingSize:GLSize,
     textureId: Cell<GLuint>
 
@@ -23,13 +23,13 @@ impl Drop for XheyPictureOutput {
     }
 }
 impl XheyPictureOutput {
-    pub fn new(width: i32, height: i32) -> Self {
+    pub fn new(width: i32, height: i32, orient: i32) -> Self {
 
         XheyPictureOutput{
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            orientation: ImageOrientation::portrait,
+            rotation: Rotation::fromInt(orient),
             backingSize: GLSize::new(width,height),
             textureId:Cell::default()
         }
@@ -88,6 +88,7 @@ impl Drawable for XheyPictureOutput {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
+
         let inputFramebuffer: &Framebuffer = framebuffer;
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
@@ -104,9 +105,10 @@ impl Drawable for XheyPictureOutput {
 
         let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 
-        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
+        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize);
 
-        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
+        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(self.rotation));
+        let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 

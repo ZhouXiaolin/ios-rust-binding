@@ -86,7 +86,7 @@ impl Drawable for XheySurfaceView {
 
         let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(self.orientation),self.backingSize);
 
-        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(self.orientation);
+        let inputTexture = framebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portraitUpsideDown);
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 

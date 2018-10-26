@@ -18,7 +18,7 @@ pub struct XHeyAlphaBlendFilter{
 impl XHeyAlphaBlendFilter {
 
     pub fn new() -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let vertexString = r#"
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
@@ -119,8 +119,6 @@ impl Renderable for XHeyAlphaBlendFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
-        sharedImageProcessingContext.makeCurrentContext();
-
         let inputFramebuffer: &Framebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
@@ -136,7 +134,7 @@ impl Renderable for XHeyAlphaBlendFilter {
             inputTextureProperties
         };
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -144,7 +142,8 @@ impl Renderable for XHeyAlphaBlendFilter {
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
+        renderFramebuffer.unbindFramebufferForRendering();
 
         renderFramebuffer
     }

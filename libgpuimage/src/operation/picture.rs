@@ -44,7 +44,7 @@ impl XheyPicture {
 
 
     pub fn new_texture(textureId: GLuint, width: i32, height: i32, rotation: i32) -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let size = GLSize::new(width,height);
         let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
         XheyPicture{
@@ -52,7 +52,7 @@ impl XheyPicture {
             head_node:Cell::default(),
             tail:RefCell::default(),
             size: GLSize::new(width, height),
-            rotation: Rotation::fromInt(rotation),
+            rotation: Rotation::from(rotation),
             orientation: ImageOrientation::portrait,
             uniformSettings: ShaderUniformSettings::default()
         }
@@ -63,7 +63,6 @@ impl XheyPicture {
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
 
-        sharedImageProcessingContext.makeCurrentContext();
 
         let size = GLSize::new(width,height);
 
@@ -89,7 +88,7 @@ impl XheyPicture {
 
 
     pub fn updateOrientation(&mut self, orient: i32) {
-        self.orientation = ImageOrientation::fromInt(orient);
+        self.orientation = ImageOrientation::from(orient);
     }
 
 }
@@ -134,7 +133,7 @@ impl Edge for XheyPicture{
 
         let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -145,7 +144,7 @@ impl Edge for XheyPicture{
         renderQuadWithShader(shader,&self.uniformSettings,&textureProperties,vertex);
 
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+        renderFramebuffer.unbindFramebufferForRendering();
 
 
         Some(renderFramebuffer)

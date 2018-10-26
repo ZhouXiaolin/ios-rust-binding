@@ -28,7 +28,6 @@ impl XheyOESTexture {
 
     pub fn new(width: i32, height: i32, orient: i32) -> Self {
 
-        sharedImageProcessingContext.makeCurrentContext();
 
         let vertexString = r#"
  attribute vec4 position;
@@ -67,7 +66,7 @@ impl XheyOESTexture {
             textureId:0,
             size,
             uniformSettings:ShaderUniformSettings::default(),
-            orientation: ImageOrientation::fromInt(orient)
+            orientation: ImageOrientation::from(orient)
         }
     }
 
@@ -121,7 +120,7 @@ impl Edge for XheyOESTexture{
 
         let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -130,7 +129,7 @@ impl Edge for XheyOESTexture{
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+        renderFramebuffer.unbindFramebufferForRendering();
 
         Some(renderFramebuffer)
 

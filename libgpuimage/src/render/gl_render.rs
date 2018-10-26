@@ -38,9 +38,23 @@ fn inputTextureProperty(index: usize) -> (String,String) {
     (inputTextureCoordinateString,inputImageTextureString)
 }
 
+pub fn enableBlending(){
+    unsafe {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+    }
+}
+
+pub fn disableBlending(){
+    unsafe {
+        glDisable(GL_BLEND);
+    }
+}
+
+
 pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
-    sharedImageProcessingContext.makeCurrentContext();
+
     unsafe {
 
         program.bind();

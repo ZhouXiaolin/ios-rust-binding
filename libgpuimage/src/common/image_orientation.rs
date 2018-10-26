@@ -7,19 +7,32 @@ pub enum ImageOrientation{
     landscapeRight
 }
 
-impl ImageOrientation {
-
-    pub fn fromInt(orient: i32) -> Self {
-        match orient {
+impl From<i32> for ImageOrientation {
+    fn from(num: i32) -> ImageOrientation {
+        match num {
             0 => ImageOrientation::portrait,
             1 => ImageOrientation::portraitUpsideDown,
             2 => ImageOrientation::landscapeLeft,
             3 => ImageOrientation::landscapeRight,
-            _ => {
-                panic!("error")
-            }
+            _ => unreachable!("error")
         }
     }
+}
+
+
+impl ImageOrientation {
+
+//    pub fn fromInt(orient: i32) -> Self {
+//        match orient {
+//            0 => ImageOrientation::portrait,
+//            1 => ImageOrientation::portraitUpsideDown,
+//            2 => ImageOrientation::landscapeLeft,
+//            3 => ImageOrientation::landscapeRight,
+//            _ => {
+//                panic!("error")
+//            }
+//        }
+//    }
     pub fn rotationNeededForOrientation(&self, targetOrientation: ImageOrientation) -> Rotation {
         match (self,targetOrientation) {
             (ImageOrientation::portrait, ImageOrientation::portrait) | (ImageOrientation::portraitUpsideDown, ImageOrientation::portraitUpsideDown)

@@ -168,10 +168,16 @@ impl Framebuffer {
         self.texturePropertiesForOutputRotation(self.orientation.get().rotationNeededForOrientation(targetOrientation))
     }
 
-    pub fn activateFramebufferForRendering(&self){
+    pub fn bindFramebufferForRendering(&self){
         unsafe {
             glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer);
             glViewport(0,0,self.size.width,self.size.height);
+        }
+    }
+
+    pub fn unbindFramebufferForRendering(&self){
+        unsafe {
+            glBindFramebuffer(GL_FRAMEBUFFER,0);
         }
     }
 

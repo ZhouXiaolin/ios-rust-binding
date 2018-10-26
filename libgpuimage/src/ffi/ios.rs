@@ -33,7 +33,7 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyPic
 
 #[no_mangle]
 pub extern "C" fn xhey_init_picture_output(width: i32, height: i32) -> *mut XheyPictureOutput {
-    let output = Box::new(XheyPictureOutput::new(width, height));
+    let output = Box::new(XheyPictureOutput::new(width, height, 0));
     Box::into_raw(output)
 }
 
@@ -86,6 +86,18 @@ pub unsafe extern "C" fn xhey_graph_printgraphviz(graph: *mut RenderGraph){
 pub extern "C" fn xhey_init_basic_filter() -> *mut XHeyBasicFilter {
     let filter = Box::new(XHeyBasicFilter::new());
     Box::into_raw(filter)
+}
+
+#[no_mangle]
+pub extern "C" fn xhey_update_outputSize(filter: *mut XHeyBasicFilter, width: i32, height: i32){
+    let combine = unsafe{filter.as_mut().unwrap()};
+    combine.updateOutputSize(width,height);
+}
+
+#[no_mangle]
+pub extern "C" fn xhey_update_outputRotation(filter: *mut XHeyBasicFilter, rotation: i32){
+    let combine = unsafe{filter.as_mut().unwrap()};
+    combine.updateOutputRotation(rotation);
 }
 
 

@@ -160,34 +160,37 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     g = xhey_init_graph();
     pic = xhey_init_picture(imageData1, width1, height1);
     free(imageData1);
-    basic = xhey_init_basic_filter_2();
-//    surface = xhey_init_surface_view(720, 720);
+    basic = xhey_init_basic_filter();
+
+//    xhey_update_outputSize(basic, height1, width1);
+//    xhey_update_outputRotation(basic, 1);
+    
     output = xhey_init_picture_output(width1, height1);
     xhey_graph(g, pic, basic, nullptr, output);
     
     
     xhey_graph_forward(g);
     
-//    CGSize _size = CGSizeMake(width1, height1);
-//    
-//    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
-//    
-//    GLubyte *rawImagePixels;
-//    
-//    CGDataProviderRef dataProvider = NULL;
-//    
-//    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
-//    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
-//    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
-//    
-//    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
-//    
-//    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
-//    
-//    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
-//    
-//    
-//    int i = 0;
+    CGSize _size = CGSizeMake(width1, height1);
+    
+    NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
+    
+    GLubyte *rawImagePixels;
+    
+    CGDataProviderRef dataProvider = NULL;
+    
+    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
+    glReadPixels(0, 0, (int)_size.width, (int)_size.height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
+    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
+    
+    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    CGImageRef cgImageFromBytes = CGImageCreate((int)_size.width, (int)_size.height, 8, 32, 4 * (int)_size.width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+    
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
+    
+    
+    int i = 0;
     [EAGLContext setCurrentContext:nil];
     
 

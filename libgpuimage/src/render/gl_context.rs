@@ -56,14 +56,6 @@ impl GlContext {
     }
 
 
-    pub fn presentBufferForDisplay(&self){
-    }
-
-    pub fn makeCurrentContext(&self){
-    }
-
-
-
     pub fn textureVBO(&self, rotation: Rotation) -> GLuint {
         let textureVBO = self.textureVBOs[rotation.toRawValue()];
         textureVBO

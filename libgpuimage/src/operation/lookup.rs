@@ -18,7 +18,7 @@ pub struct XHeyLookupFilter{
 impl XHeyLookupFilter {
 
     pub fn new() -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let vertexString = r#"
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
@@ -139,7 +139,6 @@ impl Renderable for XHeyLookupFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
-        sharedImageProcessingContext.makeCurrentContext();
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
@@ -154,7 +153,7 @@ impl Renderable for XHeyLookupFilter {
             inputTextureProperties
         };
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -162,7 +161,8 @@ impl Renderable for XHeyLookupFilter {
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
+        renderFramebuffer.unbindFramebufferForRendering();
 
         renderFramebuffer
     }

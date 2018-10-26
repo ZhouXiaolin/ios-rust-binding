@@ -18,7 +18,7 @@ pub struct XHeyUnsharpMaskFilter{
 impl XHeyUnsharpMaskFilter {
 
     pub fn new() -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let vertexString = r#"
 attribute vec4 position;
 attribute vec4 inputTextureCoordinate;
@@ -152,8 +152,6 @@ impl Renderable for XHeyUnsharpMaskFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
-        sharedImageProcessingContext.makeCurrentContext();
-
         let inputFramebuffer : &Framebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
@@ -177,7 +175,7 @@ impl Renderable for XHeyUnsharpMaskFilter {
         uniformSettings.setValue("saturation",Uniform::Float(1.1));
 
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -185,7 +183,8 @@ impl Renderable for XHeyUnsharpMaskFilter {
 
         renderQuadWithShader(&self.shader,&uniformSettings,&textureProperties,vertex);
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
+        renderFramebuffer.unbindFramebufferForRendering();
 
         renderFramebuffer
     }

@@ -18,7 +18,7 @@ pub struct XHeyCombineFilter{
 impl XHeyCombineFilter {
 
     pub fn new() -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let vertexString = r#"
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
@@ -125,7 +125,6 @@ impl Renderable for XHeyCombineFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
-        sharedImageProcessingContext.makeCurrentContext();
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
@@ -140,7 +139,7 @@ impl Renderable for XHeyCombineFilter {
             inputTextureProperties
         };
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::black());
 
@@ -148,7 +147,7 @@ impl Renderable for XHeyCombineFilter {
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+        renderFramebuffer.unbindFramebufferForRendering();
 
         renderFramebuffer
     }

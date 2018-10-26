@@ -11,11 +11,13 @@ pub struct XHeyBasicFilter{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
+    overriddenOutputSize: Option<Size>,
+    overriddenOutputRotation: Option<Rotation>
 }
 
 impl XHeyBasicFilter {
     pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
 
         let shader = GLProgram::new(vertex,fragment);
 
@@ -26,6 +28,8 @@ impl XHeyBasicFilter {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
+            overriddenOutputSize: None,
+            overriddenOutputRotation: None
         }
     }
 
@@ -49,7 +53,7 @@ impl XHeyBasicFilter {
     }
 
     pub fn new() -> Self {
-        sharedImageProcessingContext.makeCurrentContext();
+
         let vertexString = r#"
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
@@ -80,7 +84,21 @@ impl XHeyBasicFilter {
 
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
-        inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
+        if let Some(outputSize) = self.overriddenOutputSize {
+            GLSize::new(outputSize.width as i32, outputSize.height as i32)
+        }else{
+            inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
+
+        }
+
+    }
+
+    pub fn updateOutputSize(&mut self, width: i32, height: i32) {
+        self.overriddenOutputSize = Some(Size::new(width as f32, height as f32));
+    }
+
+    pub fn updateOutputRotation(&mut self, rotation: i32){
+        self.overriddenOutputRotation = Some(Rotation::from(rotation));
     }
 }
 
@@ -128,7 +146,7 @@ impl Edge for XHeyBasicFilter {
 impl Renderable for XHeyBasicFilter {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
-        sharedImageProcessingContext.makeCurrentContext();
+
 
         let inputFramebuffer = inputFramebuffers.first().unwrap();
 
@@ -138,13 +156,22 @@ impl Renderable for XHeyBasicFilter {
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];
-            for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
-                inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
+
+            if let Some(outputRotation) = self.overriddenOutputRotation {
+                for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                    inputTextureProperties.push(inputFramebuffer.texturePropertiesForOutputRotation(outputRotation));
+                }
+            }else{
+                for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                    inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
+                }
             }
+
+
             inputTextureProperties
         };
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
 
         clearFramebufferWithColor(Color::black());
@@ -153,7 +180,8 @@ impl Renderable for XHeyBasicFilter {
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
-        unsafe { glBindFramebuffer(GL_FRAMEBUFFER,0)};
+
+        renderFramebuffer.unbindFramebufferForRendering();
 
         renderFramebuffer
     }

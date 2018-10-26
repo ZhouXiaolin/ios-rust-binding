@@ -21,6 +21,10 @@ extern "C" {
     struct XheyBasicFilter;
     struct XheyBasicFilter* xhey_init_basic_filter();
     struct XheyBasicFilter* xhey_init_basic_filter_2();
+    
+    void xhey_update_outputRotation(void* filter, int rotation);
+    
+    void xhey_update_outputSize(void* filter, int width, int height);
 
 
     struct XheyLookupFilter;

@@ -10,6 +10,7 @@
 		9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F187FE5214B64AC00D855F6 /* XLHelpClass.m */; };
 		9F817385214759C100030F46 /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817383214759C100030F46 /* GLESUtils.m */; };
 		9F817386214759C100030F46 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.mm */; };
+		9F8C5AA02181B8BC00FF525E /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD4AFEC2155D9560023C196 /* libgpuimage.a */; };
 		9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48DF213EC7F30026B7EF /* ViewController.mm */; };
 		9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9F8D48E4213EC7F40026B7EF /* Assets.xcassets */; };
 		9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9F8D48E6213EC7F40026B7EF /* LaunchScreen.storyboard */; };
@@ -18,7 +19,6 @@
 		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
 		9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC94114216E14AA00BED96C /* GLKit.framework */; };
 		9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FC94116216F2F2700BED96C /* IMG_2333.JPG */; };
-		9FCAC9A8217583BE008B8105 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD4AFEC2155D9560023C196 /* libgpuimage.a */; };
 		9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */; };
 /* End PBXBuildFile section */
 
@@ -52,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9FCAC9A8217583BE008B8105 /* libgpuimage.a in Frameworks */,
+				9F8C5AA02181B8BC00FF525E /* libgpuimage.a in Frameworks */,
 				9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -330,7 +330,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/aarch64-apple-ios/debug";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../libgpuimage/target/aarch64-apple-ios/debug\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mfasta.RustOpenGLTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -350,7 +350,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/wanderfool/Documents/RustGPUImage/libgpuimage/target/aarch64-apple-ios/debug";
+				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../libgpuimage/target/aarch64-apple-ios/debug\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mfasta.RustOpenGLTest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

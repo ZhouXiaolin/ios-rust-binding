@@ -29,7 +29,7 @@ impl XheyPictureOutput {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            rotation: Rotation::fromInt(orient),
+            rotation: Rotation::from(orient),
             backingSize: GLSize::new(width,height),
             textureId:Cell::default()
         }
@@ -97,7 +97,7 @@ impl Drawable for XheyPictureOutput {
 
         self.textureId.set(renderFramebuffer.texture);
 
-        renderFramebuffer.activateFramebufferForRendering();
+        renderFramebuffer.bindFramebufferForRendering();
 
         clearFramebufferWithColor(Color::red());
 

@@ -5,7 +5,7 @@ use super::operation::*;
 use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::*;
-use std::os::raw::{c_void,c_int,c_uint};
+use std::os::raw::{c_void,c_int,c_uint,c_float};
 use gles_rust_binding::*;
 use super::render::{Framebuffer};
 use super::common::Matrix4x4;
@@ -45,23 +45,51 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 
 
 
+
+
+//#[no_mangle]
+//pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mark: *mut XheyPicture, blend_filter: *mut XHeyAlphaBlendFilter, output: *mut XheyPictureOutput) {
+//    let box_graph = graph.as_mut().unwrap();
+//    let box_picture = picture.as_mut().unwrap();
+//    let box_lut = lut.as_mut().unwrap();
+//    let box_lut_filter = lut_filter.as_mut().unwrap();
+//    let box_water_mark = water_mark.as_mut().unwrap();
+//    let box_alpha_blend = blend_filter.as_mut().unwrap();
+//    let box_output = output.as_mut().unwrap();
+//
+//    let pic = box_graph.add_input("picture", box_picture);
+//    let lut = box_graph.add_input("lut", box_lut);
+//    let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
+//    let water_mark = box_graph.add_input("water mark",box_water_mark);
+//    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
+//    let output = box_graph.add_function("output",&[alpha_blend], box_output);
+//}
+
+
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mark: *mut XheyPicture, blend_filter: *mut XHeyAlphaBlendFilter, output: *mut XheyPictureOutput) {
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mask: *mut XHeyBlendFilter, output: *mut XheyPictureOutput) {
     let box_graph = graph.as_mut().unwrap();
     let box_picture = picture.as_mut().unwrap();
     let box_lut = lut.as_mut().unwrap();
     let box_lut_filter = lut_filter.as_mut().unwrap();
-    let box_water_mark = water_mark.as_mut().unwrap();
-    let box_alpha_blend = blend_filter.as_mut().unwrap();
+
+//    let box_water_mark = water_mark.as_mut().unwrap();
+//    let box_alpha_blend = blend_filter.as_mut().unwrap();
+
+    let box_water_mask = water_mask.as_mut().unwrap();
+
     let box_output = output.as_mut().unwrap();
 
     let pic = box_graph.add_input("picture", box_picture);
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
-    let water_mark = box_graph.add_input("water mark",box_water_mark);
-    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
-    let output = box_graph.add_function("output",&[alpha_blend], box_output);
+//    let water_mark = box_graph.add_input("water mark",box_water_mark);
+//    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
+    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
+
+    let output = box_graph.add_function("output",&[water_mask], box_output);
 }
+
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: *mut RenderGraph<'a>){
@@ -79,6 +107,20 @@ pub extern "C" fn xhey_init_oes_texture(width: c_int, height: c_int, orient: c_i
 pub unsafe extern "C" fn xhey_init_alpha_blend() -> *mut XHeyAlphaBlendFilter {
     let filter = Box::new(XHeyAlphaBlendFilter::new());
     Box::into_raw(filter)
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_watermark() -> *mut XHeyBlendFilter {
+    let filter = Box::new(XHeyBlendFilter::new());
+    Box::into_raw(filter)
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_watermark_update(filter: *mut XHeyBlendFilter, texId: c_uint, x: c_float, y: c_float, w: c_float, h: c_float){
+    let filter = filter.as_mut().unwrap();
+    filter.appendWaterMark(texId,x,y,w,h);
 }
 
 #[no_mangle]
@@ -220,9 +262,14 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: 
 }
 
 
+//#[no_mangle]
+//pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong, water_mark_ptr: jlong, blend_filter_ptr:jlong,output_ptr:jlong) {
+//    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, water_mark_ptr as *mut XheyPicture, blend_filter_ptr as *mut XHeyAlphaBlendFilter, output_ptr as *mut XheyPictureOutput);
+//}
+
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong, water_mark_ptr: jlong, blend_filter_ptr:jlong,output_ptr:jlong) {
-    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, water_mark_ptr as *mut XheyPicture, blend_filter_ptr as *mut XHeyAlphaBlendFilter, output_ptr as *mut XheyPictureOutput);
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong, water_mark_ptr: jlong, output_ptr:jlong) {
+    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, water_mark_ptr as *mut XHeyBlendFilter,  output_ptr as *mut XheyPictureOutput);
 }
 
 #[no_mangle]
@@ -252,7 +299,17 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initAlphablendfil
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initUnsharpmaskfilter(env: JNIEnv, _: JClass) -> jlong {
     xhey_init_unsharp_mask() as jlong
 }
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initWatermark(env: JNIEnv, _: JClass) -> jlong {
+    xhey_init_watermark() as jlong
+}
 
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_appendWatermark(env: JNIEnv, _: JClass, watermark: jlong, texId: jint, x: jfloat, y: jfloat, w: jfloat, h: jfloat)  {
+    let filter = watermark as *mut XHeyBlendFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.appendWaterMark(texId as u32,x,y,w,h);
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPictureoutput(env: JNIEnv, _: JClass, width: jint, height: jint, orient: jint) -> jlong{
@@ -304,6 +361,11 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseAlphablend
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseUnsharpmaskfilter(env: JNIEnv, _: JClass, filter_ptr: jlong){
     drop(Box::from_raw(filter_ptr as *mut XHeyUnsharpMaskFilter))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseWatermarkfilter(env: JNIEnv, _: JClass, filter_ptr: jlong){
+    drop(Box::from_raw(filter_ptr as *mut XHeyBlendFilter))
 }
 
 #[no_mangle]

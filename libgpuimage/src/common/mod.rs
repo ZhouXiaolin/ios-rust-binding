@@ -6,6 +6,7 @@ mod rotation;
 mod size;
 mod matrix3x3;
 mod matrix4x4;
+mod rect;
 
 pub use self::color::*;
 pub use self::fill_mode::*;
@@ -15,5 +16,6 @@ pub use self::rotation::*;
 pub use self::size::*;
 pub use self::matrix3x3::*;
 pub use self::matrix4x4::*;
+pub use self::rect::*;
 
 use super::render::Framebuffer;

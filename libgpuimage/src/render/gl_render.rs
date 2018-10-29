@@ -38,10 +38,10 @@ fn inputTextureProperty(index: usize) -> (String,String) {
     (inputTextureCoordinateString,inputImageTextureString)
 }
 
-pub fn enableBlending(){
+pub fn enableBlending(sfactor: GLenum, dfactor: GLenum){
     unsafe {
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFunc(sfactor,dfactor);
     }
 }
 

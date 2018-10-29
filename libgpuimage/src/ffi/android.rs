@@ -43,38 +43,13 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 
 }
 
-
-
-
-
-//#[no_mangle]
-//pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mark: *mut XheyPicture, blend_filter: *mut XHeyAlphaBlendFilter, output: *mut XheyPictureOutput) {
-//    let box_graph = graph.as_mut().unwrap();
-//    let box_picture = picture.as_mut().unwrap();
-//    let box_lut = lut.as_mut().unwrap();
-//    let box_lut_filter = lut_filter.as_mut().unwrap();
-//    let box_water_mark = water_mark.as_mut().unwrap();
-//    let box_alpha_blend = blend_filter.as_mut().unwrap();
-//    let box_output = output.as_mut().unwrap();
-//
-//    let pic = box_graph.add_input("picture", box_picture);
-//    let lut = box_graph.add_input("lut", box_lut);
-//    let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
-//    let water_mark = box_graph.add_input("water mark",box_water_mark);
-//    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
-//    let output = box_graph.add_function("output",&[alpha_blend], box_output);
-//}
-
-
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, water_mask: *mut XHeyBlendFilter, output: *mut XheyPictureOutput) {
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, unsharpask: *mut XHeyUnsharpMaskFilter,water_mask: *mut XHeyBlendFilter, output: *mut XheyPictureOutput) {
     let box_graph = graph.as_mut().unwrap();
     let box_picture = picture.as_mut().unwrap();
     let box_lut = lut.as_mut().unwrap();
     let box_lut_filter = lut_filter.as_mut().unwrap();
-
-//    let box_water_mark = water_mark.as_mut().unwrap();
-//    let box_alpha_blend = blend_filter.as_mut().unwrap();
+    let box_unsharp_mark = unsharpask.as_mut().unwrap();
 
     let box_water_mask = water_mask.as_mut().unwrap();
 
@@ -83,9 +58,10 @@ pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *m
     let pic = box_graph.add_input("picture", box_picture);
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
-//    let water_mark = box_graph.add_input("water mark",box_water_mark);
-//    let alpha_blend = box_graph.add_function("alpha blend",&[lut_filter,water_mark],box_alpha_blend);
-    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
+
+    let unsharp_mask = box_graph.add_function("unsharp mask",&[lut_filter,pic],box_unsharp_mark);
+
+    let water_mask = box_graph.add_function("water mask",&[unsharp_mask],box_water_mask);
 
     let output = box_graph.add_function("output",&[water_mask], box_output);
 }
@@ -268,8 +244,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: 
 //}
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong, water_mark_ptr: jlong, output_ptr:jlong) {
-    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, water_mark_ptr as *mut XHeyBlendFilter,  output_ptr as *mut XheyPictureOutput);
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong,unsharp_mark_ptr: jlong, water_mark_ptr: jlong, output_ptr:jlong) {
+    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, unsharp_mark_ptr as *mut XHeyUnsharpMaskFilter,water_mark_ptr as *mut XHeyBlendFilter,  output_ptr as *mut XheyPictureOutput);
 }
 
 #[no_mangle]

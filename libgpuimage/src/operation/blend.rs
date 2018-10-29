@@ -153,8 +153,10 @@ impl Renderable for XHeyBlendFilter {
         // 激活FBO
         renderFramebuffer.bindFramebufferForRendering();
 
+
         // 开启blend
-        enableBlending();
+        enableBlending(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
+
         // 清零
         clearFramebufferWithColor(Color::black());
 
@@ -164,6 +166,8 @@ impl Renderable for XHeyBlendFilter {
         let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+
 
 
 
@@ -195,11 +199,6 @@ impl Renderable for XHeyBlendFilter {
             renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
         }
-
-
-
-
-
         // 关闭blend
         disableBlending();
 

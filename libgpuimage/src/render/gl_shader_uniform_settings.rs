@@ -20,9 +20,17 @@ pub struct ShaderUniformSettings{
 impl ShaderUniformSettings {
 
     pub fn setValue(&mut self, key:&str, value:Uniform) {
+
+
         let uniformValues = &mut self.uniformValues;
-        uniformValues.insert(String::from(key),value);
+
+        let key = String::from(key);
+
+
+        uniformValues.insert(key,value);
+
     }
+
     pub fn restoreShaderSettings(&self, shader: &GLProgram){
         for (key,value) in self.uniformValues.iter() {
             let uniform = shader.get_uniform(key);

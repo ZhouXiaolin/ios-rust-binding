@@ -24,7 +24,7 @@ pub fn textureUnitForIndex(index: usize) -> GLenum {
         6 => GL_TEXTURE6,
         7 => GL_TEXTURE7,
         8 => GL_TEXTURE8,
-        _ => panic!("Attempted to address too high a texture unit")
+        _ => unreachable!("Attempted to address too high a texture unit")
     }
 }
 

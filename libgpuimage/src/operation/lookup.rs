@@ -42,7 +42,7 @@ impl XHeyLookupFilter {
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
 
- const highp float intensity = 1.0;
+ uniform highp float intensity;
 
  void main()
  {
@@ -74,6 +74,9 @@ impl XHeyLookupFilter {
  }
     "#;
         let shader = GLProgram::new(vertexString,fragmentString);
+        let mut uniformSettings = ShaderUniformSettings::default();
+        uniformSettings.setValue("intensity",Uniform::Float(1.0));
+
 
         Self{
             maximumInputs:2,
@@ -81,7 +84,7 @@ impl XHeyLookupFilter {
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings
 
         }
     }
@@ -89,6 +92,10 @@ impl XHeyLookupFilter {
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
+    }
+
+    pub fn set_intensity(&mut self, v : f32){
+        self.uniformSettings.setValue("intensity",Uniform::Float(v));
     }
 
 }

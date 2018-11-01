@@ -159,7 +159,8 @@ impl Framebuffer {
     }
 
     pub fn texturePropertiesForOutputRotation(&self, rotation:Rotation) -> InputTextureProperties {
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(rotation));
+        let storage = InputTextureStorageFormat::textureCoordinate(rotation.textureCoordinates());
+//        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(rotation));
         InputTextureProperties::new(storage,self.texture)
     }
 
@@ -190,13 +191,13 @@ impl Framebuffer {
 impl Drop for Framebuffer {
     fn drop(&mut self) {
 
-        println!("Drop Framebuffer");
+        info!("Drop Framebuffer");
         if self.textureOverride == false {
             unsafe {
                 let mutableTexture = self.texture;
 
                 glDeleteTextures(1,&mutableTexture);
-                println!("Delete texture at size {:?}",self.size);
+                info!("Delete texture at size {:?}",self.size);
             }
         }
 
@@ -205,7 +206,7 @@ impl Drop for Framebuffer {
                 let mutableFramebuffer = self.framebuffer;
 
                 glDeleteFramebuffers(1,&mutableFramebuffer);
-                println!("Delete Framebuffer");
+                info!("Delete Framebuffer");
 
             }
         }

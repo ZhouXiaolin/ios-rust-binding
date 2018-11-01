@@ -12,6 +12,11 @@ pub struct GlContext{
 
 }
 
+impl Drop for GlContext {
+    fn drop(&mut self){
+        info!("Drop GlContext");
+    }
+}
 
 const vertexStr: &str = r#"
  attribute vec4 position;

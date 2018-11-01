@@ -28,6 +28,7 @@ pub extern "C" fn xhey_init_graph<'a>() -> *mut RenderGraph<'a> {
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOESTexture, lookup_picture: *mut XheyPicture,lookup_filter: *mut XHeyLookupFilter, unsharpask: *mut XHeyUnsharpMaskFilter,surfaceView: *mut XheySurfaceView){
+
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
 //    let box_lookup_picture = lookup_picture.as_ref().unwrap();
@@ -306,13 +307,14 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getTextureId(env:
     filter.textureId() as jint
 }
 
-
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_textureRender(env: JNIEnv, _: JClass, filter_ptr: jlong) {
     let filter = filter_ptr as *mut XheyOESTexture;
-    let filter = filter.as_mut().unwrap();
-    filter.render();
+    let filter = filter.as_ref().unwrap();
+    filter.render()
 }
+
+
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initPictureoutput(env: JNIEnv, _: JClass, width: jint, height: jint, orient: jint) -> jlong{

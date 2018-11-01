@@ -45,6 +45,12 @@ pub struct FramebufferCache{
     cache:RefCell<FnvHashMap<String,FramebufferCacheValue>>,
 }
 
+
+impl Drop for FramebufferCache {
+    fn drop(&mut self){
+        info!("Drop GlContext");
+    }
+}
 unsafe impl Sync for FramebufferCache{}
 
 impl FramebufferCache {
@@ -66,12 +72,14 @@ impl FramebufferCache {
                 let mut value_vec = i.1.value.borrow_mut();
                 for f in value_vec.iter() {
                     if f.valid() {
+
                         return f.clone();
                     }
                 }
 
                 let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
                 value_vec.push(f.clone());
+
                 return f;
             }
         }
@@ -85,7 +93,13 @@ impl FramebufferCache {
     }
 
     pub fn purgeAllUnassignedFramebuffer(&self){
+
+
+
+        info!("-----------> release framebuffer {:?}",self.cache.borrow().len());
         self.cache.borrow_mut().clear();
+        info!("-----------> release framebuffer {:?}",self.cache.borrow().len());
+
     }
 
 }

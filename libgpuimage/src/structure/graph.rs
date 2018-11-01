@@ -17,7 +17,8 @@ pub type VariableIndex = u32;
 
 impl<'a,T:Tensor> Drop for Graph<'a,T> {
     fn drop(&mut self){
-        println!("Drop Graph");
+        self.reset();
+        info!("Drop Graph");
     }
 
 }
@@ -82,8 +83,6 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
     /// 用来打印图结构
     pub fn PrintGraphviz(&self) {
-
-
 
         let edges = &self.edges;
         let nodes = &self.nodes;

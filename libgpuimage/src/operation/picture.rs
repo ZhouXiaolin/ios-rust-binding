@@ -91,6 +91,9 @@ impl XheyPicture {
         self.orientation = ImageOrientation::from(orient);
     }
 
+
+
+
 }
 
 
@@ -137,7 +140,8 @@ impl Edge for XheyPicture{
 
         clearFramebufferWithColor(Color::black());
 
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
         let shader = &sharedImageProcessingContext.passthroughShader;
 

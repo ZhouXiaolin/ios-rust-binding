@@ -14,7 +14,8 @@ pub struct XheyOESTexture{
     textureId:GLuint,
     size: GLSize,
     uniformSettings:ShaderUniformSettings,
-    orientation: ImageOrientation
+    orientation: ImageOrientation,
+    resultId: Cell<u32>
 
 }
 
@@ -66,7 +67,8 @@ impl XheyOESTexture {
             textureId:0,
             size,
             uniformSettings:ShaderUniformSettings::default(),
-            orientation: ImageOrientation::from(orient)
+            orientation: ImageOrientation::from(orient),
+            resultId:Cell::from(0)
         }
     }
 
@@ -76,6 +78,11 @@ impl XheyOESTexture {
     pub fn updateMatrix(&mut self, matrix: Matrix4x4){
         self.uniformSettings.setValue("uTexMatrix", Uniform::Matrix4x4(matrix));
     }
+
+    pub fn textureId(&self) -> GLuint {
+        self.resultId.get()
+    }
+
 
 }
 
@@ -112,9 +119,10 @@ impl Edge for XheyOESTexture{
 
 
 
+
         let size = self.size;
 
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::flipHorizontally));
+        let storage = InputTextureStorageFormat::textureCoordinate(Rotation::flipHorizontally.textureCoordinates());
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
@@ -124,12 +132,16 @@ impl Edge for XheyOESTexture{
 
         clearFramebufferWithColor(Color::black());
 
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
 
         renderFramebuffer.unbindFramebufferForRendering();
+
+        self.resultId.set(renderFramebuffer.texture);
 
         Some(renderFramebuffer)
 

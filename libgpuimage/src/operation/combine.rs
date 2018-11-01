@@ -143,7 +143,8 @@ impl Renderable for XHeyCombineFilter {
 
         clearFramebufferWithColor(Color::black());
 
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 

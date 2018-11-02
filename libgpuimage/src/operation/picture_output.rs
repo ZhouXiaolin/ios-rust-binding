@@ -99,7 +99,7 @@ impl Drawable for XheyPictureOutput {
 
         renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::red());
+        clearFramebufferWithColor(Color::white());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 
@@ -107,13 +107,15 @@ impl Drawable for XheyPictureOutput {
 
         let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize);
 
-        let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(self.rotation));
+        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
+
         let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
         renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
 
+//        renderFramebuffer.unbindFramebufferForRendering();
 
         info!("picture output finish");
 

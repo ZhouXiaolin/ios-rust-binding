@@ -48,7 +48,7 @@ pub struct FramebufferCache{
 
 impl Drop for FramebufferCache {
     fn drop(&mut self){
-        info!("Drop GlContext");
+        info!("Drop FramebufferCache");
     }
 }
 unsafe impl Sync for FramebufferCache{}

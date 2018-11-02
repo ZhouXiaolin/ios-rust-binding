@@ -177,7 +177,7 @@ impl Renderable for XHeyUnsharpMaskFilter {
 
         renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::red());
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);

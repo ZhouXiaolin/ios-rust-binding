@@ -31,39 +31,36 @@ pub unsafe extern "C" fn xhey_graph(graph: *mut RenderGraph,source: *mut XheyOES
 
     let box_graph = graph.as_mut().unwrap();
     let box_texture = source.as_ref().unwrap();
-//    let box_lookup_picture = lookup_picture.as_ref().unwrap();
-//    let box_lookup_filter = lookup_filter.as_ref().unwrap();
+
+    let box_lookup_picture = lookup_picture.as_ref().unwrap();
+    let box_lookup_filter = lookup_filter.as_ref().unwrap();
 //    let box_unsharp_filter = unsharpask.as_ref().unwrap();
 //    let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
-//    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
-//    let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
-//    let unsharp_mask = box_graph.add_function("unsharp mask",&[lookup_filter, texture],box_unsharp_filter);
-//    let view = box_graph.add_function("surface view",&[texture],box_surfaceView);
+    let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
+    let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
+//    let unsharp_mask = box_graph.add_function("unsharp mask",&[texture],box_unsharp_filter);
+//    let view = box_graph.add_function("surface view",&[unsharp_mask],box_surfaceView);
 
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, unsharpask: *mut XHeyUnsharpMaskFilter,water_mask: *mut XHeyBlendFilter, output: *mut XheyPictureOutput) {
+pub unsafe extern "C" fn xhey_picture_graph(graph: *mut RenderGraph, picture: *mut XheyPicture, basic: *mut XHeyBasicFilter,lut: *mut XheyPicture, lut_filter: *mut XHeyLookupFilter, unsharpask: *mut XHeyUnsharpMaskFilter,water_mask: *mut XHeyBlendFilter, output: *mut XheyPictureOutput) {
     let box_graph = graph.as_mut().unwrap();
+
     let box_picture = picture.as_mut().unwrap();
+    let box_basic = basic.as_mut().unwrap();
     let box_lut = lut.as_mut().unwrap();
     let box_lut_filter = lut_filter.as_mut().unwrap();
-//    let box_unsharp_mark = unsharpask.as_mut().unwrap();
-
     let box_water_mask = water_mask.as_mut().unwrap();
-
     let box_output = output.as_mut().unwrap();
 
     let pic = box_graph.add_input("picture", box_picture);
+    let basic = box_graph.add_function("basic",&[pic],box_basic);
     let lut = box_graph.add_input("lut", box_lut);
-    let lut_filter = box_graph.add_function("lut filter",&[pic, lut], box_lut_filter);
-
-//    let unsharp_mask = box_graph.add_function("unsharp mask",&[lut_filter,pic],box_unsharp_mark);
-
+    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
     let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
-
     let output = box_graph.add_function("output",&[water_mask], box_output);
 }
 
@@ -245,8 +242,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphConfig(env: 
 //}
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, lut_ptr: jlong, lut_filter_ptr: jlong,unsharp_mark_ptr: jlong, water_mark_ptr: jlong, output_ptr:jlong) {
-    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, unsharp_mark_ptr as *mut XHeyUnsharpMaskFilter,water_mark_ptr as *mut XHeyBlendFilter,  output_ptr as *mut XheyPictureOutput);
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_graphPictureconfig(env: JNIEnv, _: JClass, graph_ptr: jlong, picture_ptr: jlong, basic_ptr: jlong,lut_ptr: jlong, lut_filter_ptr: jlong,unsharp_mark_ptr: jlong, water_mark_ptr: jlong, output_ptr:jlong) {
+    xhey_picture_graph(graph_ptr as *mut RenderGraph, picture_ptr as *mut XheyPicture, basic_ptr as *mut XHeyBasicFilter,lut_ptr as *mut XheyPicture, lut_filter_ptr as *mut XHeyLookupFilter, unsharp_mark_ptr as *mut XHeyUnsharpMaskFilter,water_mark_ptr as *mut XHeyBlendFilter,  output_ptr as *mut XheyPictureOutput);
 }
 
 #[no_mangle]
@@ -301,6 +298,13 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_appendWatermark(e
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateBasicRotation(env: JNIEnv, _: JClass, basic: jlong, rotation: jint)  {
+    let filter = basic as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.updateOutputRotation(rotation);
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getTextureId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
     let filter = filter_ptr as *mut XheyOESTexture;
     let filter = filter.as_ref().unwrap();
@@ -308,10 +312,17 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getTextureId(env:
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_textureRender(env: JNIEnv, _: JClass, filter_ptr: jlong) {
-    let filter = filter_ptr as *mut XheyOESTexture;
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getBasicId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
+    let filter = filter_ptr as *mut XHeyBasicFilter;
     let filter = filter.as_ref().unwrap();
-    filter.render()
+    filter.textureId() as jint
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getLookupId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
+    let filter = filter_ptr as *mut XHeyLookupFilter;
+    let filter = filter.as_ref().unwrap();
+    filter.textureId() as jint
 }
 
 

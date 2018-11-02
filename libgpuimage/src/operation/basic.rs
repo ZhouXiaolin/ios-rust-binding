@@ -12,7 +12,9 @@ pub struct XHeyBasicFilter{
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
     overriddenOutputSize: Option<Size>,
-    overriddenOutputRotation: Option<Rotation>
+    overriddenOutputRotation: Option<Rotation>,
+    resultId: Cell<u32>
+
 }
 
 impl XHeyBasicFilter {
@@ -29,7 +31,8 @@ impl XHeyBasicFilter {
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
             overriddenOutputSize: None,
-            overriddenOutputRotation: None
+            overriddenOutputRotation: None,
+            resultId: Cell::from(0)
         }
     }
 
@@ -76,7 +79,7 @@ impl XHeyBasicFilter {
  void main()
  {
      vec4 color = texture2D(inputImageTexture, textureCoordinate);
-     gl_FragColor = vec4(color.r, color.g, 0.0, 1.0);
+     gl_FragColor = color;
  }
     "#;
         Self::new_shader(vertexString,fragmentString,1)
@@ -100,6 +103,11 @@ impl XHeyBasicFilter {
     pub fn updateOutputRotation(&mut self, rotation: i32){
         self.overriddenOutputRotation = Some(Rotation::from(rotation));
     }
+
+    pub fn textureId(&self) -> GLuint {
+        self.resultId.get()
+    }
+
 }
 
 
@@ -183,6 +191,9 @@ impl Renderable for XHeyBasicFilter {
 
 
         renderFramebuffer.unbindFramebufferForRendering();
+
+        self.resultId.set(renderFramebuffer.texture);
+
 
         renderFramebuffer
     }

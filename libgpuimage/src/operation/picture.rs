@@ -129,29 +129,30 @@ impl Edge for XheyPicture{
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
 
 
-        let size = self.size;
-        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
-        let textureProperties = vec![InputTextureProperties::new(storage,self.framebuffer.texture)];
+//        let size = self.size;
+//        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
+//        let textureProperties = vec![InputTextureProperties::new(storage,self.framebuffer.texture)];
+//
+//
+//        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
+//
+//        renderFramebuffer.bindFramebufferForRendering();
+//
+//        clearFramebufferWithColor(Color::black());
+//
+//        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+//        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+//
+//        let shader = &sharedImageProcessingContext.passthroughShader;
+//
+//        renderQuadWithShader(shader,&self.uniformSettings,&textureProperties,vertex);
+//
+//
+//        renderFramebuffer.unbindFramebufferForRendering();
 
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::black());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let shader = &sharedImageProcessingContext.passthroughShader;
-
-        renderQuadWithShader(shader,&self.uniformSettings,&textureProperties,vertex);
-
-
-        renderFramebuffer.unbindFramebufferForRendering();
-
-
-        Some(renderFramebuffer)
+        Some(self.framebuffer.clone())
     }
 
     fn name(&self) -> &str {

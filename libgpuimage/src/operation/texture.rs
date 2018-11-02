@@ -118,11 +118,9 @@ impl Edge for XheyOESTexture{
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
 
 
-
-
         let size = self.size;
 
-        let storage = InputTextureStorageFormat::textureCoordinate(Rotation::flipHorizontally.textureCoordinates());
+        let storage = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
@@ -130,7 +128,7 @@ impl Edge for XheyOESTexture{
 
         renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::red());
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
@@ -142,8 +140,17 @@ impl Edge for XheyOESTexture{
         renderFramebuffer.unbindFramebufferForRendering();
 
         self.resultId.set(renderFramebuffer.texture);
+        unsafe {
+            let error = glGetError();
+            if error != GL_NO_ERROR {
+                info!("texture ------------> {}",error);
+            }
+        }
+
 
         Some(renderFramebuffer)
+
+
 
     }
 

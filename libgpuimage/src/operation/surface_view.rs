@@ -78,7 +78,7 @@ impl Drawable for XheySurfaceView {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::red());
 
         let program = &sharedImageProcessingContext.passthroughShader;
 

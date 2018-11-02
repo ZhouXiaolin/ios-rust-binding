@@ -10,7 +10,9 @@ pub struct XHeyLookupFilter{
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings
+    uniformSettings:ShaderUniformSettings,
+    resultId: Cell<u32>
+
 
 }
 
@@ -84,7 +86,8 @@ impl XHeyLookupFilter {
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings
+            uniformSettings,
+            resultId: Cell::from(0)
 
         }
     }
@@ -96,6 +99,10 @@ impl XHeyLookupFilter {
 
     pub fn set_intensity(&mut self, v : f32){
         self.uniformSettings.setValue("intensity",Uniform::Float(v));
+    }
+
+    pub fn textureId(&self) -> GLuint {
+        self.resultId.get()
     }
 
 }
@@ -138,6 +145,8 @@ impl Edge for XHeyLookupFilter {
         "lookup"
     }
 
+
+
 }
 
 
@@ -162,7 +171,7 @@ impl Renderable for XHeyLookupFilter {
 
         renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::green());
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
@@ -171,6 +180,15 @@ impl Renderable for XHeyLookupFilter {
 
 
         renderFramebuffer.unbindFramebufferForRendering();
+
+        self.resultId.set(renderFramebuffer.texture);
+
+        unsafe {
+            let error = glGetError();
+            if error != GL_NO_ERROR {
+                info!("lookup ------------> {}",error);
+            }
+        }
 
         renderFramebuffer
     }

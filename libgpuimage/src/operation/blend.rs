@@ -158,12 +158,14 @@ impl Renderable for XHeyBlendFilter {
         enableBlending(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 
         // 清零
-        clearFramebufferWithColor(Color::black());
+        clearFramebufferWithColor(Color::blue());
 
         // 首先渲染传入的framebuffer
 
         let textureProperties = vec![inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait)];
-        let vertex = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.standardImageVBO);
+
+        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
@@ -177,8 +179,9 @@ impl Renderable for XHeyBlendFilter {
         for watermark in self.watermarks.iter() {
 
 
-            let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::noRotation));
+//            let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::noRotation));
 
+            let storage = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
             let textureProperties = vec![InputTextureProperties::new(storage,watermark.textureId)];
 
 

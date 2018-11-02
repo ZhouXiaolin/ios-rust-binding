@@ -152,8 +152,8 @@
       <file leaf-file-name="engine.rs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/render/engine.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="515">
-              <caret line="107" column="1" lean-forward="true" selection-start-line="107" selection-start-column="1" selection-end-line="107" selection-end-column="1" />
+            <state relative-caret-position="1249">
+              <caret line="108" column="33" lean-forward="true" selection-start-line="108" selection-start-column="33" selection-end-line="108" selection-end-column="33" />
               <folding>
                 <element signature="e#243#244#0" expanded="true" />
                 <element signature="e#272#273#0" expanded="true" />
@@ -288,7 +288,6 @@
         <option value="$PROJECT_DIR$/src/render/gl_shader_uniform_settings.rs" />
         <option value="$PROJECT_DIR$/src/render/Engine.rs" />
         <option value="$PROJECT_DIR$/src/render/mod.rs" />
-        <option value="$PROJECT_DIR$/src/render/engine.rs" />
         <option value="$PROJECT_DIR$/src/render/gl_context.rs" />
         <option value="$PROJECT_DIR$/src/structure/graph.rs" />
         <option value="$PROJECT_DIR$/src/render/gl_framebuffer.rs" />
@@ -304,6 +303,7 @@
         <option value="$PROJECT_DIR$/src/operation/picture_output.rs" />
         <option value="$PROJECT_DIR$/src/operation/basic.rs" />
         <option value="$PROJECT_DIR$/src/ffi/android.rs" />
+        <option value="$PROJECT_DIR$/src/render/engine.rs" />
       </list>
     </option>
   </component>
@@ -522,13 +522,13 @@
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info id="Image Layers" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50707746" side_tool="true" weight="0.2485294" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50745475" side_tool="true" weight="0.19791667" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49292257" visible="true" weight="0.19791667" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49254525" visible="true" weight="0.303125" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1517572" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1517572" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -920,8 +920,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/render/engine.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="515">
-          <caret line="107" column="1" lean-forward="true" selection-start-line="107" selection-start-column="1" selection-end-line="107" selection-end-column="1" />
+        <state relative-caret-position="1249">
+          <caret line="108" column="33" lean-forward="true" selection-start-line="108" selection-start-column="33" selection-end-line="108" selection-end-column="33" />
           <folding>
             <element signature="e#243#244#0" expanded="true" />
             <element signature="e#272#273#0" expanded="true" />

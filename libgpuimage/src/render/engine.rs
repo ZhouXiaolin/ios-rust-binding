@@ -4,21 +4,21 @@
 ///
 
 #[derive(Debug,Default)]
-pub struct PipelineState {
+pub struct RenderPipelineState {
 
 }
 
-impl PipelineState {
+impl RenderPipelineState {
 
 }
 
 // Device是个空实现
 #[derive(Debug, Default)]
-pub struct RenderDevice {
+pub struct Device {
 
 }
 
-impl RenderDevice {
+impl Device {
     pub fn makeCommandQueue(&self) -> CommandQueue {
         CommandQueue{}
     }
@@ -52,10 +52,12 @@ pub struct CommandBuffer{
 }
 
 impl CommandBuffer {
-    pub fn makeRenderCommandEncoder(&self, renderPass: &RenderPass) -> RenderEncoder {
-        RenderEncoder{}
+    pub fn makeRenderCommandEncoder(&self, renderPass: &RenderPassDescriptor) -> RenderCommandEncoder {
+        RenderCommandEncoder{}
     }
 }
+
+trait CommandEncoder {}
 
 
 type Texture = u32;
@@ -65,27 +67,30 @@ enum LoadAction {
 
 }
 
-///  渲染流
-///
+/// colorattachments
+/// 可能存在的fbo --> framebuffer + texture
+/// 清屏操作 glClear glClearColor
 #[derive(Debug,Default)]
-pub struct RenderPass {
+pub struct RenderPassDescriptor {
     pub texture: Texture,
     pub clearColor: Color
 }
 
-impl RenderPass {
+impl RenderPassDescriptor {
 
 }
 
 ///
 
 #[derive(Debug,Default)]
-pub struct RenderEncoder {
+pub struct RenderCommandEncoder {
 
 }
 
-impl RenderEncoder {
-    pub fn setRenderPipelineState(&self, pipelineState: &PipelineState) {
+impl CommandEncoder for RenderCommandEncoder {}
+
+impl RenderCommandEncoder {
+    pub fn setRenderPipelineState(&self, pipelineState: &RenderPipelineState) {
 
     }
 
@@ -94,6 +99,10 @@ impl RenderEncoder {
     }
 
     pub fn setFragmentTexture(&self){
+
+    }
+
+    pub fn setViewport(&self){
 
     }
 

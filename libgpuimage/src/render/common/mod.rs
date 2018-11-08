@@ -18,4 +18,3 @@ pub use self::matrix3x3::*;
 pub use self::matrix4x4::*;
 pub use self::rect::*;
 
-use super::render::Framebuffer;

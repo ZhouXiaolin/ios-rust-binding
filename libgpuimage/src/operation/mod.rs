@@ -26,9 +26,8 @@ pub use self::blend::*;
 #[cfg(target_os = "android")]
 pub use self::texture::*;
 
-use super::common::*;
 use super::structure::*;
 use super::render::*;
-
+use crate::render::common::*;
 
 

@@ -8,7 +8,7 @@ use jni::sys::*;
 use std::os::raw::{c_void,c_int,c_uint,c_float};
 use gles_rust_binding::*;
 use super::render::{Framebuffer};
-use super::common::Matrix4x4;
+use crate::render::Matrix4x4;
 use super::structure::{Graph,Edge};
 use super::render::sharedImageProcessingContext;
 

@@ -325,6 +325,12 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getLookupId(env: 
     filter.textureId() as jint
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getOutputId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
+    let filter = filter_ptr as *mut XheyPictureOutput;
+    let filter = filter.as_ref().unwrap();
+    filter.textureId() as jint
+}
 
 
 #[no_mangle]

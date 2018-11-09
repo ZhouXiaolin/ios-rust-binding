@@ -2,6 +2,7 @@
 
 use gles_rust_binding::*;
 use std::rc::Rc;
+use std::sync::Arc;
 use std::cell::{RefCell, Cell};
 use super::*;
 
@@ -37,7 +38,7 @@ impl XheySurfaceView {
 
 
 impl Edge for XheySurfaceView {
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

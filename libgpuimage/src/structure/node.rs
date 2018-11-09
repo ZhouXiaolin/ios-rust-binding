@@ -1,6 +1,7 @@
 use std::cell::{RefCell};
 use super::Tensor;
 use std::rc::Rc;
+use std::sync::Arc;
 
 pub struct Node<T:Tensor> {
 
@@ -8,7 +9,7 @@ pub struct Node<T:Tensor> {
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:RefCell<Vec<Rc<T>>> // 应该如何修改此处？
+    pub f:RefCell<Vec<Arc<T>>> // 应该如何修改此处？
 
 }
 

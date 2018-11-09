@@ -3,11 +3,12 @@ use super::*;
 use gles_rust_binding::*;
 use std::os::raw::c_void;
 use std::rc::Rc;
+use std::sync::Arc;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
 #[derive(Debug)]
 pub struct XheyPicture{
-    framebuffer: Rc<Framebuffer>,
+    framebuffer: Arc<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     size: GLSize,
@@ -46,7 +47,7 @@ impl XheyPicture {
     pub fn new_texture(textureId: GLuint, width: i32, height: i32, rotation: i32) -> Self {
 
         let size = GLSize::new(width,height);
-        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
+        let framebuffer = Arc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
         XheyPicture{
             framebuffer,
             head_node:Cell::default(),
@@ -99,7 +100,7 @@ impl XheyPicture {
 
 
 impl Edge for XheyPicture{
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

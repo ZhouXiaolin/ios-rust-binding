@@ -2,6 +2,7 @@ use gles_rust_binding::*;
 use super::*;
 use std::cell::{RefCell,Cell};
 use std::rc::Rc;
+use std::sync::Arc;
 #[repr(C)]
 #[derive(Debug)]
 pub struct XHeyAlphaBlendFilter{
@@ -76,7 +77,7 @@ void main()
 
 
 impl Edge for XHeyAlphaBlendFilter {
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }
@@ -116,7 +117,7 @@ impl Edge for XHeyAlphaBlendFilter {
 
 
 impl Renderable for XHeyAlphaBlendFilter {
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
         let inputFramebuffer: &Framebuffer = inputFramebuffers.first().unwrap();

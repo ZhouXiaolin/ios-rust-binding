@@ -1,5 +1,6 @@
 use gles_rust_binding::*;
 use std::rc::Rc;
+use std::sync::Arc;
 use super::*;
 use std::cell::{RefCell,Cell};
 
@@ -98,7 +99,7 @@ impl XHeyBlendFilter {
 
 
 impl Edge for XHeyBlendFilter {
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }
@@ -137,7 +138,7 @@ impl Edge for XHeyBlendFilter {
 
 
 impl Renderable for XHeyBlendFilter {
-    type Item = Rc<Framebuffer>;
+    type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
 

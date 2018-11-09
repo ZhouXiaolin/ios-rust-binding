@@ -29,27 +29,12 @@ impl From<i32> for Rotation {
     }
 }
 
-impl Into<usize> for Rotation {
-    fn into(self) -> usize{
-        match self {
-            Rotation::noRotation => 0,
-            Rotation::rotateCounterclockwise => 1,
-            Rotation::rotateClockwise => 2,
-            Rotation::rotate180 => 3,
-            Rotation::flipHorizontally => 4,
-            Rotation::flipVertically => 5,
-            Rotation::rotateClockwiseAndFlipVertically => 6,
-            Rotation::rotateClockwiseAndFlipHorizontally => 7
-        }
-    }
-
-}
 
 
 
 impl Rotation {
 
-    pub fn toRawValue(&self) -> usize {
+    pub fn intoU(&self) -> usize {
         match self {
             Rotation::noRotation => 0,
             Rotation::rotateCounterclockwise => 1,

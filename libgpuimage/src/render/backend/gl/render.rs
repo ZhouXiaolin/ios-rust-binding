@@ -52,6 +52,10 @@ pub fn disableBlending(){
 }
 
 
+
+
+
+
 pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
 

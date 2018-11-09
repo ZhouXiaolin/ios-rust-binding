@@ -132,15 +132,15 @@ impl Edge for XheyOESTexture{
         clearFramebufferWithColor(Color::red());
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
-
 
         renderFramebuffer.unbindFramebufferForRendering();
 
         self.resultId.set(renderFramebuffer.texture);
+
         unsafe {
             let error = glGetError();
             if error != GL_NO_ERROR {

@@ -305,6 +305,13 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateBasicRotati
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_updateBasicOutputSize(env: JNIEnv, _: JClass, basic: jlong, width: jint, height: jint)  {
+    let filter = basic as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.updateOutputSize(width, height);
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getTextureId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
     let filter = filter_ptr as *mut XheyOESTexture;
     let filter = filter.as_ref().unwrap();

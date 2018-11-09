@@ -18,6 +18,7 @@ static FORMAT : GLenum = GL_BGRA;
 static FORMAT : GLenum = GL_RGBA;
 
 impl Default for GPUTextureOptions {
+
     fn default() -> Self {
         GPUTextureOptions {
             minFilter: GL_LINEAR,

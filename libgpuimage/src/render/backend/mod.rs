@@ -1,4 +1,4 @@
-pub mod gl;
+mod gl;
 
 pub use self::gl::*;
 

@@ -94,8 +94,6 @@ impl FramebufferCache {
 
     pub fn purgeAllUnassignedFramebuffer(&self){
 
-
-
         info!("-----------> release framebuffer {:?}",self.cache.borrow().len());
         self.cache.borrow_mut().clear();
         info!("-----------> release framebuffer {:?}",self.cache.borrow().len());

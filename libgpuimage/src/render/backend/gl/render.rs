@@ -1,8 +1,20 @@
 use gles_rust_binding::*;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat};
-use super::sharedImageProcessingContext;
 use super::ShaderUniformSettings;
 use std::ptr;
+use super::PrimitiveType;
+
+impl Into<GLenum> for PrimitiveType {
+    fn into(self) -> GLenum {
+        match self {
+            PrimitiveType::Point => GL_POINTS,
+            PrimitiveType::Line => GL_LINES,
+            PrimitiveType::LineStrip => GL_LINE_STRIP,
+            PrimitiveType::Triangle => GL_TRIANGLES,
+            PrimitiveType::TriangleStrip => GL_TRIANGLE_STRIP
+        }
+    }
+}
 
 
 
@@ -53,7 +65,18 @@ pub fn disableBlending(){
 
 
 
+pub struct Encoder{
 
+}
+
+impl Encoder {
+
+    fn drawPrimitive(&self, mode: PrimitiveType, start: i32, count: i32){
+        unsafe {
+            glDrawArrays(mode.into(),start,count);
+        }
+    }
+}
 
 
 pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
@@ -61,11 +84,14 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
     unsafe {
 
+        let encoder = Encoder{};
+
         program.bind();
 
         uniformSettings.restoreShaderSettings(program);
 
         let position = program.get_attribute("position").unwrap();
+
 
 
 
@@ -119,8 +145,9 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
             glUniform1i(inputImageTexture.location() as i32,index as i32);
         }
 
-        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+//        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
+        encoder.drawPrimitive(PrimitiveType::TriangleStrip,0,4);
 
         if let InputTextureStorageFormat::textureVBO(_) = vertex {
             glBindBuffer(GL_ARRAY_BUFFER,0);

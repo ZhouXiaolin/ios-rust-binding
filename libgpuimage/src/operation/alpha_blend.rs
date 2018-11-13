@@ -5,20 +5,21 @@ use std::rc::Rc;
 use std::sync::Arc;
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyAlphaBlendFilter{
+pub struct XHeyAlphaBlendFilter<'a>{
     shader : GLProgram,
     maximumInputs : u32,
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings
+    uniformSettings:ShaderUniformSettings,
+    context: &'a GlContext
 
 }
 
 
-impl XHeyAlphaBlendFilter {
+impl<'a> XHeyAlphaBlendFilter<'a> {
 
-    pub fn new() -> Self {
+    pub fn new(context: &'a GlContext) -> Self {
 
         let vertexString = r#"
  attribute vec4 position;
@@ -62,7 +63,8 @@ void main()
             inputFramebuffers: RefCell::default(),
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            context
 
         }
     }
@@ -76,7 +78,7 @@ void main()
 
 
 
-impl Edge for XHeyAlphaBlendFilter {
+impl<'a> Edge for XHeyAlphaBlendFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -116,7 +118,7 @@ impl Edge for XHeyAlphaBlendFilter {
 
 
 
-impl Renderable for XHeyAlphaBlendFilter {
+impl<'a> Renderable for XHeyAlphaBlendFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -124,7 +126,7 @@ impl Renderable for XHeyAlphaBlendFilter {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {

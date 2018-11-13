@@ -8,36 +8,34 @@ use super::*;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XheySurfaceView{
+pub struct XheySurfaceView<'a>{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
     orientation: ImageOrientation,
-    backingSize:GLSize
+    backingSize:GLSize,
+    context: &'a GlContext
 
 }
 
-impl Drop for XheySurfaceView {
-    fn drop(&mut self){
-        info!("Drop XheyPicture");
-    }
-}
-impl XheySurfaceView {
-    pub fn new(width: i32, height: i32) -> Self {
+
+impl<'a> XheySurfaceView<'a> {
+    pub fn new(context: &'a GlContext, width: i32, height: i32) -> Self {
 
         XheySurfaceView{
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::portrait,
-            backingSize: GLSize::new(width,height)
+            backingSize: GLSize::new(width,height),
+            context
         }
     }
 
 }
 
 
-impl Edge for XheySurfaceView {
+impl<'a> Edge for XheySurfaceView<'a> {
     type Item = Arc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
@@ -75,13 +73,13 @@ impl Edge for XheySurfaceView {
     }
 }
 
-impl Drawable for XheySurfaceView {
+impl<'a> Drawable for XheySurfaceView<'a> {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
         clearFramebufferWithColor(Color::red());
 
-        let program = &sharedImageProcessingContext.passthroughShader;
+        let program = &self.context.passthroughShader;
 
         let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 

@@ -13,7 +13,7 @@ pub struct WaterMark {
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyBlendFilter{
+pub struct XHeyBlendFilter<'a>{
     shader : GLProgram,
     maximumInputs : u32,
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
@@ -22,11 +22,12 @@ pub struct XHeyBlendFilter{
     uniformSettings:ShaderUniformSettings,
     overriddenOutputSize: Option<Size>,
     overriddenOutputRotation: Option<Rotation>,
-    watermarks: Vec<WaterMark>
+    watermarks: Vec<WaterMark>,
+    context: &'a GlContext
 }
 
-impl XHeyBlendFilter {
-    pub fn new() -> Self {
+impl<'a> XHeyBlendFilter<'a> {
+    pub fn new(context: &'a GlContext) -> Self {
 
 
 
@@ -67,7 +68,8 @@ impl XHeyBlendFilter {
             uniformSettings:ShaderUniformSettings::default(),
             overriddenOutputSize: None,
             overriddenOutputRotation: None,
-            watermarks: Vec::default()
+            watermarks: Vec::default(),
+            context
         }
     }
 
@@ -98,7 +100,7 @@ impl XHeyBlendFilter {
 
 
 
-impl Edge for XHeyBlendFilter {
+impl<'a> Edge for XHeyBlendFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -137,7 +139,7 @@ impl Edge for XHeyBlendFilter {
 }
 
 
-impl Renderable for XHeyBlendFilter {
+impl<'a> Renderable for XHeyBlendFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -149,7 +151,7 @@ impl Renderable for XHeyBlendFilter {
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
         // 生成FBO
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
         // 激活FBO
         renderFramebuffer.bindFramebufferForRendering();

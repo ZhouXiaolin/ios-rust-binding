@@ -5,22 +5,23 @@ use std::rc::Rc;
 use std::sync::Arc;
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyLookupFilter{
+pub struct XHeyLookupFilter<'a>{
     shader : GLProgram,
     maximumInputs : u32,
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
-    resultId: Cell<u32>
+    resultId: Cell<u32>,
+    context: &'a GlContext
 
 
 }
 
 
-impl XHeyLookupFilter {
+impl<'a> XHeyLookupFilter<'a> {
 
-    pub fn new() -> Self {
+    pub fn new(context: &'a GlContext) -> Self {
 
         let vertexString = r#"
  attribute vec4 position;
@@ -88,7 +89,8 @@ impl XHeyLookupFilter {
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings,
-            resultId: Cell::from(0)
+            resultId: Cell::from(0),
+            context
 
         }
     }
@@ -110,7 +112,7 @@ impl XHeyLookupFilter {
 
 
 
-impl Edge for XHeyLookupFilter {
+impl<'a> Edge for XHeyLookupFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -152,7 +154,7 @@ impl Edge for XHeyLookupFilter {
 
 
 
-impl Renderable for XHeyLookupFilter {
+impl<'a> Renderable for XHeyLookupFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -161,7 +163,7 @@ impl Renderable for XHeyLookupFilter {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {

@@ -31,7 +31,6 @@ impl From<i32> for Rotation {
 
 
 
-
 impl Rotation {
 
     pub fn intoU(&self) -> usize {

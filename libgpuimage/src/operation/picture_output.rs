@@ -8,23 +8,20 @@ use super::*;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XheyPictureOutput{
+pub struct XheyPictureOutput<'a>{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
     rotation: Rotation,
     backingSize:GLSize,
-    textureId: Cell<GLuint>
+    textureId: Cell<GLuint>,
+    context: &'a GlContext
 
 }
 
-impl Drop for XheyPictureOutput {
-    fn drop(&mut self){
-        info!("Drop XheyPictureOutput");
-    }
-}
-impl XheyPictureOutput {
-    pub fn new(width: i32, height: i32, orient: i32) -> Self {
+
+impl<'a> XheyPictureOutput<'a> {
+    pub fn new(context: &'a GlContext,width: i32, height: i32, orient: i32) -> Self {
 
         XheyPictureOutput{
             head_node:Cell::default(),
@@ -32,7 +29,8 @@ impl XheyPictureOutput {
             uniformSettings:ShaderUniformSettings::default(),
             rotation: Rotation::from(orient),
             backingSize: GLSize::new(width,height),
-            textureId:Cell::default()
+            textureId:Cell::default(),
+            context
         }
     }
 
@@ -47,7 +45,7 @@ impl XheyPictureOutput {
 }
 
 
-impl Edge for XheyPictureOutput {
+impl<'a> Edge for XheyPictureOutput<'a> {
     type Item = Arc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
@@ -85,7 +83,7 @@ impl Edge for XheyPictureOutput {
     }
 }
 
-impl Drawable for XheyPictureOutput {
+impl<'a> Drawable for XheyPictureOutput<'a> {
     type Item = Framebuffer;
     fn render(&self, framebuffer:&Self::Item){
 
@@ -94,7 +92,7 @@ impl Drawable for XheyPictureOutput {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
         self.textureId.set(renderFramebuffer.texture);
 
@@ -102,7 +100,7 @@ impl Drawable for XheyPictureOutput {
 
         clearFramebufferWithColor(Color::white());
 
-        let program = &sharedImageProcessingContext.passthroughShader;
+        let program = &self.context.passthroughShader;
 
         let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 

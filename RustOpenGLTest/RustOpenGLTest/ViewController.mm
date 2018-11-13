@@ -171,6 +171,9 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     xhey_graph_forward(g);
     
+    
+#if 0
+    
     CGSize _size = CGSizeMake(width1, height1);
     
     NSUInteger totalBytesForImage = (int)_size.width * (int)_size.height * 4;
@@ -191,6 +194,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     
     int i = 0;
+#endif
     [EAGLContext setCurrentContext:nil];
     
 

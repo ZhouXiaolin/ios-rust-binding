@@ -5,7 +5,7 @@ use super::*;
 use std::cell::{RefCell,Cell};
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyBasicFilter{
+pub struct XHeyBasicFilter<'a>{
     shader : GLProgram,
     maximumInputs : u32,
     inputFramebuffers:RefCell<Vec<Framebuffer>>,
@@ -14,12 +14,13 @@ pub struct XHeyBasicFilter{
     uniformSettings:ShaderUniformSettings,
     overriddenOutputSize: Option<Size>,
     overriddenOutputRotation: Option<Rotation>,
-    resultId: Cell<u32>
+    resultId: Cell<u32>,
+    context: &'a GlContext
 
 }
 
-impl XHeyBasicFilter {
-    pub fn new_shader(vertex:&str,fragment:&str, numberOfInputs: u32) -> Self {
+impl<'a> XHeyBasicFilter<'a> {
+    pub fn new_shader(context: &'a GlContext,vertex:&str,fragment:&str, numberOfInputs: u32, ) -> Self {
 
 
         let shader = GLProgram::new(vertex,fragment);
@@ -33,11 +34,12 @@ impl XHeyBasicFilter {
             uniformSettings:ShaderUniformSettings::default(),
             overriddenOutputSize: None,
             overriddenOutputRotation: None,
-            resultId: Cell::from(0)
+            resultId: Cell::from(0),
+            context
         }
     }
 
-    pub fn new_shader_with_fragment(fragment: &str, maximumInputs: u32) -> Self {
+    pub fn new_shader_with_fragment(context: &'a GlContext,fragment: &str, maximumInputs: u32) -> Self {
         let vertexString = r#"
  attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
@@ -51,12 +53,12 @@ impl XHeyBasicFilter {
  }
     "#;
 
-        Self::new_shader(vertexString,fragment,maximumInputs)
+        Self::new_shader(context,vertexString,fragment,maximumInputs)
 
 
     }
 
-    pub fn new() -> Self {
+    pub fn new(context: &'a GlContext) -> Self {
 
         let vertexString = r#"
  attribute vec4 position;
@@ -83,7 +85,7 @@ impl XHeyBasicFilter {
      gl_FragColor = color;
  }
     "#;
-        Self::new_shader(vertexString,fragmentString,1)
+        Self::new_shader(context,vertexString,fragmentString,1)
     }
 
 
@@ -113,7 +115,7 @@ impl XHeyBasicFilter {
 
 
 
-impl Edge for XHeyBasicFilter {
+impl<'a> Edge for XHeyBasicFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -152,7 +154,7 @@ impl Edge for XHeyBasicFilter {
 }
 
 
-impl Renderable for XHeyBasicFilter {
+impl<'a> Renderable for XHeyBasicFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -161,7 +163,7 @@ impl Renderable for XHeyBasicFilter {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
 
         let textureProperties = {
             let mut inputTextureProperties = vec![];

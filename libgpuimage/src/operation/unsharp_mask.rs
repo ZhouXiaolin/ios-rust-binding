@@ -6,19 +6,20 @@ use std::sync::Arc;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyUnsharpMaskFilter{
+pub struct XHeyUnsharpMaskFilter<'a>{
     shader : GLProgram,
     maximumInputs : u32,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings
+    uniformSettings:ShaderUniformSettings,
+    context:&'a GlContext
 
 }
 
 
-impl XHeyUnsharpMaskFilter {
+impl<'a> XHeyUnsharpMaskFilter<'a> {
 
-    pub fn new() -> Self {
+    pub fn new(context: &'a GlContext) -> Self {
 
         let vertexString = r#"
 attribute vec4 position;
@@ -92,7 +93,8 @@ void main()
             shader,
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default()
+            uniformSettings:ShaderUniformSettings::default(),
+            context
 
         }
     }
@@ -109,7 +111,7 @@ void main()
 
 
 
-impl Edge for XHeyUnsharpMaskFilter {
+impl<'a> Edge for XHeyUnsharpMaskFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -149,7 +151,7 @@ impl Edge for XHeyUnsharpMaskFilter {
 
 
 
-impl Renderable for XHeyUnsharpMaskFilter {
+impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
     type Item = Arc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
@@ -157,7 +159,7 @@ impl Renderable for XHeyUnsharpMaskFilter {
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,false);
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {

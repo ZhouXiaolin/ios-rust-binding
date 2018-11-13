@@ -1,5 +1,4 @@
 use gles_rust_binding::*;
-use super::sharedImageProcessingContext;
 use super::texture_options::*;
 use super::{Rotation,ImageOrientation,Size,GLSize};
 use std::cell::Cell;

@@ -109,6 +109,6 @@ fn deleteVBO(vbo: GLuint){
 
 
 
-lazy_static!{
-    pub static ref sharedImageProcessingContext : GlContext = GlContext::new();
-}
+//lazy_static!{
+//    pub static ref sharedImageProcessingContext : GlContext = GlContext::new();
+//}

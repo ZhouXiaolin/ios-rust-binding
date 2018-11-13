@@ -67,7 +67,7 @@ impl XheyPicture {
 
         let size = GLSize::new(width,height);
 
-        let framebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(ImageOrientation::portrait,size,true);
+        let framebuffer = Arc::new(Framebuffer::new_default(ImageOrientation::portrait,size,true));
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
@@ -128,28 +128,6 @@ impl Edge for XheyPicture{
 
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
-
-
-//        let size = self.size;
-//        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
-//        let textureProperties = vec![InputTextureProperties::new(storage,self.framebuffer.texture)];
-//
-//
-//        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
-//
-//        renderFramebuffer.bindFramebufferForRendering();
-//
-//        clearFramebufferWithColor(Color::black());
-//
-//        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-//        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-//
-//        let shader = &sharedImageProcessingContext.passthroughShader;
-//
-//        renderQuadWithShader(shader,&self.uniformSettings,&textureProperties,vertex);
-//
-//
-//        renderFramebuffer.unbindFramebufferForRendering();
 
 
 

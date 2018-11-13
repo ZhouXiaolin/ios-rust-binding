@@ -8,7 +8,7 @@ use super::*;
 
 #[repr(C)]
 #[derive(Debug)]
-pub struct XheyOESTexture{
+pub struct XheyOESTexture<'a>{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     shader: GLProgram,
@@ -16,19 +16,15 @@ pub struct XheyOESTexture{
     size: GLSize,
     uniformSettings:ShaderUniformSettings,
     orientation: ImageOrientation,
-    resultId: Cell<u32>
+    resultId: Cell<u32>,
+    context: &'a GlContext
 
 }
 
-impl Drop for XheyOESTexture {
-    fn drop(&mut self){
-        info!("Drop XheyPicture");
-    }
-}
 
-impl XheyOESTexture {
+impl<'a> XheyOESTexture<'a> {
 
-    pub fn new(width: i32, height: i32, orient: i32) -> Self {
+    pub fn new(context: &'a GlContext, width: i32, height: i32, orient: i32) -> Self {
 
 
         let vertexString = r#"
@@ -69,7 +65,8 @@ impl XheyOESTexture {
             size,
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::from(orient),
-            resultId:Cell::from(0)
+            resultId:Cell::from(0),
+            context
         }
     }
 
@@ -88,7 +85,7 @@ impl XheyOESTexture {
 }
 
 
-impl Edge for XheyOESTexture{
+impl<'a> Edge for XheyOESTexture<'a> {
     type Item = Arc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
@@ -125,7 +122,7 @@ impl Edge for XheyOESTexture{
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 
-        let renderFramebuffer = sharedImageProcessingContext.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
+        let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
         renderFramebuffer.bindFramebufferForRendering();
 

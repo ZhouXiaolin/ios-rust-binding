@@ -14,6 +14,61 @@
 #import <OpenGLES/ES2/glext.h>
 @implementation XLHelpClass
 
++ (UIImage*) readImageFromFBO: (int) width height:(int) height
+{
+    CGSize size = CGSizeMake(width, height);
+    NSUInteger totalBytesForImage = width * height * 4;
+    GLubyte *rawImagePixels;
+    CGDataProviderRef dataProvider = NULL;
+    rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
+    glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, rawImagePixels);
+    dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
+    
+    CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef cgImageFromBytes = CGImageCreate(width, height, 8, 32, 4 * width, defaultRGBColorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaLast, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+    UIImage *finalImage = [UIImage imageWithCGImage:cgImageFromBytes scale:1.0 orientation:UIImageOrientationUp];
+    
+    CGImageRelease(cgImageFromBytes);
+    CGColorSpaceRelease(defaultRGBColorSpace);
+    CGDataProviderRelease(dataProvider);
+    
+    return finalImage;
+}
+
+void dataProviderReleaseCallback (void *info, const void *data, size_t size)
+{
+    free((void *)data);
+}
+
++ (int ) createTexture: (UIImage*) mBitmap
+{
+    GLuint textureHandle = 0;
+    
+    glGenTextures(1, &textureHandle);
+    glBindTexture(GL_TEXTURE_2D, textureHandle);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    CGImageRef newImageSource = [mBitmap CGImage];
+    int width = (int)CGImageGetWidth(newImageSource);
+    int height = (int)CGImageGetHeight(newImageSource);
+    
+    GLubyte* imageData = (GLubyte*)calloc(1, width * height * 4);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width * 4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+    
+    free(imageData);
+    
+    return textureHandle;
+}
+
 +(GLuint)loadShader:(GLenum)type withFilepath:(NSString *)shaderFilepath
 {
     NSError* error;

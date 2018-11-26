@@ -112,7 +112,11 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
-        renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
+        let pso = RenderPipelineState{
+            program:program
+        };
+
+        renderQuadWithShader(pso,&self.uniformSettings,&vec![inputTexture],vertex);
 
 //        renderFramebuffer.unbindFramebufferForRendering();
 

@@ -149,7 +149,10 @@ impl<'a> Renderable for XHeyCombineFilter<'a> {
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+        let pso = RenderPipelineState{
+            program:&self.shader
+        };
+        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
 
         renderFramebuffer.unbindFramebufferForRendering();
 

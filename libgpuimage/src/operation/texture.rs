@@ -132,7 +132,10 @@ impl<'a> Edge for XheyOESTexture<'a> {
 
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+        let pso = RenderPipelineState{
+            program:&self.shader
+        };
+        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
 
         renderFramebuffer.unbindFramebufferForRendering();
 

@@ -76,6 +76,7 @@ pub extern "C" fn xhey_init_oes_texture(context:&GlContext, width: c_int, height
     Box::into_raw(texture)
 }
 
+
 #[no_mangle]
 pub unsafe extern "C" fn xhey_init_alpha_blend(context:&GlContext) -> *mut XHeyAlphaBlendFilter {
     let filter = Box::new(XHeyAlphaBlendFilter::new(context));
@@ -413,8 +414,8 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseWatermarkf
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initContext(env: JNIEnv, _: JClass) -> jlong {
-    let filter = Box::new(GlContext::new());
-    Box::into_raw(filter) as jlong
+    let context = Box::new(GlContext::new());
+    Box::into_raw(context) as jlong
 }
 
 #[no_mangle]
@@ -424,4 +425,5 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_releaseContext(en
     let context = context.as_ref().unwrap();
     context.framebufferCache.purgeAllUnassignedFramebuffer();
 }
+
 

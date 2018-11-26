@@ -78,19 +78,30 @@ impl Encoder {
     }
 }
 
+pub struct RenderPipelineState<'a>{
+    pub program: &'a GLProgram
+}
 
-pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
+impl<'a> RenderPipelineState<'a> {
+    fn bind(&self) {
+        self.program.bind();
+    }
+
+
+}
+
+pub fn renderQuadWithShader(pipelineState: RenderPipelineState, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
 
     unsafe {
 
         let encoder = Encoder{};
 
-        program.bind();
+        pipelineState.bind();
 
-        uniformSettings.restoreShaderSettings(program);
+        uniformSettings.restoreShaderSettings(pipelineState.program);
 
-        let position = program.get_attribute("position").unwrap();
+        let position = pipelineState.program.get_attribute("position").unwrap();
 
 
 
@@ -117,7 +128,7 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
             let (inputTextureCoordinateString,inputImageTextureString) = inputTextureProperty(index);
 
 
-            if let Some(textureCoordinate) = program.get_attribute(&inputTextureCoordinateString) {
+            if let Some(textureCoordinate) = pipelineState.program.get_attribute(&inputTextureCoordinateString) {
 
                 match inputTexture.textureStorage {
                     InputTextureStorageFormat::textureVBO(texVBO) => {
@@ -139,13 +150,12 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
 
 
-            let inputImageTexture = program.get_uniform(&inputImageTextureString);
+            let inputImageTexture = pipelineState.program.get_uniform(&inputImageTextureString);
             glActiveTexture(textureUnitForIndex(index));
             glBindTexture(inputImageTexture.kind().toUniform(),inputTexture.texture);
             glUniform1i(inputImageTexture.location() as i32,index as i32);
         }
 
-//        glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
         encoder.drawPrimitive(PrimitiveType::TriangleStrip,0,4);
 
@@ -157,7 +167,7 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
             let (_,inputImageTextureString) = inputTextureProperty(index);
 
-            let inputImageTexture = program.get_uniform(&inputImageTextureString);
+            let inputImageTexture = pipelineState.program.get_uniform(&inputImageTextureString);
 
             glActiveTexture(textureUnitForIndex(index));
             glBindTexture(inputImageTexture.kind().toUniform(),0);

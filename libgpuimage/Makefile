@@ -1,5 +1,7 @@
 ios:
-	cargo build --target aarch64-apple-ios
+	cargo build --target aarch64-apple-ios --release
+	cp target/aarch64-apple-ios/release/libgpuimage.a ~/XCamera/XCamera/3rdParty/libGPUImage
+	cp ~/Documents/RustGPUImage/libgpuimage/src/gpuimage.h ~/XCamera/XCamera/3rdParty/libGPUImage
 
 android:
 	cargo build --target aarch64-linux-android --release

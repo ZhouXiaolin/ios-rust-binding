@@ -16,4 +16,7 @@
 + (CVPixelBufferRef)copyRenderedPixelBuffer:(CVPixelBufferRef)pixelBuffer;
 + (UIImage *)photoFromPixelBuffer:(CVPixelBufferRef)pixelBufferRef;
 + (GLuint)loadProgram:(NSString*)vertexShaderString withFragmentShaderString:(NSString*)fragmentShaderString;
++ (int ) createTexture: (UIImage*) mBitmap;
++ (UIImage*) readImageFromFBO: (int) width height:(int) height;
+
 @end

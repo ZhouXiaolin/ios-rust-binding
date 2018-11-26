@@ -170,19 +170,16 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-        renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+        let pso = RenderPipelineState{
+            program:&self.shader
+        };
 
-
-
-
+        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
 
         // 然后遍历渲染watermark
 
 
         for watermark in self.watermarks.iter() {
-
-
-//            let storage = InputTextureStorageFormat::textureVBO(sharedImageProcessingContext.textureVBO(Rotation::noRotation));
 
             let storage = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
             let textureProperties = vec![InputTextureProperties::new(storage,watermark.textureId)];
@@ -202,7 +199,10 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
 
             let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-            renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+            let pso = RenderPipelineState{
+                program:&self.shader
+            };
+            renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
 
         }
         // 关闭blend

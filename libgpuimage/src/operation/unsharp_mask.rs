@@ -185,7 +185,11 @@ impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-        renderQuadWithShader(&self.shader,&uniformSettings,&textureProperties,vertex);
+        let pso = RenderPipelineState{
+            program:&self.shader
+        };
+
+        renderQuadWithShader(pso,&uniformSettings,&textureProperties,vertex);
 
 
         renderFramebuffer.unbindFramebufferForRendering();

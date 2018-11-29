@@ -12,7 +12,9 @@ pub struct XHeyUnsharpMaskFilter<'a>{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings:ShaderUniformSettings,
-    context:&'a GlContext
+    context:&'a GlContext,
+    resultId: Cell<u32>,
+
 
 }
 
@@ -94,7 +96,8 @@ void main()
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            context
+            context,
+            resultId:Cell::default()
 
         }
     }
@@ -107,6 +110,11 @@ void main()
     pub fn set_value(&mut self, v : f32){
         self.uniformSettings.setValue("value",Uniform::Float(v));
     }
+
+    pub fn textureId(&self) -> GLuint {
+        self.resultId.get()
+    }
+
 }
 
 
@@ -177,23 +185,31 @@ impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
         uniformSettings.setValue("intensity",Uniform::Float(1.3));
         uniformSettings.setValue("saturation",Uniform::Float(1.1));
 
+        self.resultId.set(renderFramebuffer.texture);
 
-        renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::red());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let pso = RenderPipelineState{
-            program:&self.shader
+        let pso = RenderPipelineState {
+            framebuffer:renderFramebuffer,
+            color: Color::black()
         };
 
-        renderQuadWithShader(pso,&uniformSettings,&textureProperties,vertex);
+        pso.run(||{
+            let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+            let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
 
-        renderFramebuffer.unbindFramebufferForRendering();
+            renderQuadWithShader(&self.shader,&uniformSettings,&textureProperties,vertex);
 
-        renderFramebuffer
+
+        })
+
+//        renderFramebuffer.bindFramebufferForRendering();
+//
+//        clearFramebufferWithColor(Color::red());
+
+
+//        renderFramebuffer.unbindFramebufferForRendering();
+//
+//        renderFramebuffer
     }
 }

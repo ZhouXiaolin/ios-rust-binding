@@ -16,6 +16,7 @@
 #import "OpenGLView.h"
 #import <GLKit/GLKit.h>
 #import "GLESUtils.h"
+#import "CameraEntry.h"
 
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
@@ -46,14 +47,14 @@ NSString* const kFragmentString = SHADER_STRING
  
  void main()
  {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
  }
  
  );
 
-@interface ViewController ()<GLKViewDelegate>
+@interface ViewController ()<GLKViewDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
 {
-    GLKView* glView;
+    OpenGLView* glView;
     EAGLContext* currentContext;
     
     long g;
@@ -68,6 +69,14 @@ NSString* const kFragmentString = SHADER_STRING
     GLuint _positionSlot;
     GLuint _inputTextureCoordinateSlot;
     GLuint _inputImageTexture;
+    
+    GLuint textureId;
+    
+    
+    CameraEntry* cameraEntry;
+    
+    
+    BOOL isFirst;
 
 }
 @end
@@ -80,40 +89,42 @@ NSString* const kFragmentString = SHADER_STRING
     
     
 
-    glUseProgram(_programHandle);
-
-    
-
-    glClearColor(0, 1.0, 0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Setup viewport
-    //
-
-    GLfloat vertices[] = {
-        -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
-    GLfloat textureCoordinates[] = {
-        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
-    };
-
-    // Load the vertex data
-    //
-    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
-    glEnableVertexAttribArray(_positionSlot);
-
-    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
-    glEnableVertexAttribArray(_inputTextureCoordinateSlot);
-
-
-
-    glActiveTexture(GL_TEXTURE0);
-
-
-    glBindTexture(GL_TEXTURE_2D,xhey_picture_output_get_texture_id(output));
-    glUniform1i(0,_inputImageTexture);
-    // Draw triangle
-    //
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    if (output > 0) {
+        glUseProgram(_programHandle);
+        
+        
+        
+        glClearColor(0, 1.0, 0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        // Setup viewport
+        //
+        
+        GLfloat vertices[] = {
+            -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
+        GLfloat textureCoordinates[] = {
+            1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
+        };
+        
+        // Load the vertex data
+        //
+        glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
+        glEnableVertexAttribArray(_positionSlot);
+        
+        glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+        glEnableVertexAttribArray(_inputTextureCoordinateSlot);
+        
+        
+        
+        glActiveTexture(GL_TEXTURE0);
+        
+        
+        glBindTexture(GL_TEXTURE_2D,xhey_picture_output_get_texture_id(output));
+        glUniform1i(0,_inputImageTexture);
+        // Draw triangle
+        //
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    }
     
 }
 
@@ -123,78 +134,110 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     free((void *)data);
 }
 
+- (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+    
+    if (isFirst == FALSE) {
+        isFirst = TRUE;
+
+        NSLog(@"First");
+    }else{
+        NSLog(@"DDDDDDD");
+    }
+    
+    NSLog(@"AAAA");
+}
+
+
+- (GLuint) setupTexture{
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+    
+    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
+    CGImage* newImageSource = [image CGImage];
+    int width = (int)CGImageGetWidth(newImageSource);
+    int height = (int)CGImageGetHeight(newImageSource);
+    
+    GLubyte *imageData = (GLubyte*)calloc(1, width*height*4);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
+    
+    
+    GLuint imageTexture = 0;
+    glGenTextures(1, &imageTexture);
+    glBindTexture(GL_TEXTURE_2D, imageTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    free(imageData);
+    newImageSource = nil;
+    image = nil;
+    path = nil;
+    
+    return imageTexture;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
     self.view.backgroundColor = [UIColor blueColor];
     
-
+//    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:FALSE];
+//    [cameraEntry setVideoOutputDelegate:self];
+//    [cameraEntry startCapture];
+    
     currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
-    
-    
-    
-    glView = [[GLKView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
-    glView.delegate = self;
+    glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
-    
-    
-    
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
-
-    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
-    CGImage* newImageSource = [image CGImage];
-    int width = (int)CGImageGetWidth(newImageSource);
-    int height = (int)CGImageGetHeight(newImageSource);
 
 
 
-    
-    [EAGLContext setCurrentContext:currentContext];
-    g = xhey_init_graph();
+    [glView render:^GLuint{
 
-    GLuint textureId = [XLHelpClass createTexture:image];
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+        
+        UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
+        CGImage* newImageSource = [image CGImage];
+        int width = (int)CGImageGetWidth(newImageSource);
+        int height = (int)CGImageGetHeight(newImageSource);
+        
+        textureId = [XLHelpClass createTexture:image];
+        
+        
+        g = xhey_init_graph();
+        context = init_context();
+        pic = xhey_init_picture_textureId(textureId, width, height, 0);
+        
+        basic = xhey_init_basic_filter(context);
+        output = xhey_init_picture_output(context, width, height, 0);
+        xhey_picture_graph(g, pic, basic, 0, 0, 0, 0, output);
+        xhey_graph_forward(g);
 
-    pic = xhey_init_picture_textureId(textureId, width, height, 0);
+//        UIImage* result = [XLHelpClass readImageFromFBO:width height:height];
+//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//
+//        textureId = [XLHelpClass createTexture:result];
+        return xhey_picture_output_get_texture_id(output);
+    }];
+    
+    
+    
 
-    context = init_context();
-    
-    
-    _programHandle = [GLESUtils loadProgramString:kVertexString withFragmentShaderString:kFragmentString];
-    if (_programHandle == 0) {
-        NSLog(@" >> Error: Failed to setup program.");
-        return;
-    }
-    
-    // Get attribute slot from program
-    //
-    _positionSlot = glGetAttribLocation(_programHandle, "position");
-    _inputTextureCoordinateSlot = glGetAttribLocation(_programHandle, "inputTextureCoordinate");
-    _inputImageTexture = glGetUniformLocation(_programHandle, "inputImageTexture");
 
-    basic = xhey_init_basic_filter(context);
-    output = xhey_init_picture_output(context, width, height, 0);
-    xhey_picture_graph(g, pic, basic, 0, 0, 0, 0, output);
-    xhey_graph_forward(g);
+    
+//    [EAGLContext setCurrentContext:currentContext];
+    
+    
 
-    UIImage* result = [XLHelpClass readImageFromFBO:width height:height];
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    
-    release_picture(pic);
-    release_basic_filter(basic);
-    release_output(output);
-    release_graph(g);
-    release_context(context);
-    
-    int i = 0;
 
-    glDeleteTextures(1, &textureId);
-    [EAGLContext setCurrentContext:nil];
+//    [EAGLContext setCurrentContext:nil];
+//
+//    currentContext = nil;
     
-    currentContext = nil;
-    
-    result = nil;
     
     UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
     button.frame = CGRectMake(0, 0, 50, 50);
@@ -209,14 +252,15 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 - (void) click
 {
     NSLog(@"TTTTTTTTTTTT");
-//    release_context(context);
-//    release_picture(pic);
-//    release_basicfilter(basic);
-//    release_graph(g);
+    glDeleteTextures(1, &textureId);
+    release_context(context);
+    release_picture(pic);
+    release_basic_filter(basic);
+    release_graph(g);
     currentContext = nil;
     [EAGLContext setCurrentContext:nil];
-//    [glView removeFromSuperview];
-//    glView = nil;
+    [glView removeFromSuperview];
+    glView = nil;
     
 }
 

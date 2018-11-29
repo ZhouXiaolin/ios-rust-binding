@@ -142,20 +142,21 @@ impl<'a> Renderable for XHeyCombineFilter<'a> {
             inputTextureProperties
         };
 
-        renderFramebuffer.bindFramebufferForRendering();
 
-        clearFramebufferWithColor(Color::black());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let pso = RenderPipelineState{
-            program:&self.shader
+        let pso = RenderPipelineState {
+            framebuffer:renderFramebuffer,
+            color: Color::black()
         };
-        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
 
-        renderFramebuffer.unbindFramebufferForRendering();
+        pso.run(||{
+            let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+            let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-        renderFramebuffer
+
+            renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+        })
+
+
     }
 }

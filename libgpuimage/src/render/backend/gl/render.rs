@@ -1,9 +1,9 @@
 use gles_rust_binding::*;
-use super::{Color, InputTextureProperties, InputTextureStorageFormat};
+use super::{Color, InputTextureProperties, InputTextureStorageFormat,Framebuffer};
 use super::ShaderUniformSettings;
 use std::ptr;
+use std::sync::Arc;
 use super::PrimitiveType;
-
 impl Into<GLenum> for PrimitiveType {
     fn into(self) -> GLenum {
         match self {
@@ -50,6 +50,9 @@ fn inputTextureProperty(index: usize) -> (String,String) {
     (inputTextureCoordinateString,inputImageTextureString)
 }
 
+
+
+
 pub fn enableBlending(sfactor: GLenum, dfactor: GLenum){
     unsafe {
         glEnable(GL_BLEND);
@@ -76,73 +79,80 @@ impl Encoder {
             glDrawArrays(mode.into(),start,count);
         }
     }
+
+    fn setVertexBuffer(&self, vertex:&InputTextureStorageFormat, attribute:&GLAttribute){
+
+        unsafe {
+            match vertex {
+                InputTextureStorageFormat::textureCoordinate(ref vertices) => {
+                    glVertexAttribPointer(attribute.location() as u32,2,GL_FLOAT,GL_FALSE,0,vertices.as_ptr() as *const _);
+                    glEnableVertexAttribArray(attribute.location() as u32);
+                },
+                InputTextureStorageFormat::textureVBO(ref boundVBO) => {
+                    glBindBuffer(GL_ARRAY_BUFFER,*boundVBO);
+                    glVertexAttribPointer(attribute.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
+                    glEnableVertexAttribArray(attribute.location() as u32);
+                    glBindBuffer(GL_ARRAY_BUFFER,0);
+                }
+            }
+        }
+    }
+
+    fn setTexture(&self, inputTexture:&InputTextureProperties, uniform:&GLUniform, index: usize){
+        unsafe {
+            glActiveTexture(textureUnitForIndex(index));
+            glBindTexture(uniform.kind().toUniform(),inputTexture.texture);
+            glUniform1i(uniform.location() as i32,index as i32);
+        }
+    }
 }
 
-pub struct RenderPipelineState<'a>{
-    pub program: &'a GLProgram
+pub struct RenderPipelineState{
+    pub framebuffer:Arc<Framebuffer>,
+    pub color: Color
 }
 
-impl<'a> RenderPipelineState<'a> {
-    fn bind(&self) {
-        self.program.bind();
+impl RenderPipelineState {
+
+
+    pub fn run<T>(self, operation:T) -> Arc<Framebuffer> where T:FnOnce() -> () {
+        self.framebuffer.bindFramebufferForRendering();
+        clearFramebufferWithColor(self.color);
+        operation();
+        self.framebuffer.unbindFramebufferForRendering();
+        self.framebuffer
+    }
+    pub fn run_and_then<T>(self, operation: T) -> Arc<Framebuffer> where T:FnOnce() -> () {
+        self.framebuffer.bindFramebufferForRendering();
+        clearFramebufferWithColor(self.color);
+        operation();
+        self.framebuffer
     }
 
 
 }
 
-pub fn renderQuadWithShader(pipelineState: RenderPipelineState, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
-
+pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformSettings,inputTextures: &Vec<InputTextureProperties>, vertex:InputTextureStorageFormat) {
 
     unsafe {
 
         let encoder = Encoder{};
 
-        pipelineState.bind();
+        program.bind();
 
-        uniformSettings.restoreShaderSettings(pipelineState.program);
+        uniformSettings.restoreShaderSettings(program);
 
-        let position = pipelineState.program.get_attribute("position").unwrap();
+        let position = program.get_attribute("position").unwrap();
 
-
-
-
-        match vertex {
-            InputTextureStorageFormat::textureCoordinate(ref vertices) => {
-                glVertexAttribPointer(position.location() as u32,2,GL_FLOAT,GL_FALSE,0,vertices.as_ptr() as *const _);
-                glEnableVertexAttribArray(position.location() as u32);
-            },
-            InputTextureStorageFormat::textureVBO(boundVBO) => {
-                glBindBuffer(GL_ARRAY_BUFFER,boundVBO);
-                glVertexAttribPointer(position.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
-                glEnableVertexAttribArray(position.location() as u32);
-                glBindBuffer(GL_ARRAY_BUFFER,0);
-            }
-        }
-
-
-
-
+        encoder.setVertexBuffer(&vertex,position);
 
         for (index,inputTexture) in inputTextures.iter().enumerate(){
 
             let (inputTextureCoordinateString,inputImageTextureString) = inputTextureProperty(index);
 
+            if let Some(textureCoordinate) = program.get_attribute(&inputTextureCoordinateString) {
 
-            if let Some(textureCoordinate) = pipelineState.program.get_attribute(&inputTextureCoordinateString) {
-
-                match inputTexture.textureStorage {
-                    InputTextureStorageFormat::textureVBO(texVBO) => {
-                        glBindBuffer(GL_ARRAY_BUFFER,texVBO);
-                        glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, 0, 0, ptr::null());
-                        glEnableVertexAttribArray(textureCoordinate.location() as u32);
-                        glBindBuffer(GL_ARRAY_BUFFER,0);
-
-                    },
-                    InputTextureStorageFormat::textureCoordinate(ref texCoord) => {
-                        glVertexAttribPointer(textureCoordinate.location() as u32, 2, GL_FLOAT, GL_FALSE, 0, texCoord.as_ptr() as *const _);
-                        glEnableVertexAttribArray(textureCoordinate.location() as u32);
-                    }
-                }
+                encoder.setVertexBuffer(&inputTexture.textureStorage,textureCoordinate);
 
             }else if index == 0{
                 panic!("The required attribute named inputTextureCoordinate was missing from the shader program during rendering.");
@@ -150,10 +160,8 @@ pub fn renderQuadWithShader(pipelineState: RenderPipelineState, uniformSettings:
 
 
 
-            let inputImageTexture = pipelineState.program.get_uniform(&inputImageTextureString);
-            glActiveTexture(textureUnitForIndex(index));
-            glBindTexture(inputImageTexture.kind().toUniform(),inputTexture.texture);
-            glUniform1i(inputImageTexture.location() as i32,index as i32);
+            let uniform = program.get_uniform(&inputImageTextureString);
+            encoder.setTexture(inputTexture,uniform,index);
         }
 
 
@@ -167,7 +175,7 @@ pub fn renderQuadWithShader(pipelineState: RenderPipelineState, uniformSettings:
 
             let (_,inputImageTextureString) = inputTextureProperty(index);
 
-            let inputImageTexture = pipelineState.program.get_uniform(&inputImageTextureString);
+            let inputImageTexture = program.get_uniform(&inputImageTextureString);
 
             glActiveTexture(textureUnitForIndex(index));
             glBindTexture(inputImageTexture.kind().toUniform(),0);

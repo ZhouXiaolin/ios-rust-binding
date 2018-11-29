@@ -182,26 +182,24 @@ impl<'a> Renderable for XHeyBasicFilter<'a> {
             inputTextureProperties
         };
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-
-        clearFramebufferWithColor(Color::black());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let pso = RenderPipelineState{
-            program:&self.shader
-        };
-
-        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
-
-
-        renderFramebuffer.unbindFramebufferForRendering();
-
         self.resultId.set(renderFramebuffer.texture);
 
+        let pso = RenderPipelineState{
+            framebuffer:renderFramebuffer,
+            color:Color::black()
+        };
 
-        renderFramebuffer
+
+        pso.run(||{
+            let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+            let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+
+
+
+            renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+
+        })
+
     }
 }

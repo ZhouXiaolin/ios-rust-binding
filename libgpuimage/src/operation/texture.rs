@@ -124,29 +124,26 @@ impl<'a> Edge for XheyOESTexture<'a> {
 
         let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::red());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let pso = RenderPipelineState{
-            program:&self.shader
-        };
-        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
-
-        renderFramebuffer.unbindFramebufferForRendering();
 
         self.resultId.set(renderFramebuffer.texture);
 
-        unsafe {
-            let error = glGetError();
-            if error != GL_NO_ERROR {
-                info!("texture ------------> {}",error);
-            }
-        }
+
+        let pso = RenderPipelineState{
+            framebuffer: renderFramebuffer,
+            color: Color::black()
+        };
+
+
+        let renderFramebuffer = pso.run(||{
+            let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+
+            let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+
+
+
+            renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+        });
 
 
         Some(renderFramebuffer)

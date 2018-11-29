@@ -31,7 +31,7 @@ long xhey_init_unsharp_mask(long context);
 void release_unsharp_mask_filter(long filter);
 
 long xhey_init_basic_filter(long context);
-void release_basicfilter(long basic_filter);
+void release_basic_filter(long basic_filter);
 
 long xhey_init_surface_view(long context, int width, int height);
 void release_surfaceview(long surface_view);

@@ -22,4 +22,9 @@
     GLuint _inputTextureCoordinateSlot;
     GLuint _inputImageTexture;
 }
+
+- (id)initWithFrame:(CGRect)frame context:(EAGLContext*) context;
+
+- (void)render:(GLuint (^)())Block;
+
 @end

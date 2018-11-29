@@ -18,7 +18,6 @@
       <change afterPath="$PROJECT_DIR$/src/operation/alpha_blend.rs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/operation/blend.rs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/operation/combine.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/operation/image_generator.rs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/operation/lookup.rs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/operation/picture_output.rs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/operation/surface_view.rs" afterDir="false" />
@@ -97,56 +96,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="combine.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/combine.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2982">
-              <caret line="154" column="32" selection-start-line="154" selection-start-column="32" selection-end-line="154" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="lookup.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/lookup.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3486">
-              <caret line="180" column="32" selection-start-line="180" selection-start-column="32" selection-end-line="180" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="picture.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/picture.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1302">
-              <caret line="64" selection-start-line="64" selection-end-line="64" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="picture_output.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/operation/picture_output.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2184">
-              <caret line="118" column="32" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
+            <state relative-caret-position="347">
+              <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="surface_view.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/surface_view.rs">
+      <file leaf-file-name="android.rs" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ffi/android.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1701">
-              <caret line="93" column="10" selection-start-line="93" selection-start-column="10" selection-end-line="93" selection-end-column="10" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="texture.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/texture.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1134">
-              <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+            <state relative-caret-position="275">
+              <caret line="354" column="30" lean-forward="true" selection-start-line="354" selection-start-column="30" selection-end-line="354" selection-end-column="30" />
             </state>
           </provider>
         </entry>
@@ -154,32 +117,68 @@
       <file leaf-file-name="unsharp_mask.rs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/operation/unsharp_mask.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3759">
-              <caret line="191" column="25" selection-start-line="191" selection-start-column="25" selection-end-line="191" selection-end-column="25" />
+            <state relative-caret-position="254">
+              <caret line="186" selection-start-line="186" selection-end-line="186" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="render.rs" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/render/backend/gl/render.rs">
+      <file leaf-file-name="texture.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/operation/texture.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="302">
-              <caret line="105" lean-forward="true" selection-start-line="105" selection-end-line="105" />
+            <state relative-caret-position="268">
+              <caret line="127" column="26" selection-start-line="127" selection-end-line="128" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="android.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ffi/android.rs">
+      <file leaf-file-name="graph.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/structure/graph.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="296">
-              <caret line="324" column="14" lean-forward="true" selection-start-line="324" selection-start-column="14" selection-end-line="324" selection-end-column="14" />
+            <state relative-caret-position="153">
+              <caret line="20" column="21" lean-forward="true" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="image_generator.rs" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/operation/image_generator.rs">
+      <file leaf-file-name="node.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/structure/node.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="273">
+              <caret line="13" column="1" lean-forward="true" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="framebuffercache.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/render/backend/gl/framebuffercache.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-210">
+              <caret line="43" column="24" lean-forward="true" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="edge.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/structure/edge.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="25">
+              <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="basic.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/operation/basic.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="174">
+              <caret line="157" column="24" selection-start-line="157" selection-end-line="158" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="expression.rs" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/structure/expression.rs">
           <provider selected="true" editor-type-id="text-editor">
             <state />
           </provider>
@@ -197,12 +196,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>sharedImageProcessingContext</find>
-      <find>rele</find>
-      <find>Xheyview</find>
-      <find>Java_com_xhey_xcamera_camera_GPUImage_initPicturetexture</find>
-      <find>graphPictureconfig</find>
-      <find>picture_out</find>
       <find>picture_ou</find>
       <find>xhey_picture_graph</find>
       <find>inputFramebuffers</find>
@@ -227,6 +220,12 @@
       <find>release_basic</find>
       <find>oes</find>
       <find>XheyOESTextur</find>
+      <find>pipelineState</find>
+      <find>initlog</find>
+      <find>release</find>
+      <find>release_basi</find>
+      <find>FramebufferCacheValue</find>
+      <find>XHeyUnsharpMaskFilter</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -235,7 +234,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/../ios-rust-binding/src/lib.rs" />
         <option value="$PROJECT_DIR$/src/operation/test_view.rs" />
         <option value="$PROJECT_DIR$/src/common/matrix4x4.rs" />
         <option value="$PROJECT_DIR$/src/operation/alphablend.rs" />
@@ -254,14 +252,11 @@
         <option value="$PROJECT_DIR$/src/render/gl_framebuffer.rs" />
         <option value="$PROJECT_DIR$/src/render/gl_framebuffercache.rs" />
         <option value="$PROJECT_DIR$/src/render/engine.rs" />
-        <option value="$PROJECT_DIR$/src/lib.rs" />
         <option value="$PROJECT_DIR$/src/operation/mod.rs" />
         <option value="$PROJECT_DIR$/src/render/common/mod.rs" />
         <option value="$PROJECT_DIR$/src/render/backend/gl/gl_context.rs" />
         <option value="$PROJECT_DIR$/src/render/mod.rs" />
-        <option value="$PROJECT_DIR$/src/render/backend/mod.rs" />
         <option value="$PROJECT_DIR$/src/render/backend/gl/texture_options.rs" />
-        <option value="$PROJECT_DIR$/src/render/backend/gl/framebuffercache.rs" />
         <option value="$PROJECT_DIR$/src/structure/node.rs" />
         <option value="$PROJECT_DIR$/src/structure/graph.rs" />
         <option value="$PROJECT_DIR$/src/render/engine/render_pipeline_state.rs" />
@@ -270,20 +265,24 @@
         <option value="$PROJECT_DIR$/src/render/backend/gl/mod.rs" />
         <option value="$PROJECT_DIR$/src/render/common/rotation.rs" />
         <option value="$PROJECT_DIR$/src/render/engine/encoder.rs" />
-        <option value="$PROJECT_DIR$/src/render/backend/gl/context.rs" />
         <option value="$PROJECT_DIR$/src/render/backend/gl/framebuffer.rs" />
         <option value="$PROJECT_DIR$/src/operation/picture.rs" />
-        <option value="$PROJECT_DIR$/src/gpuimage.h" />
         <option value="$PROJECT_DIR$/src/ffi/ios.rs" />
-        <option value="$PROJECT_DIR$/src/render/backend/gl/render.rs" />
-        <option value="$PROJECT_DIR$/src/operation/basic.rs" />
-        <option value="$PROJECT_DIR$/src/operation/alpha_blend.rs" />
-        <option value="$PROJECT_DIR$/src/operation/blend.rs" />
-        <option value="$PROJECT_DIR$/src/operation/combine.rs" />
-        <option value="$PROJECT_DIR$/src/operation/lookup.rs" />
-        <option value="$PROJECT_DIR$/src/operation/picture_output.rs" />
         <option value="$PROJECT_DIR$/src/operation/surface_view.rs" />
+        <option value="$PROJECT_DIR$/src/operation/blend.rs" />
+        <option value="$PROJECT_DIR$/src/operation/basic.rs" />
+        <option value="$PROJECT_DIR$/Cargo.toml" />
+        <option value="$PROJECT_DIR$/src/lib.rs" />
+        <option value="$PROJECT_DIR$/src/operation/alpha_blend.rs" />
+        <option value="$PROJECT_DIR$/src/operation/lookup.rs" />
+        <option value="$PROJECT_DIR$/src/operation/combine.rs" />
         <option value="$PROJECT_DIR$/src/operation/texture.rs" />
+        <option value="$PROJECT_DIR$/src/render/backend/mod.rs" />
+        <option value="$PROJECT_DIR$/src/render/backend/gl/render.rs" />
+        <option value="$PROJECT_DIR$/src/operation/picture_output.rs" />
+        <option value="$PROJECT_DIR$/src/render/backend/gl/context.rs" />
+        <option value="$PROJECT_DIR$/src/gpuimage.h" />
+        <option value="$PROJECT_DIR$/src/render/backend/gl/framebuffercache.rs" />
         <option value="$PROJECT_DIR$/src/operation/unsharp_mask.rs" />
         <option value="$PROJECT_DIR$/src/ffi/android.rs" />
       </list>
@@ -295,7 +294,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-322" />
     <option name="y" value="-1057" />
     <option name="width" value="1920" />
@@ -309,24 +308,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="libgpuimage" type="1abcf292:AndroidViewProjectNode" />
-              <item name="libgpuimage" type="e9137016:NonAndroidModuleNode" />
-            </path>
-            <path>
-              <item name="libgpuimage" type="1abcf292:AndroidViewProjectNode" />
-              <item name="libgpuimage" type="e9137016:NonAndroidModuleNode" />
-              <item name="java" type="f7eae187:NonAndroidSourceTypeNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -385,6 +366,70 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="render" type="462c0819:PsiDirectoryNode" />
               <item name="engine" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="libgpuimage" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="structure" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="gles-rust-binding" type="20ee2d1f:SyntheticLibraryElementNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="gles-rust-binding" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="gles-rust-binding" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="gles-rust-binding" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="gles-rust-binding" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="opengl_es_rs" type="20ee2d1f:SyntheticLibraryElementNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="opengl_es_rs" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="b2e9fda" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="opengl_es_rs" type="20ee2d1f:SyntheticLibraryElementNode" />
+              <item name="b2e9fda" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="AndroidView">
+        <subPane>
+          <expand>
+            <path>
+              <item name="libgpuimage" type="1abcf292:AndroidViewProjectNode" />
+              <item name="libgpuimage" type="e9137016:NonAndroidModuleNode" />
+            </path>
+            <path>
+              <item name="libgpuimage" type="1abcf292:AndroidViewProjectNode" />
+              <item name="libgpuimage" type="e9137016:NonAndroidModuleNode" />
+              <item name="java" type="f7eae187:NonAndroidSourceTypeNode" />
             </path>
           </expand>
           <select />
@@ -517,7 +562,7 @@
     <option name="totallyTimeSpent" value="170604000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-322" y="-1057" width="1920" height="1057" extended-state="6" />
+    <frame x="-322" y="-1057" width="1920" height="1057" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -525,13 +570,13 @@
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info id="Image Layers" order="3" />
       <window_info anchor="right" id="Capture Analysis" order="4" />
-      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.5085197" side_tool="true" weight="0.26145834" />
+      <window_info anchor="bottom" id="Event Log" order="10" sideWeight="0.50957537" side_tool="true" weight="0.36911765" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.4914803" visible="true" weight="0.26145834" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49042463" visible="true" weight="0.26145834" />
       <window_info id="Capture Tool" order="4" />
       <window_info id="Designer" order="2" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4976744" visible="true" weight="0.16773163" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4976744" visible="true" weight="0.11980831" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Theme Preview" order="5" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -575,105 +620,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/render/common/color.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="39" lean-forward="true" selection-start-line="39" selection-end-line="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/image_orientation.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/matrix3x3.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/matrix4x4.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/position.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/rect.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/structure/mod.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/structure/edge.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/structure/node.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="11" column="25" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/structure/graph.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="38" column="5" lean-forward="true" selection-start-line="38" selection-start-column="5" selection-end-line="38" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/engine.rs" />
-    <entry file="file://$PROJECT_DIR$/src/render/engine/engine.rs" />
-    <entry file="file://$PROJECT_DIR$/src/render/engine/render_pipeline_state.rs" />
-    <entry file="file://$PROJECT_DIR$/src/render/mod.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/mod.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="347">
-          <caret line="23" column="29" selection-start-line="23" selection-start-column="29" selection-end-line="23" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.cargo/git/checkouts/opengl_es_rust_binding-1b3f745aa6fbf69c/b2e9fda/src/types.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="14" column="9" selection-start-line="14" selection-start-column="9" selection-end-line="14" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-apple-darwin/lib/rustlib/src/rust/src/libcore/convert.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="284" column="10" selection-start-line="284" selection-start-column="10" selection-end-line="284" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/render/common/size.rs">
       <provider selected="true" editor-type-id="text-editor">
         <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/common/fill_mode.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-131">
-          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/render/backend/gl/texture_options.rs">
@@ -707,13 +656,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/context.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="106" column="5" lean-forward="true" selection-start-line="106" selection-start-column="5" selection-end-line="106" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/fnv-1.0.6/lib.rs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2331">
@@ -728,39 +670,144 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/framebuffercache.rs">
+    <entry file="file://$PROJECT_DIR$/src/render/engine/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="945">
-          <caret line="45" column="23" selection-start-line="45" selection-start-column="23" selection-end-line="45" selection-end-column="23" />
+        <state relative-caret-position="147">
+          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/gpuimage.h">
+    <entry file="file://$PROJECT_DIR$/src/render/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="966">
-          <caret line="46" column="33" selection-start-line="46" selection-start-column="33" selection-end-line="46" selection-end-column="33" />
+        <state relative-caret-position="147">
+          <caret line="7" column="25" selection-start-line="7" selection-start-column="25" selection-end-line="7" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/framebuffer.rs">
+    <entry file="file://$PROJECT_DIR$/src/render/common/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3906">
-          <caret line="190" column="21" selection-start-line="190" selection-start-column="21" selection-end-line="190" selection-end-column="21" />
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/common/position.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/common/rect.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="69">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/shader_uniform_settings.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../gles-rust-binding/src/gl_enums.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="978" column="21" selection-start-line="978" selection-start-column="21" selection-end-line="978" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/blend.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="233">
+          <caret line="162" column="13" selection-start-line="162" selection-start-column="13" selection-end-line="162" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/image_generator.rs" />
+    <entry file="file://$PROJECT_DIR$/src/operation/mod.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="491">
+          <caret line="29" column="21" selection-start-line="29" selection-start-column="21" selection-end-line="29" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/alpha_blend.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="506">
+          <caret line="149" column="12" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/surface_view.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="92" selection-start-line="92" selection-end-line="92" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/combine.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-33">
+          <caret line="143" selection-start-line="143" selection-end-line="143" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/lookup.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="182" selection-start-line="182" selection-end-line="182" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-120">
+          <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/log-0.4.5/src/lib.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="349" column="4" selection-start-line="349" selection-start-column="4" selection-end-line="349" selection-end-column="4" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Cargo.toml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="21" column="11" selection-start-line="21" selection-start-column="11" selection-end-line="21" selection-end-column="11" />
+        <state relative-caret-position="271">
+          <caret line="16" column="15" selection-start-line="16" selection-start-column="15" selection-end-line="16" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ffi/ios.rs">
+    <entry file="file://$USER_HOME$/.cargo/registry/src/github.com-1ecc6299db9ec823/jni-0.10.2/src/wrapper/jnienv.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3087">
-          <caret line="147" column="15" selection-start-line="147" selection-start-column="15" selection-end-line="147" selection-end-column="15" />
+        <state relative-caret-position="147">
+          <caret line="86" column="11" selection-start-line="86" selection-start-column="11" selection-end-line="86" selection-end-column="11" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/picture.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-848">
+          <caret line="64" selection-start-line="64" selection-end-line="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/common/color.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/common/fill_mode.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/engine/descriptor.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/render/engine/encoder.rs">
@@ -775,118 +822,134 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/engine/descriptor.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/render/backend/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="105">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" />
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/engine/mod.rs">
+    <entry file="file://$USER_HOME$/.cargo/git/checkouts/opengl_es_rust_binding-1b3f745aa6fbf69c/b2e9fda/src/es20/ffi.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        <state>
+          <caret column="6" selection-start-column="6" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/shader_uniform_settings.rs">
+    <entry file="file://$USER_HOME$/.cargo/git/checkouts/opengl_es_rust_binding-1b3f745aa6fbf69c/b2e9fda/src/types.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+        <state relative-caret-position="168">
+          <caret line="8" column="25" selection-start-line="8" selection-start-column="25" selection-end-line="8" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/basic.rs">
+    <entry file="file://$USER_HOME$/.cargo/git/checkouts/opengl_es_rust_binding-1b3f745aa6fbf69c/b2e9fda/src/lib.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="194" column="10" lean-forward="true" selection-start-line="192" selection-start-column="7" selection-end-line="194" selection-end-column="10" />
+        <state relative-caret-position="567">
+          <caret line="27" column="25" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/alpha_blend.rs">
+    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/framebuffer.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="149" column="10" lean-forward="true" selection-start-line="147" selection-start-column="7" selection-end-line="149" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/blend.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4032">
-          <caret line="204" column="37" selection-start-line="204" selection-start-column="37" selection-end-line="204" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/combine.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2982">
-          <caret line="154" column="32" selection-start-line="154" selection-start-column="32" selection-end-line="154" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/image_generator.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/lookup.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3486">
-          <caret line="180" column="32" selection-start-line="180" selection-start-column="32" selection-end-line="180" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/picture.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1302">
-          <caret line="64" selection-start-line="64" selection-end-line="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/picture_output.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2184">
-          <caret line="118" column="32" selection-start-line="118" selection-start-column="32" selection-end-line="118" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/surface_view.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1701">
-          <caret line="93" column="10" selection-start-line="93" selection-start-column="10" selection-end-line="93" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/unsharp_mask.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3759">
-          <caret line="191" column="25" selection-start-line="191" selection-start-column="25" selection-end-line="191" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/operation/texture.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1134">
-          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ffi/android.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="296">
-          <caret line="324" column="14" lean-forward="true" selection-start-line="324" selection-start-column="14" selection-end-line="324" selection-end-column="14" />
+        <state relative-caret-position="3633">
+          <caret line="177" column="11" selection-start-line="177" selection-start-column="11" selection-end-line="177" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/render/backend/gl/render.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="105" lean-forward="true" selection-start-line="105" selection-end-line="105" />
+        <state relative-caret-position="1617">
+          <caret line="77" column="16" selection-start-line="77" selection-start-column="16" selection-end-line="77" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/context.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="651">
+          <caret line="33" column="24" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ffi/ios.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3213">
+          <caret line="153" column="45" selection-start-line="153" selection-start-column="25" selection-end-line="153" selection-end-column="45" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gpuimage.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="693">
+          <caret line="33" column="25" selection-start-line="33" selection-start-column="25" selection-end-line="33" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/picture_output.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="107" lean-forward="true" selection-start-line="107" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/render/backend/gl/framebuffercache.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-210">
+          <caret line="43" column="24" lean-forward="true" selection-start-line="43" selection-start-column="24" selection-end-line="43" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/structure/node.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="273">
+          <caret line="13" column="1" lean-forward="true" selection-start-line="13" selection-start-column="1" selection-end-line="13" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/basic.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="174">
+          <caret line="157" column="24" selection-start-line="157" selection-end-line="158" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/structure/edge.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/structure/expression.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/structure/graph.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="20" column="21" lean-forward="true" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/texture.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="268">
+          <caret line="127" column="26" selection-start-line="127" selection-end-line="128" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/operation/unsharp_mask.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="254">
+          <caret line="186" selection-start-line="186" selection-end-line="186" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ffi/android.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="354" column="30" lean-forward="true" selection-start-line="354" selection-start-column="30" selection-end-line="354" selection-end-column="30" />
         </state>
       </provider>
     </entry>

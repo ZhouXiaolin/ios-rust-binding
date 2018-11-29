@@ -89,11 +89,10 @@ impl<'a> Drawable for XheySurfaceView<'a> {
 
         let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
 
-        let pso = RenderPipelineState{
-            program:program
-        };
 
-        renderQuadWithShader(pso,&self.uniformSettings,&vec![inputTexture],vertex);
+
+
+        renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
 
 
 

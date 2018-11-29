@@ -96,27 +96,33 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
         self.textureId.set(renderFramebuffer.texture);
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::white());
-
-        let program = &self.context.passthroughShader;
-
-        let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
-
-        let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize);
-
-        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
-
-        let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
-
-        let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
-
         let pso = RenderPipelineState{
-            program:program
+            framebuffer: renderFramebuffer,
+            color: Color::white()
         };
 
-        renderQuadWithShader(pso,&self.uniformSettings,&vec![inputTexture],vertex);
+        let _ = pso.run_and_then(||{
+            let program = &self.context.passthroughShader;
+
+            let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
+
+            let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize);
+
+            let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
+
+            let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
+
+            let vertex = InputTextureStorageFormat::textureCoordinate(scaledVertices);
+
+            renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
+
+        });
+
+
+//        renderFramebuffer.bindFramebufferForRendering();
+//
+//        clearFramebufferWithColor(Color::white());
+
 
 //        renderFramebuffer.unbindFramebufferForRendering();
 

@@ -170,30 +170,25 @@ impl<'a> Renderable for XHeyLookupFilter<'a> {
             inputTextureProperties
         };
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::green());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
-        let pso = RenderPipelineState{
-            program:&self.shader
-        };
-        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
-
-
-        renderFramebuffer.unbindFramebufferForRendering();
-
         self.resultId.set(renderFramebuffer.texture);
 
-        unsafe {
-            let error = glGetError();
-            if error != GL_NO_ERROR {
-                info!("lookup ------------> {}",error);
-            }
-        }
 
-        renderFramebuffer
+        let pso = RenderPipelineState {
+            framebuffer:renderFramebuffer,
+            color: Color::black()
+        };
+
+
+       pso.run(||{
+
+           let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+
+           let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+
+           renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
+
+
+       })
+
     }
 }

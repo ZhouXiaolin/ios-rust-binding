@@ -138,24 +138,20 @@ impl<'a> Renderable for XHeyAlphaBlendFilter<'a> {
             inputTextureProperties
         };
 
-        renderFramebuffer.bindFramebufferForRendering();
-
-        clearFramebufferWithColor(Color::black());
-
-        let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
-        let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
-
         let pso = RenderPipelineState{
-            program:&self.shader
+            framebuffer:renderFramebuffer.clone(),
+            color:Color::black()
         };
 
-        renderQuadWithShader(pso,&self.uniformSettings,&textureProperties,vertex);
+        pso.run(|| {
+
+            let standardImageVertices: [f32; 8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+
+            let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
+
+            renderQuadWithShader(&self.shader, &self.uniformSettings, &textureProperties, vertex);
+        })
 
 
-        renderFramebuffer.unbindFramebufferForRendering();
-
-
-
-        renderFramebuffer
     }
 }

@@ -6,6 +6,7 @@ use jni::JNIEnv;
 use jni::objects::{JClass, JString};
 use jni::sys::*;
 use std::os::raw::{c_void,c_int,c_uint,c_float};
+
 use gles_rust_binding::*;
 use super::render::{Framebuffer,GlContext};
 use crate::render::Matrix4x4;
@@ -33,13 +34,13 @@ pub unsafe extern "C" fn xhey_graph<'a>(graph: *mut RenderGraph<'a>,source: *mut
 
     let box_lookup_picture = lookup_picture.as_ref().unwrap();
     let box_lookup_filter = lookup_filter.as_ref().unwrap();
-//    let box_unsharp_filter = unsharpask.as_ref().unwrap();
+    let box_unsharp_filter = unsharpask.as_ref().unwrap();
 //    let box_surfaceView = surfaceView.as_ref().unwrap();
 
     let texture = box_graph.add_input("texture",box_texture);
     let lookup_picture = box_graph.add_input("lookup picture",box_lookup_picture);
     let lookup_filter = box_graph.add_function("lookup filter",&[texture,lookup_picture],box_lookup_filter);
-//    let unsharp_mask = box_graph.add_function("unsharp mask",&[texture],box_unsharp_filter);
+    let unsharp_mask = box_graph.add_function("unsharp mask",&[lookup_filter],box_unsharp_filter);
 //    let view = box_graph.add_function("surface view",&[unsharp_mask],box_surfaceView);
 
 }
@@ -343,6 +344,13 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getLookupId(env: 
 #[no_mangle]
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getOutputId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
     let filter = filter_ptr as *mut XheyPictureOutput;
+    let filter = filter.as_ref().unwrap();
+    filter.textureId() as jint
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_getUnsharpMaskId(env: JNIEnv, _: JClass, filter_ptr: jlong) -> jint {
+    let filter = filter_ptr as *mut XHeyUnsharpMaskFilter;
     let filter = filter.as_ref().unwrap();
     filter.textureId() as jint
 }

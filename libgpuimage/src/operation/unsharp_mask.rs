@@ -3,7 +3,7 @@ use super::*;
 use std::cell::{RefCell,Cell};
 use std::rc::Rc;
 use std::sync::Arc;
-
+use fnv::FnvHashMap;
 #[repr(C)]
 #[derive(Debug)]
 pub struct XHeyUnsharpMaskFilter<'a>{
@@ -11,11 +11,11 @@ pub struct XHeyUnsharpMaskFilter<'a>{
     maximumInputs : u32,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings,
     context:&'a GlContext,
     resultId: Cell<u32>,
 
-
+    intensity: f32,
+    saturation: f32
 }
 
 
@@ -95,9 +95,10 @@ void main()
             shader,
             head_node:Cell::default(),
             tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default(),
             context,
-            resultId:Cell::default()
+            resultId:Cell::default(),
+            intensity:1.3,
+            saturation:1.1
 
         }
     }
@@ -107,8 +108,12 @@ void main()
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
     }
 
-    pub fn set_value(&mut self, v : f32){
-        self.uniformSettings.setValue("value",Uniform::Float(v));
+    pub fn set_intensity(&mut self, v : f32){
+        self.intensity = v;
+    }
+
+    pub fn set_saturation(&mut self, v : f32){
+        self.saturation = v;
     }
 
     pub fn textureId(&self) -> GLuint {
@@ -182,8 +187,9 @@ impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
         let mut uniformSettings = ShaderUniformSettings::default();
         uniformSettings.setValue("texelWidth",Uniform::Float(texelSize.width));
         uniformSettings.setValue("texelHeight",Uniform::Float(texelSize.height));
-        uniformSettings.setValue("intensity",Uniform::Float(1.3));
-        uniformSettings.setValue("saturation",Uniform::Float(1.1));
+        uniformSettings.setValue("intensity",Uniform::Float(self.intensity));
+        uniformSettings.setValue("saturation",Uniform::Float(self.saturation));
+
 
         self.resultId.set(renderFramebuffer.texture);
 
@@ -193,7 +199,7 @@ impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
             color: Color::black()
         };
 
-        pso.run(||{
+        pso.run_and_then(||{
             let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
             let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 

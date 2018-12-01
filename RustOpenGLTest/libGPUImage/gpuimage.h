@@ -38,6 +38,7 @@ void release_surfaceview(long surface_view);
 
 long xhey_init_picture(void* data, int width, int height);
 long xhey_init_picture_textureId(int textureId, int width, int height, int orient);
+void xhey_picture_update(long picture, void* data, int width, int height);
 void release_picture(long picture);
 
 long xhey_init_lookup_filter(long context);
@@ -47,6 +48,12 @@ long xhey_init_picture_output(long context, int width, int height, int orient);
 void release_output(long filter);
 
 int xhey_picture_output_get_texture_id(long filter);
+
+
+long xhey_init_camera(long context, int width, int height, int orient);
+void camera_update_luminance(long filter, int luminance);
+void camera_update_chrominance(long filter, int chrominance);
+void camera_update_matrix(long filter, float* mat);
 
 #if __cplusplus
 }

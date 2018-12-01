@@ -101,7 +101,7 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
             color: Color::white()
         };
 
-        let _ = pso.run_and_then(||{
+        let _ = pso.run(||{
             let program = &self.context.passthroughShader;
 
             let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];

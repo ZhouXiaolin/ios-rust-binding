@@ -58,7 +58,8 @@ NSString* const kFragmentString = SHADER_STRING
     EAGLContext* currentContext;
     
     long g;
-    long pic;
+//    long pic;
+    long cam;
     long surface;
     long basic;
     long output;
@@ -70,12 +71,12 @@ NSString* const kFragmentString = SHADER_STRING
     GLuint _inputTextureCoordinateSlot;
     GLuint _inputImageTexture;
     
+    GLuint y_textureId;
+    GLuint uv_textureId;
     GLuint textureId;
-    
-    
     CameraEntry* cameraEntry;
     
-    
+    CVOpenGLESTextureCacheRef coreVideoTextureCache;
     BOOL isFirst;
 
 }
@@ -134,17 +135,92 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     free((void *)data);
 }
 
-- (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+- (void)captureOutput:(AVCaptureOutput *)_output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+
+    
+    
+    CVPixelBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+    CVPixelBufferLockBaseAddress(cameraFrame, 0);
+    
+    int width = (int)round(CVPixelBufferGetWidth(cameraFrame));
+    int height = (int)round(CVPixelBufferGetHeight(cameraFrame));
+    
+    
+    void* y_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 0);
+    void* uv_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 1);
     
     if (isFirst == FALSE) {
         isFirst = TRUE;
+        
+        
+        
+        [EAGLContext setCurrentContext:currentContext];
+        
+        glGenTextures(1, &y_textureId);
+        glBindTexture(GL_TEXTURE_2D, y_textureId);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        
+        glGenTextures(1, &uv_textureId);
+        glBindTexture(GL_TEXTURE_2D, uv_textureId);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width , height , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        
+        g = xhey_init_graph();
+        context = init_context();
+//        pic = xhey_init_picture_textureId(textureId, width, height, 0);
+        cam = xhey_init_camera(context, width, height, 0);
+        camera_update_luminance(cam, y_textureId);
+        camera_update_chrominance(cam, uv_textureId);
+        float mat[9] = {1.0f, 1.0f, 1.0f,
+                      0.0f, -0.343f, 1.765f,
+            1.4f, -0.711f, 0.0f};
+        
+        camera_update_matrix(cam, mat);
+        basic = xhey_init_basic_filter(context);
+        output = xhey_init_picture_output(context, width, height, 0);
+        xhey_picture_graph(g, cam, basic, 0, 0, 0, 0, output);
+        [EAGLContext setCurrentContext:nil];
 
-        NSLog(@"First");
     }else{
-        NSLog(@"DDDDDDD");
+        [EAGLContext setCurrentContext:currentContext];
+
+        glBindTexture(GL_TEXTURE_2D, y_textureId);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        
+        
+        glBindTexture(GL_TEXTURE_2D, uv_textureId);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width  , height , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, y_frame);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        [EAGLContext setCurrentContext:nil];
+
+        
     }
     
-    NSLog(@"AAAA");
+    
+    
+    [glView render:^GLuint{
+        
+        
+        xhey_graph_forward(g);
+        textureId = xhey_picture_output_get_texture_id(output);
+        return textureId;
+    }];
+    
+    CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
 }
 
 
@@ -185,44 +261,25 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
     self.view.backgroundColor = [UIColor blueColor];
     
-//    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:FALSE];
-//    [cameraEntry setVideoOutputDelegate:self];
-//    [cameraEntry startCapture];
+    
+   
     
     currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    
+   
+    
+    
+    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:FALSE];
+    [cameraEntry setVideoOutputDelegate:self];
+    [cameraEntry startCapture];
+    
     
     glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
 
 
 
-    [glView render:^GLuint{
-
-        NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
-        
-        UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
-        CGImage* newImageSource = [image CGImage];
-        int width = (int)CGImageGetWidth(newImageSource);
-        int height = (int)CGImageGetHeight(newImageSource);
-        
-        textureId = [XLHelpClass createTexture:image];
-        
-        
-        g = xhey_init_graph();
-        context = init_context();
-        pic = xhey_init_picture_textureId(textureId, width, height, 0);
-        
-        basic = xhey_init_basic_filter(context);
-        output = xhey_init_picture_output(context, width, height, 0);
-        xhey_picture_graph(g, pic, basic, 0, 0, 0, 0, output);
-        xhey_graph_forward(g);
-
-//        UIImage* result = [XLHelpClass readImageFromFBO:width height:height];
-//        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-//
-//        textureId = [XLHelpClass createTexture:result];
-        return xhey_picture_output_get_texture_id(output);
-    }];
+   
     
     
     
@@ -254,7 +311,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     NSLog(@"TTTTTTTTTTTT");
     glDeleteTextures(1, &textureId);
     release_context(context);
-    release_picture(pic);
+    
     release_basic_filter(basic);
     release_graph(g);
     currentContext = nil;

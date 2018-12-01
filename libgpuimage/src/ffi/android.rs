@@ -53,6 +53,7 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: *mut RenderGraph<'a>, pic
     let box_basic = basic.as_mut().unwrap();
     let box_lut = lut.as_mut().unwrap();
     let box_lut_filter = lut_filter.as_mut().unwrap();
+    let box_unsharp_mask_filter = unsharpask.as_mut().unwrap();
     let box_water_mask = water_mask.as_mut().unwrap();
     let box_output = output.as_mut().unwrap();
 
@@ -60,7 +61,8 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: *mut RenderGraph<'a>, pic
     let basic = box_graph.add_function("basic",&[pic],box_basic);
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
-    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
+    let unsharp_mask = box_graph.add_function("unsharp mask filter",&[lut_filter],box_unsharp_mask_filter);
+    let water_mask = box_graph.add_function("water mask",&[unsharp_mask],box_water_mask);
     let output = box_graph.add_function("output",&[water_mask], box_output);
 }
 
@@ -134,13 +136,14 @@ pub extern "C" fn xhey_init_picture(data: *const c_void, width: i32, height: i32
 
 #[no_mangle]
 pub extern "C" fn xhey_init_picture_textureId(textureId: i32, width: i32, height: i32, orient: i32) ->  *mut XheyPicture {
-    info!("-----> xhey_init_picture {} {}",width,height);
-
     let picture = XheyPicture::new_texture(textureId as GLuint,width,height,orient);
     let picture = Box::new(picture);
     Box::into_raw(picture)
 
 }
+
+
+
 
 #[no_mangle]
 pub extern "C" fn xhey_init_lookup_filter(context:&GlContext) -> *mut XHeyLookupFilter {
@@ -277,6 +280,28 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_lutSetvalue(env: 
     filter.set_intensity(value);
 
 
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_unsharpMaskSetIntensity(env: JNIEnv, _: JClass, unsharp_mask: jlong ,value: jfloat) {
+
+
+    let filter = lut_ptr as *mut XHeyUnsharpMaskFilter;
+    let filter = filter.as_mut().unwrap();
+
+    filter.set_intensity(v);
+}
+
+
+#[no_mangle]
+pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_unsharpMaskSetSaturation(env: JNIEnv, _: JClass, unsharp_mask: jlong ,value: jfloat) {
+
+
+    let filter = lut_ptr as *mut XHeyUnsharpMaskFilter;
+    let filter = filter.as_mut().unwrap();
+
+    filter.set_saturation(v);
 }
 
 #[no_mangle]

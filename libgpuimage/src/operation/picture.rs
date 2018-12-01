@@ -92,7 +92,12 @@ impl XheyPicture {
         self.orientation = ImageOrientation::from(orient);
     }
 
-
+//    pub fn update(&mut self, textureId: GLuint){
+//
+//        let framebuffer = Arc::new(Framebuffer::new_texture(ImageOrientation::portrait,self.size,textureId));
+//
+//        self.framebuffer = framebuffer;
+//    }
 
 
 }
@@ -129,9 +134,8 @@ impl Edge for XheyPicture{
     /// 前向计算
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
 
-
-
         Some(self.framebuffer.clone())
+
     }
 
     fn name(&self) -> &str {

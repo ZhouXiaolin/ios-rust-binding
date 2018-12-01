@@ -5,6 +5,7 @@ use std::ffi::{CStr};
 use std::mem::transmute;
 use std::rc::Rc;
 use gles_rust_binding::*;
+use crate::render::Matrix3x3;
 
 
 use super::structure::{Graph,Edge};
@@ -46,12 +47,12 @@ pub unsafe extern "C" fn release_context(context: c_long){
 
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, picture: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
+pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, camera: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
 
     let box_graph = graph as *mut RenderGraph;
     let box_graph = box_graph.as_mut().unwrap();
 
-    let box_picture = picture as *mut XheyPicture;
+    let box_picture = camera as *mut XheyCamera;
     let box_picture = box_picture.as_mut().unwrap();
 
     let box_basic = basic as *mut XHeyBasicFilter;
@@ -102,6 +103,36 @@ pub unsafe extern "C" fn release_alpha_blend_filter(filter_ptr: c_long) {
 }
 
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_camera(context: c_long, width: i32, height: i32, orient: i32) -> c_long {
+    let context = context as *mut GlContext;
+    let context = context.as_ref().unwrap();
+    let filter = Box::new(XheyCamera::new(context,width,height,orient));
+    Box::into_raw(filter) as c_long
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn camera_update_luminance(camera:c_long, luminance: i32) {
+    let filter = camera as *mut XheyCamera;
+    let filter = filter.as_mut().unwrap();
+    filter.update_luminance(luminance as GLuint);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn camera_update_chrominance(camera:c_long, chrominance: i32) {
+    let filter = camera as *mut XheyCamera;
+    let filter = filter.as_mut().unwrap();
+    filter.update_luminance(chrominance as GLuint);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn camera_update_matrix(camera: c_long, matrix: *mut [f32;9]){
+    let filter = camera as *mut XheyCamera;
+    let filter = filter.as_mut().unwrap();
+    let mat = Matrix3x3::new(matrix.as_ref().unwrap().clone());
+    filter.updateMatrix(mat)
+}
+
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_init_watermark(context:c_long) -> c_long {
@@ -125,7 +156,13 @@ pub unsafe extern "C" fn xhey_watermark_update(filter: c_long, texId: c_uint, x:
     filter.appendWaterMark(texId,x,y,w,h);
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_picture_update(filter: c_long, data: *const c_void, width: i32, height: i32){
+    let picture = filter as *mut XheyPicture;
+    let picture = picture.as_mut().unwrap();
 
+    picture.update(data,width,height);
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_init_unsharp_mask(context:c_long) -> c_long {

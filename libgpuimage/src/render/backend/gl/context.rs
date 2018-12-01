@@ -39,7 +39,7 @@ const fragmentStr: &str = r#"
 
  void main()
  {
-     gl_FragColor = texture2D(inputImageTexture, textureCoordinate).rrra;
+     gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
  }
     "#;
 

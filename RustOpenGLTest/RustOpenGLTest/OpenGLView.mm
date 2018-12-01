@@ -75,9 +75,8 @@ NSString* const kFragmentString = SHADER_STRING
         [EAGLContext setCurrentContext:_context];
         
         
-        [self destoryBuffers];
+//        [self destoryBuffers];
         
-        [self setupBuffers];
         [self setupProgram];
     }
     
@@ -149,6 +148,11 @@ NSString* const kFragmentString = SHADER_STRING
     if (_frameBuffer == 0) {
         [self createDisplayFramebuffer];
     }
+    
+    
+    GLuint textureId = Block();
+
+    
     [self activateDisplayFramebuffer];
     
     
@@ -160,7 +164,7 @@ NSString* const kFragmentString = SHADER_STRING
 
    
 
-    glClearColor(1.0, 1.0, 0, 1.0);
+    glClearColor(1.0, 0.0, 0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Setup viewport
@@ -181,7 +185,6 @@ NSString* const kFragmentString = SHADER_STRING
     glEnableVertexAttribArray(_inputTextureCoordinateSlot);
     
     
-    GLuint textureId = Block();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,textureId);

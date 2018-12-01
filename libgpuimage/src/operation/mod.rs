@@ -10,6 +10,8 @@ mod surface_view;
 mod picture_output;
 mod unsharp_mask;
 mod blend;
+mod camera;
+
 #[cfg(target_os = "android")]
 mod texture;
 
@@ -22,6 +24,7 @@ pub use self::alpha_blend::*;
 pub use self::surface_view::*;
 pub use self::unsharp_mask::*;
 pub use self::blend::*;
+pub use self::camera::*;
 
 #[cfg(target_os = "android")]
 pub use self::texture::*;

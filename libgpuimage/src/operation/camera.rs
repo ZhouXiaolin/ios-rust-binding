@@ -24,19 +24,23 @@ impl<'a> XheyCamera<'a>{
     pub fn new(context:&'a GlContext, width: i32, height: i32, orient: i32) -> Self {
         let vertexString = r#"
  attribute vec4 position;
- attribute vec4 inputTextureCoordinate;
-
+ attribute vec2 inputTextureCoordinate;
+ attribute vec2 inputTextureCoordinate2;
  varying vec2 textureCoordinate;
+ varying vec2 textureCoordinate2;
 
  void main()
  {
      gl_Position = position;
      textureCoordinate = inputTextureCoordinate.xy;
+     textureCoordinate2 = inputTextureCoordinate2.xy;
+
  }
         "#;
 
         let fragmentString = r#"
 varying highp vec2 textureCoordinate;
+varying highp vec2 textureCoordinate2;
 
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
@@ -48,7 +52,7 @@ varying highp vec2 textureCoordinate;
      lowp vec3 rgb;
 
      yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-     yuv.yz = texture2D(inputImageTexture2, textureCoordinate).ra - vec2(0.5, 0.5);
+     yuv.yz = texture2D(inputImageTexture2, textureCoordinate2).ra - vec2(0.5, 0.5);
      rgb = colorConversionMatrix * yuv;
 
      gl_FragColor = vec4(rgb, 1);
@@ -130,8 +134,8 @@ impl<'a> Edge for XheyCamera<'a> {
         let storage_2 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
 
         let textureProperties = vec![
-            InputTextureProperties::new(storage_1,self.chrominance),
-            InputTextureProperties::new(storage_2,self.luminance)
+            InputTextureProperties::new(storage_1,self.luminance),
+            InputTextureProperties::new(storage_2,self.chrominance)
         ];
 
         let renderFramebuffer = self.context.framebufferCache.requestFramebufferWithDefault(self.orientation, size,false);

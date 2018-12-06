@@ -122,7 +122,7 @@ pub unsafe extern "C" fn camera_update_luminance(camera:c_long, luminance: i32) 
 pub unsafe extern "C" fn camera_update_chrominance(camera:c_long, chrominance: i32) {
     let filter = camera as *mut XheyCamera;
     let filter = filter.as_mut().unwrap();
-    filter.update_luminance(chrominance as GLuint);
+    filter.update_chrominance(chrominance as GLuint);
 }
 
 #[no_mangle]

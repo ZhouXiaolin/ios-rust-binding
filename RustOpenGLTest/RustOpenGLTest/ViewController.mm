@@ -134,6 +134,8 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 {
     free((void *)data);
 }
+#define aw_stride(wid) ((wid % 16 != 0) ? ((wid) + 16 - (wid) % 16): (wid))
+
 
 - (void)captureOutput:(AVCaptureOutput *)_output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
 
@@ -145,6 +147,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     int width = (int)round(CVPixelBufferGetWidth(cameraFrame));
     int height = (int)round(CVPixelBufferGetHeight(cameraFrame));
     
+    width = aw_stride(width);
     
     void* y_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 0);
     void* uv_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 1);
@@ -174,7 +177,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width , height , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
@@ -203,7 +206,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         
         
         glBindTexture(GL_TEXTURE_2D, uv_textureId);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width  , height , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, y_frame);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         [EAGLContext setCurrentContext:nil];
 
@@ -269,7 +272,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
    
     
     
-    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:FALSE];
+    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
     [cameraEntry setVideoOutputDelegate:self];
     [cameraEntry startCapture];
     

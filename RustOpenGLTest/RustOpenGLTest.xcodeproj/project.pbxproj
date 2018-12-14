@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F187FE5214B64AC00D855F6 /* XLHelpClass.m */; };
+		9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */; };
+		9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */; };
+		9F1DF5C321C39A9000993C6B /* foodie.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1DF5C221C39A9000993C6B /* foodie.bundle */; };
 		9F817385214759C100030F46 /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817383214759C100030F46 /* GLESUtils.m */; };
 		9F817386214759C100030F46 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.mm */; };
 		9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48DF213EC7F30026B7EF /* ViewController.mm */; };
@@ -25,6 +28,11 @@
 /* Begin PBXFileReference section */
 		9F187FE4214B64AC00D855F6 /* XLHelpClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLHelpClass.h; sourceTree = "<group>"; };
 		9F187FE5214B64AC00D855F6 /* XLHelpClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLHelpClass.m; sourceTree = "<group>"; };
+		9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLFilterChooserViewCell.m; sourceTree = "<group>"; };
+		9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLFilterChooserView.m; sourceTree = "<group>"; };
+		9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFilterChooserViewCell.h; sourceTree = "<group>"; };
+		9F1DF5BF21C395E300993C6B /* XLFilterChooserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFilterChooserView.h; sourceTree = "<group>"; };
+		9F1DF5C221C39A9000993C6B /* foodie.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = foodie.bundle; sourceTree = "<group>"; };
 		9F817381214759C000030F46 /* GLESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESUtils.h; sourceTree = "<group>"; };
 		9F817382214759C000030F46 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		9F817383214759C100030F46 /* GLESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLESUtils.m; sourceTree = "<group>"; };
@@ -81,10 +89,15 @@
 			isa = PBXGroup;
 			children = (
 				9FD66C5621A025E7005638E2 /* libGPUImage */,
-				9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */,
-				9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */,
+				9F1DF5C221C39A9000993C6B /* foodie.bundle */,
 				9F8D48DE213EC7F30026B7EF /* ViewController.h */,
 				9F8D48DF213EC7F30026B7EF /* ViewController.mm */,
+				9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */,
+				9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */,
+				9F1DF5BF21C395E300993C6B /* XLFilterChooserView.h */,
+				9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */,
+				9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */,
+				9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */,
 				9F187FE4214B64AC00D855F6 /* XLHelpClass.h */,
 				9F187FE5214B64AC00D855F6 /* XLHelpClass.m */,
 				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
@@ -179,6 +192,7 @@
 			files = (
 				9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */,
 				9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */,
+				9F1DF5C321C39A9000993C6B /* foodie.bundle in Resources */,
 				9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */,
 				9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */,
 			);
@@ -191,10 +205,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */,
 				9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */,
 				9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */,
 				9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */,
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
+				9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */,
 				9F817385214759C100030F46 /* GLESUtils.m in Sources */,
 				9F8D48EB213EC7F40026B7EF /* main.m in Sources */,
 				9F817386214759C100030F46 /* OpenGLView.mm in Sources */,

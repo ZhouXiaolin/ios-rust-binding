@@ -9,7 +9,7 @@ pub struct Node<T:Tensor> {
     pub name: String,
     pub in_edge: u32,
     pub out_edges: Vec<u32>,
-    pub f:RefCell<Vec<Arc<T>>> // 应该如何修改此处？
+    pub f:RefCell<Vec<Arc<T>>> // 应该如何修改此处？为了在图中正确表达，f采用了非常复杂的结构
 
 }
 

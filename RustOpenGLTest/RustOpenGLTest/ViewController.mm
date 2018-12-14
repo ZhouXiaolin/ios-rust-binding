@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "gpuimage.h"
 #import "XLHelpClass.h"
+#import "XLFilterChooserView.h"
 #import <objc/runtime.h>
 
 #import <OpenGLES/ES2/gl.h>
@@ -52,13 +53,14 @@ NSString* const kFragmentString = SHADER_STRING
  
  );
 
-@interface ViewController ()<GLKViewDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
+@interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate>
 {
     OpenGLView* glView;
     EAGLContext* currentContext;
     
     long g;
-//    long pic;
+    long lut;
+    long pic;
     long cam;
     long surface;
     long basic;
@@ -74,60 +76,22 @@ NSString* const kFragmentString = SHADER_STRING
     GLuint y_textureId;
     GLuint uv_textureId;
     GLuint textureId;
+    GLuint lookup_textureId;
     CameraEntry* cameraEntry;
     
     CVOpenGLESTextureCacheRef coreVideoTextureCache;
     BOOL isFirst;
+    
+    NSString* lut_path;
+    BOOL update;
+    
+    XLFilterChooserView* filterChooserView;
 
 }
 @end
 
 @implementation ViewController
 
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect{
-   
-//     Create program, attach shaders, compile and link program
-    
-    
-
-    if (output > 0) {
-        glUseProgram(_programHandle);
-        
-        
-        
-        glClearColor(0, 1.0, 0, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        
-        // Setup viewport
-        //
-        
-        GLfloat vertices[] = {
-            -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
-        GLfloat textureCoordinates[] = {
-            1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
-        };
-        
-        // Load the vertex data
-        //
-        glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
-        glEnableVertexAttribArray(_positionSlot);
-        
-        glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
-        glEnableVertexAttribArray(_inputTextureCoordinateSlot);
-        
-        
-        
-        glActiveTexture(GL_TEXTURE0);
-        
-        
-        glBindTexture(GL_TEXTURE_2D,xhey_picture_output_get_texture_id(output));
-        glUniform1i(0,_inputImageTexture);
-        // Draw triangle
-        //
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    }
-    
-}
 
 
 void dataProviderReleaseCallback (void *info, const void *data, size_t size)
@@ -147,7 +111,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     int width = (int)round(CVPixelBufferGetWidth(cameraFrame));
     int height = (int)round(CVPixelBufferGetHeight(cameraFrame));
     
-    width = aw_stride(width);
+    int _width = aw_stride(width);
     
     void* y_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 0);
     void* uv_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 1);
@@ -166,7 +130,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
@@ -177,13 +141,12 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
         g = xhey_init_graph();
         context = init_context();
-//        pic = xhey_init_picture_textureId(textureId, width, height, 0);
         cam = xhey_init_camera(context, width, height, 0);
         camera_update_luminance(cam, y_textureId);
         camera_update_chrominance(cam, uv_textureId);
@@ -193,21 +156,33 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         
         camera_update_matrix(cam, mat);
         basic = xhey_init_basic_filter(context);
-        output = xhey_init_picture_output(context, width, height, 0);
-        xhey_picture_graph(g, cam, basic, 0, 0, 0, 0, output);
+        lut = xhey_init_lookup_filter(context);
+        lookup_textureId = [self setupTexture:[UIImage imageNamed:@"b_street_food"]];
+        pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
+        
+        
+        output = xhey_init_picture_output(context, width, height, 3);
+        xhey_picture_graph(g, cam, basic, pic, lut, 0, 0, output);
         [EAGLContext setCurrentContext:nil];
 
     }else{
         [EAGLContext setCurrentContext:currentContext];
 
         glBindTexture(GL_TEXTURE_2D, y_textureId);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
         glBindTexture(GL_TEXTURE_2D, uv_textureId);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
+        
+        if (update) {
+            update = NO;
+            [self texSubImage2D:lut_path];
+        }
+        
+        
         [EAGLContext setCurrentContext:nil];
 
         
@@ -226,11 +201,31 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
 }
 
-
-- (GLuint) setupTexture{
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
-    
+- (void) texSubImage2D:(NSString*) path {
     UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
+    CGImage* newImageSource = [image CGImage];
+    int width = (int)CGImageGetWidth(newImageSource);
+    int height = (int)CGImageGetHeight(newImageSource);
+    
+    GLubyte *imageData = (GLubyte*)calloc(1, width*height*4);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
+    
+    
+    xhey_picture_update(pic, imageData, width, height);
+    
+    
+    
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    free(imageData);
+    newImageSource = nil;
+}
+- (GLuint) setupTexture: (UIImage*)image{
+//    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
+//
+//    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
     CGImage* newImageSource = [image CGImage];
     int width = (int)CGImageGetWidth(newImageSource);
     int height = (int)CGImageGetHeight(newImageSource);
@@ -253,8 +248,6 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     CGColorSpaceRelease(genericRGBColorspace);
     free(imageData);
     newImageSource = nil;
-    image = nil;
-    path = nil;
     
     return imageTexture;
 }
@@ -264,6 +257,11 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
     self.view.backgroundColor = [UIColor blueColor];
     
+    int WIDTH = self.view.bounds.size.width;
+    int HEIGHT = self.view.bounds.size.height;
+    
+    
+    
     
    
     
@@ -272,7 +270,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
    
     
     
-    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPresetPhoto) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
+    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPreset1280x720) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
     [cameraEntry setVideoOutputDelegate:self];
     [cameraEntry startCapture];
     
@@ -280,23 +278,34 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
 
-
-
+    NSString* bundlePath = [XLHelpClass pathBundlePath];
+    NSArray<NSString*>* files = [[NSFileManager defaultManager] subpathsAtPath:bundlePath];
+    
+    filterChooserView = [[XLFilterChooserView alloc] initWithFrame:CGRectMake(0, HEIGHT - 80, WIDTH, 80)];
+    filterChooserView.backgroundColor = UIColorFromRGB(0x19181d);
+    [filterChooserView setChooserBlock:^(NSInteger idx) {
+        
+        NSString* name = files[idx];
+        NSString* path = [bundlePath stringByAppendingFormat:@"/%@",name];
+        
+        NSLog(@"solaren %@",path);
+        update = YES;
+        lut_path = path;
+        
+        
+    }];
+    [self.view addSubview:filterChooserView];
+    
    
+    NSMutableArray<XLFilter*>* array = [NSMutableArray array];
+    for (NSString* path in files) {
+        XLFilter* filter = [[XLFilter alloc] init];
+        filter.name = path;
+        [array addObject:filter];
+    }
     
-    
-    
-
-
-    
-//    [EAGLContext setCurrentContext:currentContext];
-    
-    
-
-
-//    [EAGLContext setCurrentContext:nil];
-//
-//    currentContext = nil;
+    [filterChooserView addFiltersToChooser:array];
+    [filterChooserView setCurrentIndex:0];
     
     
     UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];

@@ -58,11 +58,11 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, camera: c_long, b
     let box_basic = basic as *mut XHeyBasicFilter;
     let box_basic = box_basic.as_mut().unwrap();
 
-//    let box_lut = lut as *mut XheyPicture;
-//    let box_lut = box_lut.as_mut().unwrap();
+    let box_lut = lut as *mut XheyPicture;
+    let box_lut = box_lut.as_mut().unwrap();
 //
-//    let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
-//    let box_lut_filter = box_lut_filter.as_mut().unwrap();
+    let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
+    let box_lut_filter = box_lut_filter.as_mut().unwrap();
 //
 //    let box_water_mask = water_mask as *mut XHeyBlendFilter;
 //    let box_water_mask = box_water_mask.as_mut().unwrap();
@@ -72,10 +72,10 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, camera: c_long, b
 
     let pic = box_graph.add_input("picture", box_picture);
     let basic = box_graph.add_function("basic",&[pic],box_basic);
-//    let lut = box_graph.add_input("lut", box_lut);
-//    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
+    let lut = box_graph.add_input("lut", box_lut);
+    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
 //    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
-    let output = box_graph.add_function("output",&[basic], box_output);
+    let output = box_graph.add_function("output",&[lut_filter], box_output);
 }
 
 

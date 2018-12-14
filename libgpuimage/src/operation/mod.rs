@@ -11,6 +11,7 @@ mod picture_output;
 mod unsharp_mask;
 mod blend;
 mod camera;
+mod test;
 
 #[cfg(target_os = "android")]
 mod texture;

@@ -4,13 +4,16 @@ pub trait Edge {
     type Item;
 
     fn name(&self) -> &str;
+
     /// 将tail加入这个节点的输入序列
     fn add_tail(&self, tail: u32);
+
     /// 返回输入序列
     fn tail_nodes(&self) -> Vec<u32>;
 
-
+    /// 将head_node加入这个节点
     fn add_head_node(&self, head_node: u32);
+
     /// 节点在图中的序号
     fn head_node(&self) -> u32;
 

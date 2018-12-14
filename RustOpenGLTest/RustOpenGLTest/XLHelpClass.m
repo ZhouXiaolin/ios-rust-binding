@@ -184,7 +184,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
 
 + (NSString*) pathBundlePath
 {
-    NSString* bundlePath = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:@"b612.bundle"];
+    NSString* bundlePath = [[NSBundle mainBundle].resourcePath stringByAppendingPathComponent:@"foodie.bundle"];
 
     return bundlePath;
     

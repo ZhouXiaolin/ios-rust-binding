@@ -161,7 +161,7 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
         enableBlending(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 
         // 清零
-        clearFramebufferWithColor(Color::blue());
+        clearFramebufferWithColor(Color::black());
 
         // 首先渲染传入的framebuffer
 

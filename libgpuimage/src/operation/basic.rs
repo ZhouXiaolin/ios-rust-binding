@@ -15,7 +15,9 @@ pub struct XHeyBasicFilter<'a>{
     overriddenOutputSize: Option<Size>,
     overriddenOutputRotation: Option<Rotation>,
     resultId: Cell<u32>,
-    context: &'a GlContext
+    context: &'a GlContext,
+    hook: Option<extern "C" fn(context: *mut c_void)>,
+    ctxt: Option<*mut c_void>
 
 }
 
@@ -35,8 +37,15 @@ impl<'a> XHeyBasicFilter<'a> {
             overriddenOutputSize: None,
             overriddenOutputRotation: None,
             resultId: Cell::from(0),
-            context
+            context,
+            hook:None,
+            ctxt: None
         }
+    }
+
+    pub fn updateHookFunction(&mut self, hook: extern "C" fn(context: *mut c_void), ctxt: *mut c_void){
+        self.hook = Some(hook);
+        self.ctxt = Some(ctxt);
     }
 
     pub fn new_shader_with_fragment(context: &'a GlContext,fragment: &str, maximumInputs: u32) -> Self {
@@ -188,6 +197,11 @@ impl<'a> Renderable for XHeyBasicFilter<'a> {
             framebuffer:renderFramebuffer,
             color:Color::black()
         };
+
+
+        if let Some(hook) = self.hook {
+            hook(self.ctxt.unwrap());
+        }
 
 
         pso.run(||{

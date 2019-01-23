@@ -9,6 +9,10 @@
 extern "C" {
 #endif
 
+
+typedef void (*hook)(void* context);
+
+
 long init_context();
 void release_context(long context);
 
@@ -31,6 +35,7 @@ long xhey_init_unsharp_mask(long context);
 void release_unsharp_mask_filter(long filter);
 
 long xhey_init_basic_filter(long context);
+long xhey_update_basic_hook(long basic_filter, hook, void*);
 void release_basic_filter(long basic_filter);
 
 long xhey_init_surface_view(long context, int width, int height);
@@ -45,6 +50,7 @@ long xhey_init_lookup_filter(long context);
 void release_lookup_filter(long lookup);
 
 long xhey_init_picture_output(long context, int width, int height, int orient);
+void xhey_update_picture_output_hook(long pic_output, hook,void*);
 void release_output(long filter);
 
 int xhey_picture_output_get_texture_id(long filter);

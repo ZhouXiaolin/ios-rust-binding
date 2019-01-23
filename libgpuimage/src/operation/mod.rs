@@ -33,5 +33,5 @@ pub use self::texture::*;
 use super::structure::*;
 use super::render::*;
 use crate::render::common::*;
-
+use std::os::raw::c_void;
 

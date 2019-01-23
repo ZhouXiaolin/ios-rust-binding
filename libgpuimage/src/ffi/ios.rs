@@ -188,6 +188,14 @@ pub unsafe extern "C" fn xhey_init_basic_filter(context:c_long) -> c_long {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn xhey_update_basic_hook(basic_filter_ptr: c_long, hook: extern "C" fn(context: *mut c_void),ctxt: *mut c_void){
+    let filter = basic_filter_ptr as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.updateHookFunction(hook,ctxt);
+
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn release_basic_filter(basic_filter_ptr: c_long) {
     drop(Box::from_raw(basic_filter_ptr as *mut XHeyBasicFilter))
 }
@@ -264,6 +272,13 @@ pub unsafe extern "C" fn xhey_init_picture_output(context:c_long,width: i32, hei
 
     let output = Box::new(XheyPictureOutput::new(context,width, height, orient));
     Box::into_raw(output) as c_long
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_picture_output_hook(pic_output_filter: c_long, hook: extern "C" fn(context: *mut c_void), ctxt: *mut c_void){
+    let filter = pic_output_filter as *mut XheyPictureOutput;
+    let filter = filter.as_mut().unwrap();
+    filter.updateHookFunction(hook,ctxt);
 }
 
 #[no_mangle]

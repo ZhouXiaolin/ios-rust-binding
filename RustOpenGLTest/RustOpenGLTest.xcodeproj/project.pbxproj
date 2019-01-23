@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F187FE5214B64AC00D855F6 /* XLHelpClass.m */; };
+		9F07A24521F6FA7700DAE084 /* MovieWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F07A24421F6FA7600DAE084 /* MovieWriter.m */; };
+		9F07A24821F6FA8600DAE084 /* FilterController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F07A24721F6FA8600DAE084 /* FilterController.mm */; };
+		9F07A24B21F6FD2B00DAE084 /* MovieOutput.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F07A24A21F6FD2B00DAE084 /* MovieOutput.m */; };
+		9F187FE6214B64AC00D855F6 /* XLHelpClass.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F187FE5214B64AC00D855F6 /* XLHelpClass.mm */; };
 		9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */; };
 		9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */; };
 		9F1DF5C321C39A9000993C6B /* foodie.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1DF5C221C39A9000993C6B /* foodie.bundle */; };
@@ -26,8 +29,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9F07A24321F6FA7600DAE084 /* MovieWriter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MovieWriter.h; sourceTree = "<group>"; };
+		9F07A24421F6FA7600DAE084 /* MovieWriter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MovieWriter.m; sourceTree = "<group>"; };
+		9F07A24621F6FA8600DAE084 /* FilterController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FilterController.h; sourceTree = "<group>"; };
+		9F07A24721F6FA8600DAE084 /* FilterController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FilterController.mm; sourceTree = "<group>"; };
+		9F07A24921F6FD2B00DAE084 /* MovieOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MovieOutput.h; sourceTree = "<group>"; };
+		9F07A24A21F6FD2B00DAE084 /* MovieOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MovieOutput.m; sourceTree = "<group>"; };
 		9F187FE4214B64AC00D855F6 /* XLHelpClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLHelpClass.h; sourceTree = "<group>"; };
-		9F187FE5214B64AC00D855F6 /* XLHelpClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLHelpClass.m; sourceTree = "<group>"; };
+		9F187FE5214B64AC00D855F6 /* XLHelpClass.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = XLHelpClass.mm; sourceTree = "<group>"; };
 		9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLFilterChooserViewCell.m; sourceTree = "<group>"; };
 		9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XLFilterChooserView.m; sourceTree = "<group>"; };
 		9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFilterChooserViewCell.h; sourceTree = "<group>"; };
@@ -99,9 +108,15 @@
 				9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */,
 				9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */,
 				9F187FE4214B64AC00D855F6 /* XLHelpClass.h */,
-				9F187FE5214B64AC00D855F6 /* XLHelpClass.m */,
+				9F187FE5214B64AC00D855F6 /* XLHelpClass.mm */,
 				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
 				9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */,
+				9F07A24321F6FA7600DAE084 /* MovieWriter.h */,
+				9F07A24421F6FA7600DAE084 /* MovieWriter.m */,
+				9F07A24921F6FD2B00DAE084 /* MovieOutput.h */,
+				9F07A24A21F6FD2B00DAE084 /* MovieOutput.m */,
+				9F07A24621F6FA8600DAE084 /* FilterController.h */,
+				9F07A24721F6FA8600DAE084 /* FilterController.mm */,
 				9FB2F4032148E65E00806A1E /* IMG_1592.JPG */,
 				9FC94116216F2F2700BED96C /* IMG_2333.JPG */,
 				9F817381214759C000030F46 /* GLESUtils.h */,
@@ -208,9 +223,12 @@
 				9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */,
 				9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */,
 				9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */,
-				9F187FE6214B64AC00D855F6 /* XLHelpClass.m in Sources */,
+				9F187FE6214B64AC00D855F6 /* XLHelpClass.mm in Sources */,
+				9F07A24521F6FA7700DAE084 /* MovieWriter.m in Sources */,
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
+				9F07A24B21F6FD2B00DAE084 /* MovieOutput.m in Sources */,
 				9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */,
+				9F07A24821F6FA8600DAE084 /* FilterController.mm in Sources */,
 				9F817385214759C100030F46 /* GLESUtils.m in Sources */,
 				9F8D48EB213EC7F40026B7EF /* main.m in Sources */,
 				9F817386214759C100030F46 /* OpenGLView.mm in Sources */,

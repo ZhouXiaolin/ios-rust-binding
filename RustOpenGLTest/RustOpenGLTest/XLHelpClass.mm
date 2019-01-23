@@ -13,7 +13,33 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 @implementation XLHelpClass
-
++ (GLuint) setupTexture: (UIImage*)image
+{
+    CGImage* newImageSource = [image CGImage];
+    int width = (int)CGImageGetWidth(newImageSource);
+    int height = (int)CGImageGetHeight(newImageSource);
+    
+    GLubyte *imageData = (GLubyte*)calloc(1, width*height*4);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
+    
+    
+    GLuint imageTexture = 0;
+    glGenTextures(1, &imageTexture);
+    glBindTexture(GL_TEXTURE_2D, imageTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    free(imageData);
+    newImageSource = nil;
+    
+    return imageTexture;
+}
 + (UIImage*) readImageFromFBO: (int) width height:(int) height
 {
     CGSize size = CGSizeMake(width, height);
@@ -21,7 +47,7 @@
     GLubyte *rawImagePixels;
     CGDataProviderRef dataProvider = NULL;
     rawImagePixels = (GLubyte *)malloc(totalBytesForImage);
-    glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, rawImagePixels);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rawImagePixels);
     dataProvider = CGDataProviderCreateWithData(NULL, rawImagePixels, totalBytesForImage, dataProviderReleaseCallback);
     
     CGColorSpaceRef defaultRGBColorSpace = CGColorSpaceCreateDeviceRGB();
@@ -108,7 +134,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         glGetShaderiv ( shader, GL_INFO_LOG_LENGTH, &infoLen );
         
         if (infoLen > 1) {
-            char * infoLog = malloc(sizeof(char) * infoLen);
+            char * infoLog = (char*)malloc(sizeof(char) * infoLen);
             glGetShaderInfoLog (shader, infoLen, NULL, infoLog);
             NSLog(@"Error compiling shader:\n%s\n", infoLog );
             
@@ -155,7 +181,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
         glGetProgramiv(programHandle, GL_INFO_LOG_LENGTH, &infoLen);
         
         if (infoLen > 1){
-            char * infoLog = malloc(sizeof(char) * infoLen);
+            char * infoLog = (char*)malloc(sizeof(char) * infoLen);
             glGetProgramInfoLog(programHandle, infoLen, NULL, infoLog);
             
             NSLog(@"Error linking program:\n%s\n", infoLog);
@@ -200,7 +226,7 @@ void dataProviderReleaseCallback (void *info, const void *data, size_t size)
     
     
     size_t bytesPerRow = CVPixelBufferGetBytesPerRow( pixelBuffer );
-    uint8_t *baseAddress = CVPixelBufferGetBaseAddress( pixelBuffer );
+    uint8_t *baseAddress = (uint8_t*)CVPixelBufferGetBaseAddress( pixelBuffer );
     
     for ( int row = 0; row < bufferHeight; row += 4 )
     {

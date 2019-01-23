@@ -26,5 +26,6 @@
 - (id)initWithFrame:(CGRect)frame context:(EAGLContext*) context;
 
 - (void)render:(GLuint (^)())Block;
+- (void)renderTextureId:(GLuint) textureId;
 
 @end

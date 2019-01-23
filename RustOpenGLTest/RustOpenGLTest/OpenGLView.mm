@@ -140,6 +140,70 @@ NSString* const kFragmentString = SHADER_STRING
     glBindFramebuffer(GL_FRAMEBUFFER, _frameBuffer);
     glViewport(0, 0, backingWidth, backingHeight);
 }
+
+
+
+- (void)renderTextureId:(GLuint) textureId
+{
+    
+    if ([EAGLContext currentContext] != _context ) {
+        [EAGLContext setCurrentContext:_context];
+    }
+    
+    
+    if (_frameBuffer == 0) {
+        [self createDisplayFramebuffer];
+    }
+    
+    
+    
+    [self activateDisplayFramebuffer];
+    
+    
+    
+    
+    
+    
+    glUseProgram(_programHandle);
+    
+    
+    
+    glClearColor(1.0, 0.0, 0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    // Setup viewport
+    //
+    
+    GLfloat vertices[] = {
+        -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
+    GLfloat textureCoordinates[] = {
+        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
+    };
+    
+    // Load the vertex data
+    //
+    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
+    glEnableVertexAttribArray(_positionSlot);
+    
+    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glEnableVertexAttribArray(_inputTextureCoordinateSlot);
+    
+    
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,textureId);
+    glUniform1i(0,_inputImageTexture);
+    // Draw triangle
+    //
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
+    [_context presentRenderbuffer:GL_RENDERBUFFER];
+    
+    
+    
+}
+
 - (void)render:(GLuint (^)())Block;
 {
 

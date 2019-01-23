@@ -15,7 +15,10 @@ pub struct XheyPictureOutput<'a>{
     rotation: Rotation,
     backingSize:GLSize,
     textureId: Cell<GLuint>,
-    context: &'a GlContext
+    context: &'a GlContext,
+    hook: Option<extern "C" fn(context: *mut c_void)>,
+    ctxt: Option<*mut c_void>
+
 
 }
 
@@ -30,10 +33,17 @@ impl<'a> XheyPictureOutput<'a> {
             rotation: Rotation::from(orient),
             backingSize: GLSize::new(width,height),
             textureId:Cell::default(),
-            context
+            context,
+            hook:None,
+            ctxt: None
         }
     }
 
+
+    pub fn updateHookFunction(&mut self, hook: extern "C" fn(context: *mut c_void), ctxt: *mut c_void){
+        self.hook = Some(hook);
+        self.ctxt = Some(ctxt);
+    }
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
@@ -98,7 +108,7 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
         let pso = RenderPipelineState{
             framebuffer: renderFramebuffer,
-            color: Color::white()
+            color: Color::black()
         };
 
         let _ = pso.run(||{
@@ -116,7 +126,13 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
             renderQuadWithShader(program,&self.uniformSettings,&vec![inputTexture],vertex);
 
+            if let Some(hook) = self.hook {
+                hook(self.ctxt.unwrap());
+            }
+
         });
+
+
 
 
 //        renderFramebuffer.bindFramebufferForRendering();

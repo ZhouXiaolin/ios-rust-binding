@@ -78,6 +78,107 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, camera: c_long, b
     let output = box_graph.add_function("output",&[lut_filter], box_output);
 }
 
+#[repr(C)]
+pub enum InputKind{
+    Picture,
+    Camera
+}
+
+#[repr(C)]
+pub enum OutputKind{
+    AlphaBlend,
+    Basic,
+    Blend,
+    Combine,
+    Lookup,
+    UnsharpMask,
+    PictureOutput
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph_add_function(graph: c_long, filter: c_long, arg:&[u32],kind: OutputKind) -> c_long{
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+
+    let result = match kind {
+        OutputKind::AlphaBlend => {
+            let alpha_blend = filter as *mut XHeyAlphaBlendFilter;
+            let alpha_blend = alpha_blend.as_mut().unwrap();
+
+            box_graph.add_function("alpha blend",arg,alpha_blend)
+        },
+
+        OutputKind::Basic => {
+            let basic = filter as *mut XHeyBasicFilter;
+            let basic = basic.as_mut().unwrap();
+
+            box_graph.add_function("basic",arg,basic)
+        },
+
+        OutputKind::Blend => {
+            let blend = filter as *mut XHeyBlendFilter;
+            let blend = blend.as_mut().unwrap();
+
+            box_graph.add_function("blend", arg, blend)
+        },
+
+        OutputKind::Combine => {
+            let combine = filter as *mut XHeyCombineFilter;
+            let combine = combine.as_mut().unwrap();
+
+            box_graph.add_function("combine", arg, combine)
+        },
+
+        OutputKind::Lookup => {
+            let lookup = filter as *mut XHeyLookupFilter;
+            let lookup = lookup.as_mut().unwrap();
+
+            box_graph.add_function("lookup", arg, lookup)
+        },
+        OutputKind::UnsharpMask => {
+            let unsharp_mask = filter as *mut XHeyUnsharpMaskFilter;
+            let unsharp_mask = unsharp_mask.as_mut().unwrap();
+
+            box_graph.add_function("unsharp mask",arg,unsharp_mask)
+        },
+        OutputKind::PictureOutput => {
+            let picture_output = filter as *mut XheyPictureOutput;
+            let picture_output = picture_output.as_mut().unwrap();
+
+            box_graph.add_function("picture output", arg, picture_output)
+        }
+    };
+
+    result as c_long
+
+}
+#[no_mangle]
+pub unsafe extern "C" fn xhey_graph_add_input(graph: c_long,filter:c_long,kind:InputKind) -> c_long {
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+
+
+    let result = match kind {
+        InputKind::Picture => {
+            let picture = filter as *mut XheyPicture;
+            let picture = picture.as_mut().unwrap();
+            box_graph.add_input("picture",picture)
+        },
+        InputKind::Camera => {
+            let camera = filter as *mut XheyCamera;
+            let camera = camera.as_mut().unwrap();
+            box_graph.add_input("camera",camera)
+
+        }
+    };
+
+    result as c_long
+
+}
+
+
+
+
 
 #[no_mangle]
 pub unsafe extern "C" fn xhey_graph_forward<'a>(graph: c_long){

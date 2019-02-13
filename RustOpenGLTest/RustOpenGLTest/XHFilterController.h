@@ -11,6 +11,15 @@
 #import <UIKit/UIKit.h>
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSInteger, XHFilterControllerMode){
+    XHFilterControllerModePhotoFront   = 0,
+    XHFilterControllerModePhotoBack    = 1,
+    XHFilterControllerModeVideoFront   = 2,
+    XHFilterControllerModeVideoBack    = 3,
+    XHFilterControllerModePhotoProcess = 4,
+    XHFilterControllerModeVideoProcess = 5
+};
+
 @interface WaterViewInfo : NSObject
 @property (nonatomic, assign) CGFloat x;
 @property (nonatomic, assign) CGFloat y;
@@ -22,13 +31,16 @@ NS_ASSUME_NONNULL_BEGIN
 @class CameraEntry;
 @class OpenGLView;
 @class MovieWriter;
-@interface FilterController : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
+
+@interface XHFilterController : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
 
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
                    renderView:(OpenGLView*)glView
                        writer:(MovieWriter*)movieWriter
                       context:(EAGLContext*)context;
 
+
+- (void) changeFilter:(XHFilterControllerMode) mode;
 - (void) changeLookup:(NSString*) path;
 
 - (void) startCapture;
@@ -43,6 +55,7 @@ NS_ASSUME_NONNULL_BEGIN
             previewImgCallBack: (void (^)(UIImage* img, NSError* error))previewImgCallBack
            originalImgCallBack: (void (^)(UIImage* img, NSError* error))originalImgCallBack
           processedImgCallBack: (void (^)(UIImage* img, NSError* error))processedImgCallBack;
+
 
 @end
 

@@ -154,13 +154,14 @@ pub fn renderQuadWithShader(program: &GLProgram, uniformSettings:&ShaderUniformS
 
                 encoder.setVertexBuffer(&inputTexture.textureStorage,textureCoordinate);
 
-            }else if index == 0{
+            }else if index == 0 {
+
                 panic!("The required attribute named inputTextureCoordinate was missing from the shader program during rendering.");
+
             }
 
-
-
             let uniform = program.get_uniform(&inputImageTextureString);
+
             encoder.setTexture(inputTexture,uniform,index);
         }
 

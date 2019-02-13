@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MovieWriter : NSObject
+- (instancetype)initWithFrameSize:(CGSize) frameSize movieURL:(NSURL*)movieURL;
 - (void) start;
 - (void) stop;
 - (void) readAndPut:(int)height width:(int)width frameTime:(CMTime)frameTime;

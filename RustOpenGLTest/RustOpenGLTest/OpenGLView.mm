@@ -155,18 +155,9 @@ NSString* const kFragmentString = SHADER_STRING
         [self createDisplayFramebuffer];
     }
     
-    
-    
     [self activateDisplayFramebuffer];
     
-    
-    
-    
-    
-    
     glUseProgram(_programHandle);
-    
-    
     
     glClearColor(1.0, 0.0, 0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -204,96 +195,8 @@ NSString* const kFragmentString = SHADER_STRING
     
 }
 
-- (void)render:(GLuint (^)())Block;
-{
-
-    [EAGLContext setCurrentContext:_context];
-    
-    if (_frameBuffer == 0) {
-        [self createDisplayFramebuffer];
-    }
-    
-    
-    GLuint textureId = Block();
-
-    
-    [self activateDisplayFramebuffer];
-    
-    
-    
-    
-    
-
-    glUseProgram(_programHandle);
-
-   
-
-    glClearColor(1.0, 0.0, 0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    // Setup viewport
-    //
-
-    GLfloat vertices[] = {
-       -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
-    GLfloat textureCoordinates[] = {
-        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
-    };
-
-    // Load the vertex data
-    //
-    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
-    glEnableVertexAttribArray(_positionSlot);
-
-    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
-    glEnableVertexAttribArray(_inputTextureCoordinateSlot);
-    
-    
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,textureId);
-    glUniform1i(0,_inputImageTexture);
-    // Draw triangle
-    //
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    
-    glBindRenderbuffer(GL_RENDERBUFFER, _colorRenderBuffer);
-    [_context presentRenderbuffer:GL_RENDERBUFFER];
-    
-    
-    
-}
 
 
-//- (void) setupTexture{
-//    NSString* path = [[NSBundle mainBundle] pathForResource:@"IMG_1592" ofType:@"JPG"];
-//
-//    UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
-//    CGImage* newImageSource = [image CGImage];
-//    int width = (int)CGImageGetWidth(newImageSource);
-//    int height = (int)CGImageGetHeight(newImageSource);
-//
-//    GLubyte *imageData = (GLubyte*)calloc(1, width*height*4);
-//    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
-//    CGContextRef imageContext = CGBitmapContextCreate(imageData, width, height, 8, width*4, genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
-//    CGContextDrawImage(imageContext, CGRectMake(0, 0, width, height), newImageSource);
-//
-//
-//
-//    glGenTextures(1, &imageTexture);
-//    glBindTexture(GL_TEXTURE_2D, imageTexture);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
-//    CGContextRelease(imageContext);
-//    CGColorSpaceRelease(genericRGBColorspace);
-//    free(imageData);
-//    newImageSource = nil;
-//    image = nil;
-//    path = nil;
-//}
 - (void) setupProgram {
     // Create program, attach shaders, compile and link program
     //
@@ -310,16 +213,6 @@ NSString* const kFragmentString = SHADER_STRING
     _inputImageTexture = glGetUniformLocation(_programHandle, "inputImageTexture");
 }
 
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
-}
-*/
 
 - (void)dealloc{
 //    [self destoryBuffers];

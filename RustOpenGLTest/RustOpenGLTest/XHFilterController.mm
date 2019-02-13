@@ -6,7 +6,7 @@
 //  Copyright © 2019 Solaren. All rights reserved.
 //
 
-#import "FilterController.h"
+#import "XHFilterController.h"
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import "gpuimage.h"
@@ -15,13 +15,13 @@
 #import "OpenGLView.h"
 #import "MovieWriter.h"
 struct Context{
-    FilterController* self;
+    XHFilterController* self;
 };
 
 @implementation WaterViewInfo
 @end
 
-@interface FilterController()
+@interface XHFilterController()
 {
     EAGLContext* currentContext;
     
@@ -34,6 +34,9 @@ struct Context{
     long output;
     long context;
     
+    long context_watermark_ptr;
+    long watermark_graph;
+    long watermark_picture_ptr;
     
     GLuint y_textureId;
     GLuint uv_textureId;
@@ -48,6 +51,8 @@ struct Context{
 
     NSString* lut_path;
     BOOL lutUpdate;
+    
+    
 
 
 }
@@ -55,7 +60,7 @@ struct Context{
 @property (nonatomic, strong) OpenGLView* glView;
 @property (nonatomic, strong) MovieWriter* movieWriter;
 @end
-@implementation FilterController
+@implementation XHFilterController
 #define aw_stride(wid) ((wid % 16 != 0) ? ((wid) + 16 - (wid) % 16): (wid))
 void print1(void* context){
     NSLog(@"TTTTTTTTTTTTT --------");
@@ -150,7 +155,6 @@ void print_test1(void* context){
     if (isFirst == FALSE) {
         isFirst = TRUE;
         
-        
         [EAGLContext setCurrentContext:currentContext];
         
         glGenTextures(1, &y_textureId);
@@ -191,7 +195,6 @@ void print_test1(void* context){
         lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
         pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
         
-        
         output = xhey_init_picture_output(context, width, height, 3);
         xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
         xhey_picture_graph(g, cam, basic, pic, lut, 0, 0, output);
@@ -222,7 +225,6 @@ void print_test1(void* context){
     textureId = xhey_picture_output_get_texture_id(output);
     
     
-    
     [_glView renderTextureId:textureId];
 //
     if (_movieWriter) {
@@ -233,9 +235,6 @@ void print_test1(void* context){
     
     [EAGLContext setCurrentContext:nil];
     
-    
-    
-    
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     
 }
@@ -244,7 +243,28 @@ void print_test1(void* context){
     
     [_cameraEntry takePhotoWithCompletionHandle:^(CVPixelBufferRef imagePixelBuffer) {
         
+        CVPixelBufferLockBaseAddress(imagePixelBuffer, 0);
         
+        int bufferWidth = (int)CVPixelBufferGetWidth(imagePixelBuffer);
+        int bufferHeight = (int)CVPixelBufferGetHeight(imagePixelBuffer);
+        
+        OSType pixelFormat = CVPixelBufferGetPixelFormatType(imagePixelBuffer);
+        
+        
+        if (pixelFormat == kCVPixelFormatType_32BGRA) {
+            
+            NSLog(@"ddddd");
+            
+            
+        }
+        
+        if (pixelFormat == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange || pixelFormat == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange) {
+            
+            NSLog(@"wwwww");
+        }
+        
+        
+        CVPixelBufferUnlockBaseAddress(imagePixelBuffer, 0);
         
     }];
     

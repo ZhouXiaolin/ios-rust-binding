@@ -25,7 +25,8 @@
 @implementation MovieWriter
 
 
-- (instancetype)init{
+- (instancetype)initWithFrameSize:(CGSize) frameSize movieURL:(NSURL*)movieURL
+{
     
     if (!(self=[super init])) {
         return nil;
@@ -33,13 +34,10 @@
     
     startTime = kCMTimeInvalid;
 
-    pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
-    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
-    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
+
     
     AVFileType fileType = AVFileTypeQuickTimeMovie;
     
-    CGSize frameSize = CGSizeMake(720, 1280);
     
     
     NSError *error = nil;

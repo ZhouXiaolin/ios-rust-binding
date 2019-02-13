@@ -20,6 +20,25 @@ long xhey_init_graph();
 void release_graph(long graph);
 
 
+enum InputKind{
+    Picture,
+    Camera
+};
+
+enum OutputKind{
+    AlphaBlend,
+    Basic,
+    Blend,
+    Combine,
+    Lookup,
+    UnsharpMask,
+    PictureOutput
+};
+
+long xhey_graph_add_input(long graph, long filter,InputKind kind);
+long xhey_graph_add_function(long graph, long filter, long* arg,OutputKind kind);
+
+
 void xhey_picture_graph(long graph, long picture, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
 
 void xhey_graph_forward(long graph);

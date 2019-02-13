@@ -199,9 +199,7 @@ impl<'a> Renderable for XHeyBasicFilter<'a> {
         };
 
 
-        if let Some(hook) = self.hook {
-            hook(self.ctxt.unwrap());
-        }
+
 
 
         pso.run(||{
@@ -212,6 +210,10 @@ impl<'a> Renderable for XHeyBasicFilter<'a> {
 
             renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
+
+            if let Some(hook) = self.hook {
+                hook(self.ctxt.unwrap());
+            }
 
         })
 

@@ -156,7 +156,6 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
         // 激活FBO
         renderFramebuffer.bindFramebufferForRendering();
 
-
         // 开启blend
         enableBlending(GL_ONE,GL_ONE_MINUS_SRC_ALPHA);
 
@@ -173,7 +172,6 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
         renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
 
         // 然后遍历渲染watermark
-
 
         for watermark in self.watermarks.iter() {
 

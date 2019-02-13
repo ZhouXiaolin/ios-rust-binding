@@ -18,7 +18,7 @@
 #import "GLESUtils.h"
 #import "CameraEntry.h"
 #import "MovieWriter.h"
-#import "FilterController.h"
+#import "XHFilterController.h"
 
 @interface ViewController ()
 {
@@ -26,14 +26,12 @@
     OpenGLView* glView;
     EAGLContext* currentContext;
     
-    FilterController* filterController;
+    XHFilterController* filterController;
     
     CameraEntry* cameraEntry;
     
     BOOL isFirst;
     
-    NSString* lut_path;
-    BOOL update;
     
     XLFilterChooserView* filterChooserView;
     
@@ -50,8 +48,14 @@
     [super viewDidLoad];
     
     
-    movieWriter = [[MovieWriter alloc] init];
+    CGSize frameSize = CGSizeMake(720, 1280);
+    NSString* pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
     
+    
+    movieWriter = [[MovieWriter alloc] initWithFrameSize:frameSize movieURL:movieURL];
+
 
     self.view.backgroundColor = [UIColor blueColor];
     
@@ -68,7 +72,7 @@
     glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
     
-    filterController = [[FilterController alloc]
+    filterController = [[XHFilterController alloc]
                         initWithInput:cameraEntry
                         renderView:glView
                         writer:movieWriter
@@ -85,8 +89,6 @@
         NSString* name = files[idx];
         NSString* path = [bundlePath stringByAppendingFormat:@"/%@",name];
         
-        NSLog(@"solaren %@",path);
-        self->update = YES;
         
         if (idx > 0) {
             [filterController changeLookup:path];
@@ -119,6 +121,20 @@
 }
 - (void) click
 {
+    
+//    [filterController capturePhotoWithWater:nil
+//                         previewImgCallBack:^(UIImage * _Nonnull img, NSError * _Nonnull error)
+//    {
+//
+//    }
+//                        originalImgCallBack:^(UIImage * _Nonnull img, NSError * _Nonnull error)
+//    {
+//
+//    }
+//                       processedImgCallBack:^(UIImage * _Nonnull img, NSError * _Nonnull error)
+//    {
+//
+//    }];
     
     if (isRecording == NO) {
         isRecording = YES;

@@ -40,6 +40,8 @@
     
     return imageTexture;
 }
+
+
 + (UIImage*) readImageFromFBO: (int) width height:(int) height
 {
     CGSize size = CGSizeMake(width, height);

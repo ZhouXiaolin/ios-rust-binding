@@ -23,7 +23,9 @@ pub struct XHeyBlendFilter<'a>{
     overriddenOutputSize: Option<Size>,
     overriddenOutputRotation: Option<Rotation>,
     watermarks: Vec<WaterMark>,
-    context: &'a GlContext
+    context: &'a GlContext,
+    resultId: Cell<u32>,
+
 }
 
 impl<'a> XHeyBlendFilter<'a> {
@@ -69,7 +71,8 @@ impl<'a> XHeyBlendFilter<'a> {
             overriddenOutputSize: None,
             overriddenOutputRotation: None,
             watermarks: Vec::default(),
-            context
+            context,
+            resultId: Cell::from(0)
         }
     }
 
@@ -95,6 +98,10 @@ impl<'a> XHeyBlendFilter<'a> {
         let watermark = WaterMark{textureId:texId,rect:Rect::new(xoffset,yoffset,width,height)};
         self.watermarks.push(watermark);
 
+    }
+
+    pub fn textureId(&self) -> GLuint {
+        self.resultId.get()
     }
 }
 
@@ -165,6 +172,7 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
         // 首先渲染传入的framebuffer
 
         let textureProperties = vec![inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait)];
+        self.resultId.set(renderFramebuffer.texture);
 
         let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
         let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);

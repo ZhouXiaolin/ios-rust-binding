@@ -39,6 +39,7 @@ long xhey_graph_add_input(long graph, long filter,InputKind kind);
 long xhey_graph_add_function(long graph, long filter, long* arg,OutputKind kind);
 
 
+void xhey_camera_graph(long graph, long camera, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
 void xhey_picture_graph(long graph, long picture, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
 
 void xhey_graph_forward(long graph);
@@ -79,7 +80,7 @@ long xhey_init_camera(long context, int width, int height, int orient);
 void camera_update_luminance(long filter, int luminance);
 void camera_update_chrominance(long filter, int chrominance);
 void camera_update_matrix(long filter, float* mat);
-
+void camera_update_size(long filter, int width, int height);
 #if __cplusplus
 }
 #endif

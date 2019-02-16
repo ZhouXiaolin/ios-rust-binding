@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, CameraEntryMode){
 - (void) setStabilitizationMode:(AVCaptureVideoStabilizationMode) mode;
 - (void) focusAtPoint:(CGPoint) point isSmooth:(BOOL) isSmooth focusMode:(AVCaptureFocusMode) mode;
 - (void) exposureAtPoint:(CGPoint) point exposureMode:(AVCaptureExposureMode) mode;
+
 - (void) setExposure:(float) bias;
 - (void) zoomBegin:(CGFloat) scale;
 - (void) zoomEnd:(CGFloat) scale;

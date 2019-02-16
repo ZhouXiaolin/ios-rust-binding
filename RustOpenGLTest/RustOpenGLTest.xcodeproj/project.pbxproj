@@ -22,6 +22,7 @@
 		9F8D48EB213EC7F40026B7EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48EA213EC7F40026B7EF /* main.m */; };
 		9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */; };
 		9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FB2F4032148E65E00806A1E /* IMG_1592.JPG */; };
+		9FB5EF2B2216A21E003B062E /* GPUImageContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FB5EF2A2216A21D003B062E /* GPUImageContext.m */; };
 		9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC94114216E14AA00BED96C /* GLKit.framework */; };
 		9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FC94116216F2F2700BED96C /* IMG_2333.JPG */; };
 		9FD66C5921A025E7005638E2 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD66C5721A025E7005638E2 /* libgpuimage.a */; };
@@ -56,6 +57,8 @@
 		9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9F8D4BD0213FBA7F0026B7EF /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9FB2F4032148E65E00806A1E /* IMG_1592.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_1592.JPG; sourceTree = "<group>"; };
+		9FB5EF292216A21D003B062E /* GPUImageContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GPUImageContext.h; sourceTree = "<group>"; };
+		9FB5EF2A2216A21D003B062E /* GPUImageContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GPUImageContext.m; sourceTree = "<group>"; };
 		9FC94114216E14AA00BED96C /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		9FC94116216F2F2700BED96C /* IMG_2333.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_2333.JPG; sourceTree = "<group>"; };
 		9FD66C5721A025E7005638E2 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgpuimage.a; sourceTree = "<group>"; };
@@ -117,6 +120,8 @@
 				9F07A24A21F6FD2B00DAE084 /* MovieOutput.m */,
 				9F07A24621F6FA8600DAE084 /* XHFilterController.h */,
 				9F07A24721F6FA8600DAE084 /* XHFilterController.mm */,
+				9FB5EF292216A21D003B062E /* GPUImageContext.h */,
+				9FB5EF2A2216A21D003B062E /* GPUImageContext.m */,
 				9FB2F4032148E65E00806A1E /* IMG_1592.JPG */,
 				9FC94116216F2F2700BED96C /* IMG_2333.JPG */,
 				9F817381214759C000030F46 /* GLESUtils.h */,
@@ -226,6 +231,7 @@
 				9F187FE6214B64AC00D855F6 /* XLHelpClass.mm in Sources */,
 				9F07A24521F6FA7700DAE084 /* MovieWriter.m in Sources */,
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
+				9FB5EF2B2216A21E003B062E /* GPUImageContext.m in Sources */,
 				9F07A24B21F6FD2B00DAE084 /* MovieOutput.m in Sources */,
 				9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */,
 				9F07A24821F6FA8600DAE084 /* XHFilterController.mm in Sources */,

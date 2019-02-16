@@ -44,10 +44,40 @@ pub unsafe extern "C" fn release_context(context: c_long){
 
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, picture: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
 
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+
+    let box_picture = picture as *mut XheyPicture;
+    let box_picture = box_picture.as_mut().unwrap();
+
+    let box_basic = basic as *mut XHeyBasicFilter;
+    let box_basic = box_basic.as_mut().unwrap();
+
+    let box_lut = lut as *mut XheyPicture;
+    let box_lut = box_lut.as_mut().unwrap();
+//
+    let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
+    let box_lut_filter = box_lut_filter.as_mut().unwrap();
+//
+//    let box_water_mask = water_mask as *mut XHeyBlendFilter;
+//    let box_water_mask = box_water_mask.as_mut().unwrap();
+
+    let box_output = output as *mut XheyPictureOutput;
+    let box_output = box_output.as_mut().unwrap();
+
+    let pic = box_graph.add_input("picture", box_picture);
+    let basic = box_graph.add_function("basic",&[pic],box_basic);
+    let lut = box_graph.add_input("lut", box_lut);
+    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
+//    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
+    let output = box_graph.add_function("output",&[lut_filter], box_output);
+}
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, camera: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
+pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
 
     let box_graph = graph as *mut RenderGraph;
     let box_graph = box_graph.as_mut().unwrap();
@@ -232,6 +262,13 @@ pub unsafe extern "C" fn camera_update_matrix(camera: c_long, matrix: *mut [f32;
     let filter = filter.as_mut().unwrap();
     let mat = Matrix3x3::new(matrix.as_ref().unwrap().clone());
     filter.updateMatrix(mat)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn camera_update_size(camera: c_long, width: i32, height: i32){
+    let filter = camera as *mut XheyCamera;
+    let filter = filter.as_mut().unwrap();
+    filter.updateSize(width,height);
 }
 
 

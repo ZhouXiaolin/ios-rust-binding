@@ -14,6 +14,7 @@
 #import "CameraEntry.h"
 #import "OpenGLView.h"
 #import "MovieWriter.h"
+#import "GPUImageContext.h"
 struct Context{
     XHFilterController* self;
 };
@@ -26,12 +27,19 @@ struct Context{
     EAGLContext* currentContext;
     
     long g;
+    
+    
+    
+    long render_pic;
+    long cam;
+    
     long lut;
     long pic;
-    long cam;
+    
     long surface;
     long basic;
     long output;
+    
     long context;
     
     long context_watermark_ptr;
@@ -53,12 +61,13 @@ struct Context{
     BOOL lutUpdate;
     
     
-
+    BOOL isPhoto;
 
 }
 @property (nonatomic, strong) CameraEntry* cameraEntry;
 @property (nonatomic, strong) OpenGLView* glView;
 @property (nonatomic, strong) MovieWriter* movieWriter;
+@property (nonatomic, strong) UIImage* renderPicture;
 @end
 @implementation XHFilterController
 #define aw_stride(wid) ((wid % 16 != 0) ? ((wid) + 16 - (wid) % 16): (wid))
@@ -71,6 +80,57 @@ void print_test1(void* context){
     
 }
 
+- (instancetype) initWithPicture:(UIImage*) image
+       renderView:(OpenGLView*)glView
+{
+    self =[super init];
+    if (!self) {
+        return nil;
+    }
+    
+    isPhoto = true;
+    
+    
+    self.glView = glView;
+    self.renderPicture = image;
+    
+    
+    g = xhey_init_graph();
+    context = init_context();
+    
+    
+    int render_pic_texture_id = [XLHelpClass createTexture:self.renderPicture];
+    
+    render_pic = xhey_init_picture_textureId(render_pic_texture_id, 500, 500, 0);
+    
+    basic = xhey_init_basic_filter(context);
+    
+    output = xhey_init_picture_output(context, 500, 500, 0);
+    
+    lut = xhey_init_lookup_filter(context);
+    lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
+    pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
+    
+    xhey_picture_graph(g, render_pic, basic, pic, lut, 0, 0, output);
+    
+    return self;
+}
+
+
+- (void) renderPictureWithLut:(NSString*)lut
+{
+    [GPUImageContext useImageProcessingContext];
+    [self texImageTexture:lut];
+    
+    xhey_graph_forward(g);
+    
+    textureId = xhey_picture_output_get_texture_id(output);
+    
+    [_glView renderTextureId:textureId];
+}
+
+
+
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
                    renderView:(OpenGLView*)glView
                        writer:(MovieWriter*)movieWriter
@@ -81,7 +141,9 @@ void print_test1(void* context){
         return nil;
     }
     
-    currentContext = context;
+    isPhoto = false;
+    
+    currentContext = [[GPUImageContext sharedImageProcessingContext] context];
     ctxt = (Context*)malloc(sizeof(Context));
     ctxt->self = self;
     
@@ -106,6 +168,10 @@ void print_test1(void* context){
 {
     lutUpdate = YES;
     lut_path = path;
+    
+    if (isPhoto) {
+        [self renderPictureWithLut:path];
+    }
 }
 
 - (void) startRecordWithWaterInfo:( WaterViewInfo *  ) waterInfo destinationURL:(NSURL *)url
@@ -118,7 +184,13 @@ void print_test1(void* context){
     [_movieWriter stop];
 }
 
+
 - (void) texImageTexture:(NSString*)path{
+    
+    if (!path) {
+        return;
+    }
+    
     UIImage* image = [[UIImage alloc] initWithContentsOfFile:path];
     CGImage* newImageSource = [image CGImage];
     int width = (int)CGImageGetWidth(newImageSource);
@@ -137,6 +209,16 @@ void print_test1(void* context){
     free(imageData);
     newImageSource = nil;
 }
+                                 
+                                 
+- (void)switchCamera {
+    if (_cameraEntry.location == AVCaptureDevicePositionFront) {
+        _cameraEntry.location = AVCaptureDevicePositionBack;
+    }else{
+        _cameraEntry.location = AVCaptureDevicePositionFront;
+    }
+}
+
 - (void)captureOutput:(AVCaptureOutput *)_output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
     
     CMTime frameTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
@@ -213,6 +295,8 @@ void print_test1(void* context){
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
+        camera_update_size(cam, _width, height);
+        
         if (lutUpdate) {
             lutUpdate = NO;
             [self texImageTexture:lut_path];
@@ -225,7 +309,35 @@ void print_test1(void* context){
     textureId = xhey_picture_output_get_texture_id(output);
     
     
+    
+    
     [_glView renderTextureId:textureId];
+    
+    
+    {
+        int _width = width;
+        int _height = height;
+        CVPixelBufferRef pxbuffer = NULL;
+        
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
+                                 nil];
+        
+        CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, _width,
+                                              _height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef) options,
+                                              &pxbuffer);
+        
+        CVPixelBufferLockBaseAddress(pxbuffer, 0);
+        void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+        
+        glReadPixels(0, 0, _width, _height, GL_BGRA, GL_UNSIGNED_BYTE, pxdata);
+        
+        
+        CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
+        CVPixelBufferRelease(pxbuffer);
+    }
+    
 //
     if (_movieWriter) {
         int _width = height;
@@ -252,21 +364,17 @@ void print_test1(void* context){
         
         
         if (pixelFormat == kCVPixelFormatType_32BGRA) {
-            
             NSLog(@"ddddd");
-            
-            
         }
         
         if (pixelFormat == kCVPixelFormatType_420YpCbCr8BiPlanarFullRange || pixelFormat == kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange) {
-            
             NSLog(@"wwwww");
         }
-        
         
         CVPixelBufferUnlockBaseAddress(imagePixelBuffer, 0);
         
     }];
     
 }
+
 @end

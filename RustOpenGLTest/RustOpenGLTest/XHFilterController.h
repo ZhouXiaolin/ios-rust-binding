@@ -36,13 +36,18 @@ typedef NS_ENUM(NSInteger, XHFilterControllerMode){
 
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
                    renderView:(OpenGLView*)glView
-                       writer:(MovieWriter*)movieWriter
-                      context:(EAGLContext*)context;
+                       writer:(MovieWriter*)movieWriter;
+
+
+- (instancetype)initWithPicture:(UIImage*) image
+                     renderView:(OpenGLView*)glView;
+
+- (void) renderPictureWithLut:(NSString*)lut;
 
 
 - (void) changeFilter:(XHFilterControllerMode) mode;
 - (void) changeLookup:(NSString*) path;
-
+- (void) switchCamera;
 - (void) startCapture;
 
 - (void) stopCapture;

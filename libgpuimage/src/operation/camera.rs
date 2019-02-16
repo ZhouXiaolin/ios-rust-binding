@@ -13,7 +13,7 @@ pub struct XheyCamera<'a>{
     shader: GLProgram,
     luminance: GLuint,
     chrominance: GLuint,
-    size: GLSize,
+    size: Cell<GLSize>,
     uniformSettings: ShaderUniformSettings,
     orientation: ImageOrientation,
     resultId: Cell<u32>,
@@ -60,8 +60,7 @@ varying highp vec2 textureCoordinate2;
         "#;
 
         let shader = GLProgram::new(vertexString, fragmentString);
-        let size = GLSize::new(width, height);
-
+        let size = Cell::from(GLSize::new(width, height));
         XheyCamera {
             head_node: Cell::default(),
             tail: RefCell::default(),
@@ -92,6 +91,9 @@ varying highp vec2 textureCoordinate2;
 
     pub fn updateMatrix(&mut self, matrix: Matrix3x3){
         self.uniformSettings.setValue("colorConversionMatrix", Uniform::Matrix3x3(matrix));
+    }
+    pub fn updateSize(&mut self, width: i32, height: i32){
+        self.size.set(GLSize::new(width,height));
     }
 }
 
@@ -128,7 +130,7 @@ impl<'a> Edge for XheyCamera<'a> {
     fn forward(&self, xs: &Vec<Self::Item>) -> Option<Self::Item>{
 
 
-        let size = self.size;
+        let size = self.size.get();
 
         let storage_1 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
         let storage_2 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());

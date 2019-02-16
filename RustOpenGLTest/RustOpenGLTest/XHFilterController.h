@@ -61,7 +61,7 @@ typedef NS_ENUM(NSInteger, XHFilterControllerMode){
            originalImgCallBack: (void (^)(UIImage* img, NSError* error))originalImgCallBack
           processedImgCallBack: (void (^)(UIImage* img, NSError* error))processedImgCallBack;
 
-
+- (void) clear;
 @end
 
 NS_ASSUME_NONNULL_END

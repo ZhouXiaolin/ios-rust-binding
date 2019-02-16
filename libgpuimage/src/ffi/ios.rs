@@ -243,6 +243,13 @@ pub unsafe extern "C" fn xhey_init_camera(context: c_long, width: i32, height: i
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn release_camera(filter: c_long){
+
+    drop(Box::from_raw(filter as *mut XheyCamera));
+
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn camera_update_luminance(camera:c_long, luminance: i32) {
     let filter = camera as *mut XheyCamera;
     let filter = filter.as_mut().unwrap();

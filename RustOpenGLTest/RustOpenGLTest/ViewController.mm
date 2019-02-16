@@ -20,7 +20,7 @@
 #import "CameraEntry.h"
 #import "MovieWriter.h"
 #import "XHFilterController.h"
-
+#import "SecondViewController.h"
 @interface ViewController ()
 {
     MovieWriter* movieWriter;
@@ -49,13 +49,13 @@
     [super viewDidLoad];
     
     
-//    CGSize frameSize = CGSizeMake(720, 1280);
-//    NSString* pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
-//    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
-//    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
+    CGSize frameSize = CGSizeMake(720, 1280);
+    NSString* pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
     
     
-//    movieWriter = [[MovieWriter alloc] initWithFrameSize:frameSize movieURL:movieURL];
+    movieWriter = [[MovieWriter alloc] initWithFrameSize:frameSize movieURL:movieURL];
 
 
     self.view.backgroundColor = [UIColor blueColor];
@@ -63,30 +63,30 @@
     int WIDTH = self.view.bounds.size.width;
     int HEIGHT = self.view.bounds.size.height;
     
-//    currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    currentContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
     
 
     
-//    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPreset1280x720) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
+    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPreset1280x720) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
     
     
     glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
     
-    filterController = [[XHFilterController alloc]
-                        initWithPicture:[UIImage imageNamed:@"IMG_1592"] renderView:glView];
-    [filterController renderPictureWithLut:nil];
-    
-    [GPUImageContext useImageProcessingContext];
-    UIImage* image = [XLHelpClass readImageFromFBO:1000 height:1000];
-    int i = 0;
-    
 //    filterController = [[XHFilterController alloc]
-//                        initWithInput:cameraEntry
-//                        renderView:glView
-//                        writer:movieWriter
-//                        ];
-//    [filterController startCapture];
+//                        initWithPicture:[UIImage imageNamed:@"IMG_1592"] renderView:glView];
+//    [filterController renderPictureWithLut:nil];
+    
+//    [GPUImageContext useImageProcessingContext];
+//    UIImage* image = [XLHelpClass readImageFromFBO:1000 height:1000];
+//    int i = 0;
+    
+    filterController = [[XHFilterController alloc]
+                        initWithInput:cameraEntry
+                        renderView:glView
+                        writer:movieWriter
+                        ];
+    [filterController startCapture];
 
     NSString* bundlePath = [XLHelpClass pathBundlePath];
     NSArray<NSString*>* files = [[NSFileManager defaultManager] subpathsAtPath:bundlePath];
@@ -131,6 +131,13 @@
 - (void) click
 {
     
+    [filterController stopCapture];
+    
+    [filterController clear];
+    
+    
+    SecondViewController* s = [[SecondViewController alloc] init];
+    [self presentViewController:s animated:FALSE completion:nil];
 //    [filterController capturePhotoWithWater:nil
 //                         previewImgCallBack:^(UIImage * _Nonnull img, NSError * _Nonnull error)
 //    {

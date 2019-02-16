@@ -81,6 +81,7 @@ void camera_update_luminance(long filter, int luminance);
 void camera_update_chrominance(long filter, int chrominance);
 void camera_update_matrix(long filter, float* mat);
 void camera_update_size(long filter, int width, int height);
+void release_camera(long filter);
 #if __cplusplus
 }
 #endif

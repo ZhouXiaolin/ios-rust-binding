@@ -129,12 +129,22 @@ void print_test1(void* context){
     [_glView renderTextureId:textureId];
 }
 
-
+- (void)clear{
+    if (!isPhoto) {
+//        release_output(output);
+//        release_picture(pic);
+//        glDeleteTextures(1, &lookup_textureId);
+//        release_lookup_filter(lut);
+//        release_basic_filter(basic);
+//        release_camera(cam);
+//        release_context(context);
+//        release_graph(g);
+    }
+}
 
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
                    renderView:(OpenGLView*)glView
                        writer:(MovieWriter*)movieWriter
-                      context:(EAGLContext*)context
 {
     self = [super init];
     if (!self) {
@@ -279,7 +289,7 @@ void print_test1(void* context){
         
         output = xhey_init_picture_output(context, width, height, 3);
         xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
-        xhey_picture_graph(g, cam, basic, pic, lut, 0, 0, output);
+        xhey_camera_graph(g, cam, basic, pic, lut, 0, 0, output);
         
         
     }else{

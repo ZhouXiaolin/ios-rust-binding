@@ -10,12 +10,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "RustOpenGLTest/ViewController.mm"
-            timestampString = "572000254.666086"
+            timestampString = "572073792.71666"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "-viewDidLoad"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
+            landmarkName = "-click"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

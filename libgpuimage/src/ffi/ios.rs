@@ -62,8 +62,8 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, picture: c_long, 
     let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
     let box_lut_filter = box_lut_filter.as_mut().unwrap();
 //
-//    let box_water_mask = water_mask as *mut XHeyBlendFilter;
-//    let box_water_mask = box_water_mask.as_mut().unwrap();
+    let box_water_mask = water_mask as *mut XHeyBlendFilter;
+    let box_water_mask = box_water_mask.as_mut().unwrap();
 
     let box_output = output as *mut XheyPictureOutput;
     let box_output = box_output.as_mut().unwrap();
@@ -72,8 +72,31 @@ pub unsafe extern "C" fn xhey_picture_graph<'a>(graph: c_long, picture: c_long, 
     let basic = box_graph.add_function("basic",&[pic],box_basic);
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
-//    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
-    let output = box_graph.add_function("output",&[lut_filter], box_output);
+    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
+    let output = box_graph.add_function("output",&[water_mask], box_output);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_camera_watermark_graph<'a>(graph: c_long, picture: c_long, basic: c_long, watermark: c_long, output: c_long){
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+
+    let box_picture = picture as *mut XheyPicture;
+    let box_picture = box_picture.as_mut().unwrap();
+
+    let box_basic = basic as *mut XHeyBasicFilter;
+    let box_basic = box_basic.as_mut().unwrap();
+
+    let box_watermark = watermark as *mut XHeyBlendFilter;
+    let box_watermark = box_watermark.as_mut().unwrap();
+
+    let box_output = output as *mut XheyPictureOutput;
+    let box_output = box_output.as_mut().unwrap();
+
+    let pic = box_graph.add_input("picture",box_picture);
+    let basic = box_graph.add_function("basic",&[pic],box_basic);
+    let water_mark = box_graph.add_function("water mask",&[basic],box_watermark);
+    let output = box_graph.add_function("output",&[water_mark],box_output);
 }
 
 #[no_mangle]

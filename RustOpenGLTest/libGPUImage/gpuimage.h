@@ -41,7 +41,7 @@ long xhey_graph_add_function(long graph, long filter, long* arg,OutputKind kind)
 
 void xhey_camera_graph(long graph, long camera, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
 void xhey_picture_graph(long graph, long picture, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
-
+void xhey_camera_watermark_graph(long graph, long picture, long  basic, long water_mark, long  water_output);
 void xhey_graph_forward(long graph);
 
 long xhey_init_alpha_blend(long graph);

@@ -188,7 +188,12 @@
     long lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
     long pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
 
-    xhey_picture_graph(g, render_pic, basic, pic, lut, 0, 0, output);
+    UIImage* water = [UIImage imageNamed:@"aaa"];
+    int water_id = [XLHelpClass setupTexture:water];
+    long water_mark = xhey_init_watermark(context);
+    xhey_watermark_update(water_mark, water_id, -1, -1, 0.5, 0.5);
+    
+    xhey_picture_graph(g, render_pic, basic, pic, lut, 0, water_mark, output);
 
     xhey_graph_forward(g);
 

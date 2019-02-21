@@ -99,8 +99,37 @@ pub unsafe extern "C" fn xhey_camera_watermark_graph<'a>(graph: c_long, picture:
     let output = box_graph.add_function("output",&[water_mark],box_output);
 }
 
+
+
+
 #[no_mangle]
-pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long) {
+pub unsafe extern "C" fn xhey_print_graph(graph: c_long){
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+    box_graph.PrintGraphviz();
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_normal_camera_graph(graph: c_long, camera: c_long, basic: c_long, output: c_long){
+    let box_graph = graph as *mut RenderGraph;
+    let box_graph = box_graph.as_mut().unwrap();
+
+    let box_camera = camera as *mut XheyCamera;
+    let box_camera = box_camera.as_mut().unwrap();
+
+    let box_basic = basic as *mut XHeyBasicFilter;
+    let box_basic = box_basic.as_mut().unwrap();
+
+    let box_output = output as *mut XheyPictureOutput;
+    let box_output = box_output.as_mut().unwrap();
+
+    let pic = box_graph.add_input("picture", box_camera);
+    let basic = box_graph.add_function("basic",&[pic],box_basic);
+    let output = box_graph.add_function("output",&[basic], box_output);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, basic: c_long,normal_basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long, normal_output: c_long) {
 
     let box_graph = graph as *mut RenderGraph;
     let box_graph = box_graph.as_mut().unwrap();
@@ -111,23 +140,28 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
     let box_basic = basic as *mut XHeyBasicFilter;
     let box_basic = box_basic.as_mut().unwrap();
 
+
     let box_lut = lut as *mut XheyPicture;
     let box_lut = box_lut.as_mut().unwrap();
 //
     let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
     let box_lut_filter = box_lut_filter.as_mut().unwrap();
 //
-//    let box_water_mask = water_mask as *mut XHeyBlendFilter;
-//    let box_water_mask = box_water_mask.as_mut().unwrap();
 
     let box_output = output as *mut XheyPictureOutput;
     let box_output = box_output.as_mut().unwrap();
 
+    let box_normal_output = normal_output as *mut XheyPictureOutput;
+    let box_normal_output = box_normal_output.as_mut().unwrap();
+
+
     let pic = box_graph.add_input("picture", box_picture);
     let basic = box_graph.add_function("basic",&[pic],box_basic);
+
+    let normal_output = box_graph.add_function("normal output",&[pic], box_normal_output);
+
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
-//    let water_mask = box_graph.add_function("water mask",&[lut_filter],box_water_mask);
     let output = box_graph.add_function("output",&[lut_filter], box_output);
 }
 
@@ -188,12 +222,14 @@ pub unsafe extern "C" fn xhey_graph_add_function(graph: c_long, filter: c_long, 
 
             box_graph.add_function("lookup", arg, lookup)
         },
+
         OutputKind::UnsharpMask => {
             let unsharp_mask = filter as *mut XHeyUnsharpMaskFilter;
             let unsharp_mask = unsharp_mask.as_mut().unwrap();
 
             box_graph.add_function("unsharp mask",arg,unsharp_mask)
         },
+
         OutputKind::PictureOutput => {
             let picture_output = filter as *mut XheyPictureOutput;
             let picture_output = picture_output.as_mut().unwrap();
@@ -318,10 +354,10 @@ pub unsafe extern "C" fn release_water_mark_filter(filter_ptr: c_long){
 
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_watermark_update(filter: c_long, texId: c_uint, x: c_float, y: c_float, w: c_float, h: c_float){
+pub unsafe extern "C" fn xhey_watermark_update(filter: c_long, texId: c_uint, x: c_float, y: c_float, w: c_float, h: c_float, rotation: c_int){
     let filter = filter as *mut XHeyBlendFilter;
     let filter = filter.as_mut().unwrap();
-    filter.appendWaterMark(texId,x,y,w,h);
+    filter.appendWaterMark(texId,x,y,w,h,rotation);
 }
 
 #[no_mangle]
@@ -361,6 +397,27 @@ pub unsafe extern "C" fn xhey_update_basic_hook(basic_filter_ptr: c_long, hook: 
     let filter = filter.as_mut().unwrap();
     filter.updateHookFunction(hook,ctxt);
 
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_basic_rotation(basic: c_long, rotation: c_int){
+    let filter = basic as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.updateOutputRotation(rotation);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_basic_size(basic: c_long, width: i32, height: i32){
+    let filter = basic as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.updateOutputSize(width,height);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_get_basic_texture_id(basic: c_long) -> c_int {
+    let filter = basic as *mut XHeyBasicFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.textureId() as c_int
 }
 
 #[no_mangle]
@@ -452,6 +509,20 @@ pub unsafe extern "C" fn xhey_update_picture_output_hook(pic_output_filter: c_lo
 #[no_mangle]
 pub unsafe extern "C" fn release_output(filter_ptr: c_long) {
     drop(Box::from_raw(filter_ptr as *mut XheyPictureOutput))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_output_rotation(output: c_long, rotation: i32){
+    let filter = output as *mut XheyPictureOutput;
+    let filter = filter.as_mut().unwrap();
+    filter.updateRotation(rotation);
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_output_size(output: c_long, width: i32, height: i32){
+    let filter = output as *mut XheyPictureOutput;
+    let filter = filter.as_mut().unwrap();
+    filter.updateBackingSize(width,height);
 }
 
 #[no_mangle]

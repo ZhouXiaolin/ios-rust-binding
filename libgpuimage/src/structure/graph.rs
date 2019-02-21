@@ -34,8 +34,8 @@ impl<'a,T:Tensor> Graph<'a,T> {
 
     /// 清空关系图 一般用于重新构建一个图
     pub fn reset(&mut self) {
-        self.nodes.clear();
-        self.edges.clear();
+        self.nodes = Vec::default();
+        self.edges = Vec::default();
     }
 
     /// 这个函数用来添加输入
@@ -95,20 +95,22 @@ impl<'a,T:Tensor> Graph<'a,T> {
             let in_edge : &Box<&dyn Edge<Item=Arc<T>>> = edges.get(node.in_edge as usize).unwrap();
 
             let tail_nodes = in_edge.tail_nodes();
+
             for tail_node in tail_nodes.iter() {
+
                 let inner_node: &Node<_> = nodes.get(tail_node.clone() as usize).unwrap();
 
                 var_names.push(String::from(inner_node.var_name()));
             }
 
-            info!("N{} [lable={} input{:?}]",nc,node.var_name(),var_names);
+            println!("N{} [lable={} input{:?}]",nc,node.var_name(),var_names);
             nc += 1;
 
         }
 
         for edge in edges.iter() {
             for ni in edge.tail_nodes().iter() {
-                info!("N{} ---> N{}",ni,edge.head_node());
+                println!("N{} ---> N{}",ni,edge.head_node());
             }
         }
 

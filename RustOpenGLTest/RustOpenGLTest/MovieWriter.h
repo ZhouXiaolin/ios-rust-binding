@@ -11,6 +11,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MovieWriter : NSObject
+@property (nonatomic, assign) BOOL isReady;
 - (instancetype)initWithFrameSize:(CGSize) frameSize movieURL:(NSURL*)movieURL;
 - (void) start;
 - (void) stop;

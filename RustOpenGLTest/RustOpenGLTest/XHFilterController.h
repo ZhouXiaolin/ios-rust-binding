@@ -17,7 +17,8 @@ typedef NS_ENUM(NSInteger, XHFilterControllerMode){
     XHFilterControllerModeVideoFront   = 2,
     XHFilterControllerModeVideoBack    = 3,
     XHFilterControllerModePhotoProcess = 4,
-    XHFilterControllerModeVideoProcess = 5
+    XHFilterControllerModeVideoProcess = 5,
+    XHFilterControllerModeNormal = 6
 };
 
 @interface WaterViewInfo : NSObject

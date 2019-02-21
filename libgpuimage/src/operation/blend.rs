@@ -8,7 +8,8 @@ use std::cell::{RefCell,Cell};
 #[derive(Debug)]
 pub struct WaterMark {
     pub textureId : u32,
-    pub rect: Rect
+    pub rect: Rect,
+    pub rotation: Rotation
 }
 
 #[repr(C)]
@@ -94,8 +95,12 @@ impl<'a> XHeyBlendFilter<'a> {
         self.overriddenOutputRotation = Some(Rotation::from(rotation));
     }
 
-    pub fn appendWaterMark(&mut self, texId: u32, xoffset: f32, yoffset: f32, width: f32, height: f32){
-        let watermark = WaterMark{textureId:texId,rect:Rect::new(xoffset,yoffset,width,height)};
+    pub fn appendWaterMark(&mut self, texId: u32, xoffset: f32, yoffset: f32, width: f32, height: f32, rotation: i32){
+        let watermark = WaterMark{
+            textureId:texId,
+            rect:Rect::new(xoffset,yoffset,width,height),
+            rotation: Rotation::from(rotation)
+        };
         self.watermarks.push(watermark);
 
     }
@@ -183,7 +188,7 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
 
         for watermark in self.watermarks.iter() {
 
-            let storage = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
+            let storage = InputTextureStorageFormat::textureCoordinate(watermark.rotation.textureCoordinates());
             let textureProperties = vec![InputTextureProperties::new(storage,watermark.textureId)];
 
 

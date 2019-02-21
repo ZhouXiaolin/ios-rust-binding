@@ -29,7 +29,6 @@ struct Context{
     long g;
     
     
-    
     long render_pic;
     long cam;
     
@@ -38,13 +37,18 @@ struct Context{
     
     long surface;
     long basic;
+    long basic_normal;
     long output;
+    long normal_output;
     
     long context;
     
     long context_watermark_ptr;
     long watermark_graph;
     long watermark_picture_ptr;
+    long watermark_basic_ptr;
+    long watermark_watermark_ptr;
+    long watermark_output_ptr;
     
     GLuint y_textureId;
     GLuint uv_textureId;
@@ -62,6 +66,9 @@ struct Context{
     
     
     BOOL isPhoto;
+    
+    NSLock* lock;
+    XHFilterControllerMode _mode;
 
 }
 @property (nonatomic, strong) CameraEntry* cameraEntry;
@@ -72,7 +79,7 @@ struct Context{
 @implementation XHFilterController
 #define aw_stride(wid) ((wid % 16 != 0) ? ((wid) + 16 - (wid) % 16): (wid))
 void print1(void* context){
-    NSLog(@"TTTTTTTTTTTTT --------");
+
 }
 
 void print_test1(void* context){
@@ -131,14 +138,37 @@ void print_test1(void* context){
 
 - (void)clear{
     if (!isPhoto) {
-//        release_output(output);
-//        release_picture(pic);
-//        glDeleteTextures(1, &lookup_textureId);
-//        release_lookup_filter(lut);
-//        release_basic_filter(basic);
-//        release_camera(cam);
-//        release_context(context);
-//        release_graph(g);
+        
+        release_output(output);
+        output = 0;
+        
+        release_picture(pic);
+        pic = 0;
+        
+        glDeleteTextures(1, &lookup_textureId);
+        lookup_textureId = 0;
+        
+        release_lookup_filter(lut);
+        lut = 0;
+        
+        
+        glDeleteTextures(1, &y_textureId);
+        y_textureId = 0;
+        
+        glDeleteTextures(1, &uv_textureId);
+        uv_textureId = 0;
+        
+        release_basic_filter(basic);
+        basic = 0;
+        
+        release_camera(cam);
+        cam = 0;
+        
+        release_context(context);
+        context = 0;
+        
+        release_graph(g);
+        g = 0;
     }
 }
 
@@ -152,6 +182,8 @@ void print_test1(void* context){
     }
     
     isPhoto = false;
+    
+    lock = [[NSLock alloc] init];
     
     currentContext = [[GPUImageContext sharedImageProcessingContext] context];
     ctxt = (Context*)malloc(sizeof(Context));
@@ -172,6 +204,9 @@ void print_test1(void* context){
 - (void) stopCapture
 {
     [self.cameraEntry stopCapture];
+}
+- (void)changeFilter:(XHFilterControllerMode)mode {
+    _mode = mode;
 }
 
 - (void) changeLookup:(NSString*) path
@@ -222,6 +257,10 @@ void print_test1(void* context){
                                  
                                  
 - (void)switchCamera {
+//    [self clear];
+//    isFirst = FALSE;
+    
+    textureId = 0;
     if (_cameraEntry.location == AVCaptureDevicePositionFront) {
         _cameraEntry.location = AVCaptureDevicePositionBack;
     }else{
@@ -239,8 +278,8 @@ void print_test1(void* context){
     int width = (int)round(CVPixelBufferGetWidth(cameraFrame));
     int height = (int)round(CVPixelBufferGetHeight(cameraFrame));
     
-    int _width = aw_stride(width);
-    
+//    int _width = aw_stride(width);
+    int _width = width;
     void* y_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 0);
     void* uv_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 1);
     
@@ -272,8 +311,9 @@ void print_test1(void* context){
         
         
         g = xhey_init_graph();
+        
         context = init_context();
-        cam = xhey_init_camera(context, width, height, 0);
+        cam = xhey_init_camera(context, _width, height, 0);
         camera_update_luminance(cam, y_textureId);
         camera_update_chrominance(cam, uv_textureId);
         float mat[9] = {1.0f, 1.0f, 1.0f,
@@ -282,30 +322,35 @@ void print_test1(void* context){
         
         camera_update_matrix(cam, mat);
         basic = xhey_init_basic_filter(context);
+        basic_normal = xhey_init_basic_filter(context);
+        
         xhey_update_basic_hook(basic, print1, (void*)ctxt);
         lut = xhey_init_lookup_filter(context);
         lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
         pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
         
-        output = xhey_init_picture_output(context, width, height, 3);
+        output = xhey_init_picture_output(context, _width, height, 3);
+        normal_output = xhey_init_picture_output(context, _width, height, 3);
         xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
-        xhey_camera_graph(g, cam, basic, pic, lut, 0, 0, output);
-        
+        xhey_camera_graph(g, cam, basic,0, pic, lut, 0, 0, output,normal_output);
         
     }else{
         [EAGLContext setCurrentContext:currentContext];
         
         glBindTexture(GL_TEXTURE_2D, y_textureId);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
         glBindTexture(GL_TEXTURE_2D, uv_textureId);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
         glBindTexture(GL_TEXTURE_2D, 0);
         
         
         camera_update_size(cam, _width, height);
+        xhey_update_output_size(output, _width, height);
         
         if (lutUpdate) {
             lutUpdate = NO;
@@ -316,40 +361,41 @@ void print_test1(void* context){
     
     
     xhey_graph_forward(g);
-    textureId = xhey_picture_output_get_texture_id(output);
     
-    
+    if (_mode == XHFilterControllerModeNormal) {
+        textureId = xhey_picture_output_get_texture_id(normal_output);
+    }else{
+        textureId = xhey_picture_output_get_texture_id(output);
+    }
     
     
     [_glView renderTextureId:textureId];
-    
-    
-    {
-        int _width = width;
-        int _height = height;
-        CVPixelBufferRef pxbuffer = NULL;
-        
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
-                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
-                                 nil];
-        
-        CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, _width,
-                                              _height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef) options,
-                                              &pxbuffer);
-        
-        CVPixelBufferLockBaseAddress(pxbuffer, 0);
-        void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
-        
-        glReadPixels(0, 0, _width, _height, GL_BGRA, GL_UNSIGNED_BYTE, pxdata);
-        
-        
-        CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
-        CVPixelBufferRelease(pxbuffer);
-    }
-    
-//
+
     if (_movieWriter) {
+        [EAGLContext setCurrentContext:currentContext];
+
+        if (_movieWriter.isReady == FALSE) {
+            _movieWriter.isReady = TRUE;
+
+            watermark_graph = xhey_init_graph();
+            context_watermark_ptr = init_context();
+            watermark_picture_ptr = xhey_init_picture_textureId(textureId, width, height, 0);
+            watermark_basic_ptr = xhey_init_basic_filter(context_watermark_ptr);
+            watermark_watermark_ptr = xhey_init_watermark(context_watermark_ptr);
+
+            UIImage* image = [UIImage imageNamed:@"aaa"];
+            int image_texid = [XLHelpClass createTexture:image];
+
+            xhey_watermark_update(watermark_watermark_ptr, image_texid, -1.0, 0.0, 0.5, 0.5,0);
+
+            watermark_output_ptr = xhey_init_picture_output(context_watermark_ptr, width, height, 0);
+
+            xhey_camera_watermark_graph(watermark_graph, watermark_picture_ptr, watermark_basic_ptr, watermark_watermark_ptr, watermark_output_ptr);
+
+
+        }
+        xhey_graph_forward(watermark_graph);
+
         int _width = height;
         int _height = width;
         [_movieWriter readAndPut:_width width:height frameTime:frameTime];

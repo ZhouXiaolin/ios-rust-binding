@@ -168,7 +168,8 @@ impl<'a> Renderable for XHeyBasicFilter<'a> {
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
 
-        let inputFramebuffer = inputFramebuffers.first().unwrap();
+        let inputFramebuffer: &Framebuffer = inputFramebuffers.first().unwrap();
+
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 

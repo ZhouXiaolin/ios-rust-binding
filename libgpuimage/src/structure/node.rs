@@ -24,6 +24,7 @@ impl<T:Tensor> Node<T> {
         }
     }
 
+
     pub fn var_name(&self) -> &str {
         &self.name
     }

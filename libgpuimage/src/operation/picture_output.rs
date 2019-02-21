@@ -12,8 +12,8 @@ pub struct XheyPictureOutput<'a>{
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     uniformSettings: ShaderUniformSettings,
-    rotation: Rotation,
-    backingSize:GLSize,
+    rotation: Option<Rotation>,
+    backingSize:Cell<GLSize>,
     textureId: Cell<GLuint>,
     context: &'a GlContext,
     hook: Option<extern "C" fn(context: *mut c_void)>,
@@ -26,12 +26,13 @@ pub struct XheyPictureOutput<'a>{
 impl<'a> XheyPictureOutput<'a> {
     pub fn new(context: &'a GlContext,width: i32, height: i32, orient: i32) -> Self {
 
+
         XheyPictureOutput{
             head_node:Cell::default(),
             tail:RefCell::default(),
             uniformSettings:ShaderUniformSettings::default(),
-            rotation: Rotation::from(orient),
-            backingSize: GLSize::new(width,height),
+            rotation: Some(Rotation::from(orient)),
+            backingSize: Cell::from(GLSize::new(width,height)),
             textureId:Cell::default(),
             context,
             hook:None,
@@ -39,6 +40,14 @@ impl<'a> XheyPictureOutput<'a> {
         }
     }
 
+
+    pub fn updateBackingSize(&mut self, width: i32, height: i32){
+        self.backingSize.set(GLSize::new(width,height));
+    }
+
+    pub fn updateRotation(&mut self, rotation: i32){
+        self.rotation = Some(Rotation::from(rotation));
+    }
 
     pub fn updateHookFunction(&mut self, hook: extern "C" fn(context: *mut c_void), ctxt: *mut c_void){
         self.hook = Some(hook);
@@ -116,9 +125,9 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
             let verticallyInvertedImageVertices: [f32;8] = [-1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, -1.0];
 
-            let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize);
+            let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize.get());
 
-            let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.textureCoordinates());
+            let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates());
 
             let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
 

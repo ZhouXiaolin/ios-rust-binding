@@ -8,9 +8,41 @@
 
 #import "CameraEntry.h"
 #import "XLHelpClass.h"
+typedef void(^CompleteHandle)(UIImage*);
 
 
-@interface CameraEntry () <AVCapturePhotoCaptureDelegate,AVCaptureVideoDataOutputSampleBufferDelegate>
+void stillImageDataReleaseCallback(void *releaseRefCon, const void *baseAddress)
+{
+    free((void *)baseAddress);
+}
+
+void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize finalSize, CVPixelBufferRef *pixelbuffer)
+{
+    // CVPixelBufferCreateWithPlanarBytes for YUV input
+    
+    CGSize originalSize = CGSizeMake(CVPixelBufferGetWidth(cameraFrame), CVPixelBufferGetHeight(cameraFrame));
+    
+    CVPixelBufferLockBaseAddress(cameraFrame, 0);
+    GLubyte *sourceImageBytes =  CVPixelBufferGetBaseAddress(cameraFrame);
+    CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, sourceImageBytes, CVPixelBufferGetBytesPerRow(cameraFrame) * originalSize.height, NULL);
+    CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef cgImageFromBytes = CGImageCreate((int)originalSize.width, (int)originalSize.height, 8, 32, CVPixelBufferGetBytesPerRow(cameraFrame), genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
+    
+    GLubyte *imageData = (GLubyte *) calloc(1, (int)finalSize.width * (int)finalSize.height * 4);
+    
+    CGContextRef imageContext = CGBitmapContextCreate(imageData, (int)finalSize.width, (int)finalSize.height, 8, (int)finalSize.width * 4, genericRGBColorspace,  kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGContextDrawImage(imageContext, CGRectMake(0.0, 0.0, finalSize.width, finalSize.height), cgImageFromBytes);
+    CGImageRelease(cgImageFromBytes);
+    CGContextRelease(imageContext);
+    CGColorSpaceRelease(genericRGBColorspace);
+    CGDataProviderRelease(dataProvider);
+    
+    CVPixelBufferCreateWithBytes(kCFAllocatorDefault, finalSize.width, finalSize.height, kCVPixelFormatType_32BGRA, imageData, finalSize.width * 4, stillImageDataReleaseCallback, NULL, NULL, pixelbuffer);
+    
+}
+
+
+@interface CameraEntry () <AVCapturePhotoCaptureDelegate,AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate,AVCapturePhotoCaptureDelegate>
 {
     
     
@@ -18,14 +50,21 @@
     AVCaptureSession *captureSession;
     AVCaptureDeviceInput *videoInput;
     AVCaptureVideoDataOutput *videoOutput;
-    dispatch_queue_t cameraQueue;
+    dispatch_queue_t cameraQueue,audioQueue;
+    
     
     AVCaptureDevice *microphone;
     
 #ifdef USE_STILLIMAGE
-    AVCaptureStillImageOutput* imageOutput;
-#else
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    AVCaptureStillImageOutput* imageOutput;
+#pragma clang diagnostic pop
+    
+#else
+    CompleteHandle completeImageHandle;
+    AVCapturePhotoOutput* imageOutput;
 #endif
     
     AVCaptureDeviceInput* audioInput;
@@ -33,11 +72,13 @@
     
     dispatch_semaphore_t frameRenderingSemaphore;
     BOOL isFullYUVRange;
-    BOOL isPhoto;
     
     id<AVCaptureVideoDataOutputSampleBufferDelegate> _cameraInput;
-
+    id<AVCaptureAudioDataOutputSampleBufferDelegate> _audioInput;
+    
 }
+@property (nonatomic, assign) CFAbsoluteTime lastCheckTime;
+@property (nonatomic, assign) int framesSinceLastCheck;
 @property (nonatomic, assign) AVCaptureVideoStabilizationMode videoStabilizationMode;
 @end
 
@@ -65,12 +106,11 @@
 }
 
 
-
 - (void) setCameraAdjustParameter {
     NSError* error;
     [_inputCamera lockForConfiguration:&error];
     
-    [_inputCamera setSubjectAreaChangeMonitoringEnabled:TRUE]; // 开启范围监测
+    [_inputCamera setSubjectAreaChangeMonitoringEnabled:FALSE]; // 开启范围监测
     
     if ([_inputCamera isAutoFocusRangeRestrictionSupported]) { //自动对焦区域限制 无
         [_inputCamera setAutoFocusRangeRestriction:(AVCaptureAutoFocusRangeRestrictionNone)];
@@ -90,33 +130,43 @@
         [_inputCamera setWhiteBalanceMode:(AVCaptureWhiteBalanceModeContinuousAutoWhiteBalance)];
     }
     
-    if ([_inputCamera isVideoHDREnabled]) {
-        [_inputCamera setVideoHDREnabled:YES];
-    }
-    
     if ([_inputCamera isLowLightBoostSupported]) { // 弱光下自动提升亮度
         [_inputCamera setAutomaticallyEnablesLowLightBoostWhenAvailable:TRUE];
     }
     
-    
     [_inputCamera unlockForConfiguration];
 }
+
+
+
 - (instancetype)initWithSessionPreset:(AVCaptureSessionPreset) sessionPreset
                              location:(AVCaptureDevicePosition) location
+                      cameraEntryMode:(CameraEntryMode)cameraEntryMode
                          captureAsYUV:(BOOL)captureAsYUV
 {
     if (!(self = [super init])) {
         return nil;
     }
+    
+    
+    
+    self.framesSinceLastCheck = 0;
+    self.lastCheckTime = CFAbsoluteTimeGetCurrent();
+    
     preScale = 0.0;
-    _cameraMode = CameraEntryModeVideo;
+    
+    _cameraMode = cameraEntryMode;
     
     cameraQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
-    
+    audioQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
     
     self.location = location;
     
     frameRenderingSemaphore = dispatch_semaphore_create(1);
+    
+    
+    captureSession = [[AVCaptureSession alloc] init];
+    [captureSession beginConfiguration];
     
     _inputCamera = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera] mediaType:AVMediaTypeVideo position:location].devices.firstObject;
     
@@ -124,13 +174,11 @@
         return nil;
     }
     
+    
+    
     [self setCameraAdjustParameter];
-
     
-    captureSession = [[AVCaptureSession alloc] init];
-    [captureSession beginConfiguration];
-    
-    NSError* error = nil;
+    NSError* error;
     videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_inputCamera error:&error];
     if ([captureSession canAddInput:videoInput]) {
         [captureSession addInput:videoInput];
@@ -139,7 +187,7 @@
     videoOutput = [[AVCaptureVideoDataOutput alloc] init];
     [videoOutput setAlwaysDiscardsLateVideoFrames:NO];
     [videoOutput setSampleBufferDelegate:self queue:cameraQueue];
-
+    
     
     
     if (captureAsYUV) {
@@ -177,12 +225,29 @@
         return nil;
     }
     
-    
+#ifdef USE_STILLIMAGE
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     imageOutput = [[AVCaptureStillImageOutput alloc] init];
-    [imageOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    //    [imageOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    
+    [imageOutput setOutputSettings:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey]];
+    
+    
+    
+    [imageOutput setHighResolutionStillImageOutputEnabled:YES];
+    
     if ([captureSession canAddOutput:imageOutput]) {
         [captureSession addOutput:imageOutput];
     }
+#pragma clang diagnostic pop
+#else
+    imageOutput = [[AVCapturePhotoOutput alloc] init];
+    [imageOutput setHighResolutionCaptureEnabled:TRUE];
+    if ([captureSession canAddOutput:imageOutput]) {
+        [captureSession addOutput:imageOutput];
+    }
+#endif
     
     if([captureSession canSetSessionPreset:sessionPreset]){
         [captureSession setSessionPreset:sessionPreset];
@@ -200,6 +265,11 @@
     [self stopCapture];
     [videoOutput setSampleBufferDelegate:nil queue:nil];
     [audioOutput setSampleBufferDelegate:nil queue:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidEnterBackgroundNotification object:nil];
 }
 
 - (void)setLocation:(AVCaptureDevicePosition)location{
@@ -217,10 +287,11 @@
 }
 
 - (void) startCapture {
-    if (![captureSession isRunning]) {
-        [captureSession startRunning];
-    }
-    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (![captureSession isRunning]) {
+            [captureSession startRunning];
+        }
+    });
 }
 
 - (void) stopCapture {
@@ -228,13 +299,19 @@
         [captureSession stopRunning];
     }
 }
+- (BOOL)isRunning{
+    if ([captureSession isRunning]) {
+        return true;
+    }else{
+        return false;
+    }
+}
 
 - (BOOL) canSwitchCameras
 {
     return [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera,AVCaptureDeviceTypeBuiltInTelephotoCamera] mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionUnspecified].devices.count > 1;
 }
-
-- (void) addAudioInputsAndOutputsWithDelegate:(id<AVCaptureAudioDataOutputSampleBufferDelegate>) delegate callbackQueue:(dispatch_queue_t) callbackQueue
+- (void) addAudioInputsAndOutputs
 {
     if (audioOutput != nil) {
         return;
@@ -252,7 +329,33 @@
     if ([captureSession canAddOutput:audioOutput]) {
         [captureSession addOutput:audioOutput];
     }
-    [audioOutput setSampleBufferDelegate:delegate queue:callbackQueue];
+    [audioOutput setSampleBufferDelegate:self queue:audioQueue];
+    
+    [captureSession commitConfiguration];
+}
+
+- (void) addAudioInputsAndOutputsWithDelegate:(id<AVCaptureAudioDataOutputSampleBufferDelegate>) delegate// callbackQueue:(dispatch_queue_t) callbackQueue
+{
+    if (audioOutput != nil) {
+        return;
+    }
+    
+    _audioInput = delegate;
+    
+    
+    [captureSession beginConfiguration];
+    
+    microphone = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInMicrophone] mediaType:AVMediaTypeAudio position:AVCaptureDevicePositionUnspecified].devices.firstObject;
+    NSError* error;
+    audioInput = [AVCaptureDeviceInput deviceInputWithDevice:microphone error:&error];
+    if ([captureSession canAddInput:audioInput]) {
+        [captureSession addInput:audioInput];
+    }
+    audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+    if ([captureSession canAddOutput:audioOutput]) {
+        [captureSession addOutput:audioOutput];
+    }
+    [audioOutput setSampleBufferDelegate:self queue:audioQueue];
     
     [captureSession commitConfiguration];
     
@@ -324,7 +427,7 @@
     
     if ([_inputCamera isFocusPointOfInterestSupported]) {
         [_inputCamera setFocusPointOfInterest:point];
-        [_inputCamera setFocusMode:AVCaptureFocusModeAutoFocus];
+        [_inputCamera setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
     }
     [_inputCamera unlockForConfiguration];
     
@@ -374,15 +477,16 @@
         return;
     }
     
+    
+    
     [captureSession beginConfiguration];
-
     AVCaptureDevice* oldDevice = _inputCamera;
     AVCaptureDeviceInput* oldDeviceInput = videoInput;
     
     [captureSession removeInput:videoInput];
     
     AVCaptureSessionPreset videoPresent = (_location == AVCaptureDevicePositionBack ? ([XLHelpClass isLowerThaniPhone6] ? AVCaptureSessionPreset1280x720 : AVCaptureSessionPreset1920x1080) : AVCaptureSessionPreset1280x720);
-    AVCaptureSessionPreset imagePresent = AVCaptureSessionPresetPhoto;
+    AVCaptureSessionPreset imagePresent = _cameraMode == CameraEntryModePhoto4x3 ? AVCaptureSessionPresetPhoto : AVCaptureSessionPreset1280x720;
     
     AVCaptureSessionPreset present = _cameraMode == CameraEntryModeVideo ? videoPresent : imagePresent;
     if ([captureSession canSetSessionPreset:present]) {
@@ -390,6 +494,7 @@
     }
     
     _inputCamera = [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[AVCaptureDeviceTypeBuiltInWideAngleCamera, AVCaptureDeviceTypeBuiltInTelephotoCamera] mediaType:AVMediaTypeVideo position:_location].devices.firstObject;
+    
     NSError* error;
     videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:_inputCamera error:&error];
     if (error != nil) {
@@ -411,14 +516,49 @@
         }
     }
     
-    if ([_inputCamera isVideoHDREnabled]) {
-        [_inputCamera setVideoHDREnabled:YES];
-    }
-    
     [captureSession commitConfiguration];
     
 }
-
+- (void)configureDeviceFlash:(AVCaptureFlashMode) mode{
+    if (_inputCamera.flashMode == mode) {
+        return;
+    }
+    
+    
+    
+    NSError* error;
+    
+    [_inputCamera lockForConfiguration:&error];
+    if (error == nil){
+        if ([_inputCamera isFlashModeSupported:mode]){
+            [_inputCamera setFlashMode:mode];
+        }
+    }else{
+        NSLog(@"%@",error);
+    }
+    [_inputCamera lockForConfiguration:&error];
+    
+    
+}
+- (void)configureDeviceTorch:(AVCaptureTorchMode) mode{
+    
+    
+    
+    if (_inputCamera.torchMode == mode) {
+        return;
+    }
+    
+    
+    
+    NSError* error;
+    [_inputCamera lockForConfiguration:&error];
+    if ([_inputCamera isTorchModeSupported:mode]){
+        [_inputCamera setTorchMode:mode];
+    }
+    [_inputCamera lockForConfiguration:&error];
+    
+    
+}
 - (void) updateMirror
 {
     AVCaptureConnection* connection = [videoOutput connectionWithMediaType:AVMediaTypeVideo];
@@ -428,6 +568,8 @@
             return;
         }
     }else if (_location == AVCaptureDevicePositionFront){
+        
+        
         if ([connection isVideoMirrored] == _isFrontMirrord) {
             return;
         }
@@ -455,119 +597,151 @@
     _cameraMode = mode;
     [captureSession beginConfiguration];
     
+    
     AVCaptureSessionPreset videoPresent = (_location == AVCaptureDevicePositionBack ? ([XLHelpClass isLowerThaniPhone6] ? AVCaptureSessionPreset1280x720 : AVCaptureSessionPreset1920x1080) : AVCaptureSessionPreset1280x720);
-    AVCaptureSessionPreset imagePresent = AVCaptureSessionPresetPhoto;
+    AVCaptureSessionPreset imagePresent = mode == CameraEntryModePhoto4x3 ? AVCaptureSessionPresetPhoto : AVCaptureSessionPreset1280x720;
     
     AVCaptureSessionPreset present = _cameraMode == CameraEntryModeVideo ? videoPresent : imagePresent;
     if ([captureSession canSetSessionPreset:present]) {
         [captureSession setSessionPreset:present];
     }
+    
     [captureSession commitConfiguration];
 }
 
 #pragma mark -- 拍照
 
-- (void)takePhotoProcessedUpToFilter:(void *)finalFilterInChain WithCompletionHandler:(void (^)(CVPixelBufferRef))block{
-   
-}
+#ifdef USE_STILLIMAGE
 
-#if 0
-- (void) takePhotoWithCompletionHandler:(void (^)(CVPixelBufferRef imagePixelBuffer)) block
+- (void) takePhotoWithCompletionHandle:(void (^)(CVPixelBufferRef,NSError*)) block
 {
     
-    if (isPhoto) {
-        isPhoto = false;
-    }else{
-        isPhoto = true;
-    }
     
-    AVCaptureConnection* connection = [[imageOutput connections] objectAtIndex:0];
+    
     dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
+    
+    
+    
     [imageOutput captureStillImageAsynchronouslyFromConnection:[[imageOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef  _Nullable imageDataSampleBuffer, NSError * _Nullable error) {
         
-        CVPixelBufferRef cameraFrame = CMSampleBufferGetImageBuffer(imageDataSampleBuffer);
+        if (error) {
+            block(NULL,error);
+        }else{
+            CVPixelBufferRef buffer = CMSampleBufferGetImageBuffer(imageDataSampleBuffer);
+            
+            
+            int width = (int)CVPixelBufferGetWidth(buffer);
+            int height = (int)CVPixelBufferGetHeight(buffer);
+            
+            
+            if (width <= 4096) {
+                CFRetain(buffer);
+                block(buffer,error);
+                CFRelease(buffer);
+            }else{
+                if (width > 4096) {
+                    width = 4096;
+                    height = 4096 * height / width;
+                }
+                
+                CVPixelBufferRef pixebuffer = NULL;
+                
+                GPUImageCreateResizedSampleBuffer(buffer, CGSizeMake(width, height), &pixebuffer);
+                
+                block(pixebuffer,error);
+                
+                CFRelease(pixebuffer);
+            }
+            
+            
+        }
         
-        NSLog(@"solaren %zu %zu",CVPixelBufferGetWidth(cameraFrame), CVPixelBufferGetHeight(cameraFrame));
-        
-        CGSize finalSize = CGSizeMake(1000, 750);
-
-        CIImage* image = [[CIImage alloc] initWithCVPixelBuffer:cameraFrame];
-        image = [image imageByApplyingTransform:CGAffineTransformMakeScale(finalSize.width/CVPixelBufferGetWidth(cameraFrame), finalSize.height/CVPixelBufferGetHeight(cameraFrame))];
-        image = [image imageByApplyingCGOrientation:(kCGImagePropertyOrientationUpMirrored)];
-        
-        CIContext* context = [CIContext contextWithOptions:nil];
-        
-        CVPixelBufferRef pixel_buffer = NULL;
-        CVPixelBufferCreate(kCFAllocatorDefault, finalSize.width, finalSize.height, self.pixelFormatType, NULL, &pixel_buffer);
-        [context render:image toCVPixelBuffer:pixel_buffer];
-        
-        CMVideoFormatDescriptionRef videoInfo = NULL;
-        CMVideoFormatDescriptionCreateForImageBuffer(NULL, pixel_buffer, &videoInfo);
-        
-        CMTime frameTime = CMTimeMake(1, 30);
-        CMSampleTimingInfo timing = {frameTime, frameTime, kCMTimeInvalid};
         
         
-        CMSampleBufferRef sampleBuffer = NULL;
-        CMSampleBufferCreateForImageBuffer(kCFAllocatorDefault, pixel_buffer, YES, NULL, NULL, videoInfo, &timing, &sampleBuffer);
         
         
         dispatch_semaphore_signal(self->frameRenderingSemaphore);
-//        CFRetain(sampleBuffer);
-        [self->_cameraInput captureOutput:self->imageOutput didOutputSampleBuffer:sampleBuffer fromConnection:connection];
-//        CFRelease(sampleBuffer);
-        dispatch_semaphore_wait(self->frameRenderingSemaphore, DISPATCH_TIME_FOREVER);
-
-        CFRelease(sampleBuffer);
-        CVPixelBufferRelease(pixel_buffer);
         
         
-        dispatch_semaphore_signal(self->frameRenderingSemaphore);
         
-        block(nil);
-
     }];
-
-
+    
+    
+    
+    
 }
+#else
+
+- (AVCapturePhotoSettings*) createPhotoSettings
+{
+    AVCapturePhotoSettings* photoSettings = [AVCapturePhotoSettings photoSettingsWithFormat:[NSDictionary dictionaryWithObject:AVVideoCodecJPEG forKey:(id)AVVideoCodecKey]];
+    return photoSettings;
+}
+- (void)takePhotoWithCompletionHandle:(void (^)(UIImage *))block
+{
+    completeImageHandle = block;
+    AVCapturePhotoSettings* settings = [self createPhotoSettings];
+    [imageOutput capturePhotoWithSettings:settings delegate:self];
+}
+- (void)captureOutput:(AVCapturePhotoOutput *)output didFinishProcessingPhotoSampleBuffer:(CMSampleBufferRef)photoSampleBuffer previewPhotoSampleBuffer:(CMSampleBufferRef)previewPhotoSampleBuffer resolvedSettings:(AVCaptureResolvedPhotoSettings *)resolvedSettings bracketSettings:(AVCaptureBracketedStillImageSettings *)bracketSettings error:(NSError *)error
+{
+    NSData* data = [AVCapturePhotoOutput JPEGPhotoDataRepresentationForJPEGSampleBuffer:photoSampleBuffer previewPhotoSampleBuffer:previewPhotoSampleBuffer];
+    UIImage* image = [UIImage imageWithData:data];
+    
+    completeImageHandle(image);
+}
+
 #endif
 
-- (void) takePhotoWithCompletionHandle:(void (^)(CVPixelBufferRef)) block
-{
-    if(dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER)!=0){
-        return;
-    }
-
-    [imageOutput captureStillImageAsynchronouslyFromConnection:[[imageOutput connections] objectAtIndex:0] completionHandler:^(CMSampleBufferRef  _Nullable imageDataSampleBuffer, NSError * _Nullable error) {
-        CVPixelBufferRef buffer = CMSampleBufferGetImageBuffer(imageDataSampleBuffer);
-        CFRetain(buffer);
-        dispatch_async(self->cameraQueue, ^{
-            block(buffer);
-            CFRelease(buffer);
-            dispatch_semaphore_signal(self->frameRenderingSemaphore);
-        });
-    }];
-    
-    
-}
-
-
-#pragma mark -- 视频流
+#pragma mark -- 视频流 音频流
 
 - (void)captureOutput:(AVCaptureOutput *)output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-    if (isPhoto) {
-        return;
+    @autoreleasepool {
+        if (!captureSession.isRunning) {
+            [self changeMode:_cameraMode];
+            return;
+        }else if (output == audioOutput){
+            
+            if (self.delegate) {
+                [self.delegate processAudioBuffer:sampleBuffer];
+            }
+            
+            if (_audioInput) {
+                [_audioInput captureOutput:output didOutputSampleBuffer:sampleBuffer fromConnection:connection];
+            }
+            
+        }else{
+            if(dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER)!=0){
+                return;
+            }
+            CFRetain(sampleBuffer);
+            
+            if (self.delegate) {
+                [self.delegate processVideoBuffer:sampleBuffer];
+            }
+            
+            if (_cameraInput) {
+                [_cameraInput captureOutput:output didOutputSampleBuffer:sampleBuffer fromConnection:connection];
+            }
+            
+            
+            
+            CFRelease(sampleBuffer);
+            
+            if (self.logFPS) {
+                if ((CFAbsoluteTimeGetCurrent() - self.lastCheckTime) > 1.0)  {
+                    self.lastCheckTime = CFAbsoluteTimeGetCurrent();
+                    NSLog(@"FPS : %d",self.framesSinceLastCheck);
+                    self.framesSinceLastCheck = 0;
+                }
+                self.framesSinceLastCheck += 1;
+            }
+            
+            
+            dispatch_semaphore_signal(frameRenderingSemaphore);
+        }
+        
     }
-    
-    if(dispatch_semaphore_wait(frameRenderingSemaphore, DISPATCH_TIME_FOREVER)!=0){
-        return;
-    }
-    CFRetain(sampleBuffer);
-    [_cameraInput captureOutput:output didOutputSampleBuffer:sampleBuffer fromConnection:connection];
-    CFRelease(sampleBuffer);
-    dispatch_semaphore_signal(frameRenderingSemaphore);
-    
-    
 }
 @end

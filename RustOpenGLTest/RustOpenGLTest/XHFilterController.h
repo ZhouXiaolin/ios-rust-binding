@@ -36,8 +36,7 @@ typedef NS_ENUM(NSInteger, XHFilterControllerMode){
 @interface XHFilterController : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
 
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
-                   renderView:(OpenGLView*)glView
-                       writer:(MovieWriter*)movieWriter;
+                   renderView:(OpenGLView*)glView;
 
 
 - (instancetype)initWithPicture:(UIImage*) image

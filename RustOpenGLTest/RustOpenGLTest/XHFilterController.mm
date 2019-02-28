@@ -22,7 +22,7 @@ struct Context{
 @implementation WaterViewInfo
 @end
 
-@interface XHFilterController()
+@interface XHFilterController()<CameraEntryDelegate>
 {
     EAGLContext* currentContext;
     
@@ -69,6 +69,8 @@ struct Context{
     
     NSLock* lock;
     XHFilterControllerMode _mode;
+    
+    GLuint image_texid;
 
 }
 @property (nonatomic, strong) CameraEntry* cameraEntry;
@@ -86,6 +88,8 @@ void print_test1(void* context){
     Context* ctxt = (Context*)context;
     
 }
+
+
 
 - (instancetype) initWithPicture:(UIImage*) image
        renderView:(OpenGLView*)glView
@@ -174,7 +178,6 @@ void print_test1(void* context){
 
 - (instancetype)initWithInput:(CameraEntry*) cameraEntry
                    renderView:(OpenGLView*)glView
-                       writer:(MovieWriter*)movieWriter
 {
     self = [super init];
     if (!self) {
@@ -190,9 +193,9 @@ void print_test1(void* context){
     ctxt->self = self;
     
     self.cameraEntry = cameraEntry;
-    [self.cameraEntry setVideoOutputDelegate:self];
+    _cameraEntry.delegate = self;
+//    [self.cameraEntry setVideoOutputDelegate:self];
     self.glView = glView;
-    self.movieWriter = movieWriter;
     
     return self;
 }
@@ -221,12 +224,23 @@ void print_test1(void* context){
 
 - (void) startRecordWithWaterInfo:( WaterViewInfo *  ) waterInfo destinationURL:(NSURL *)url
 {
+    
+    CGSize frameSize = CGSizeMake(720, 1280);
+    NSString* pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
+    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
+    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
+    
+    
+    self.movieWriter = [[MovieWriter alloc] initWithFrameSize:frameSize movieURL:movieURL];
+
     [_movieWriter start];
     
 }
 
 - (void) stopRecordWithCompletion:(void (^)(NSError * _Nonnull))handler {
     [_movieWriter stop];
+    _movieWriter = nil;
+    [self clearWriterGraph];
 }
 
 
@@ -268,7 +282,10 @@ void print_test1(void* context){
     }
 }
 
-- (void)captureOutput:(AVCaptureOutput *)_output didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection{
+- (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer {
+    
+}
+- (void)processVideoBuffer:(CMSampleBufferRef)sampleBuffer{
     
     CMTime frameTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     
@@ -384,7 +401,7 @@ void print_test1(void* context){
             watermark_watermark_ptr = xhey_init_watermark(context_watermark_ptr);
 
             UIImage* image = [UIImage imageNamed:@"aaa"];
-            int image_texid = [XLHelpClass createTexture:image];
+            image_texid = [XLHelpClass createTexture:image];
 
             xhey_watermark_update(watermark_watermark_ptr, image_texid, -1.0, 0.0, 0.5, 0.5,0);
 
@@ -407,9 +424,20 @@ void print_test1(void* context){
     
 }
 
+- (void) clearWriterGraph
+{
+    release_output(watermark_output_ptr);
+    release_water_mark_filter(watermark_watermark_ptr);
+    release_basic_filter(watermark_basic_ptr);
+    release_picture(watermark_picture_ptr);
+    release_graph(watermark_graph);
+    release_context(context_watermark_ptr);
+    glDeleteTextures(1, &image_texid);
+}
+
 - (void)capturePhotoWithWater:(WaterViewInfo *)waterInfo previewImgCallBack:(void (^)(UIImage * _Nonnull, NSError * _Nonnull))previewImgCallBack originalImgCallBack:(void (^)(UIImage * _Nonnull, NSError * _Nonnull))originalImgCallBack processedImgCallBack:(void (^)(UIImage * _Nonnull, NSError * _Nonnull))processedImgCallBack{
     
-    [_cameraEntry takePhotoWithCompletionHandle:^(CVPixelBufferRef imagePixelBuffer) {
+    [_cameraEntry takePhotoWithCompletionHandle:^(CVPixelBufferRef imagePixelBuffer, NSError *) {
         
         CVPixelBufferLockBaseAddress(imagePixelBuffer, 0);
         

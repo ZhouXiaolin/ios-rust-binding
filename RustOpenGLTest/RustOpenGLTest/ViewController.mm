@@ -49,14 +49,7 @@
     [super viewDidLoad];
     
     
-    CGSize frameSize = CGSizeMake(720, 1280);
-    NSString* pathToMovie = [NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Movie.m4v"];
-    unlink([pathToMovie UTF8String]); // If a file already exists, AVAssetWriter won't let you record new frames, so delete the old movie
-    NSURL* movieURL = [NSURL fileURLWithPath:pathToMovie];
-
-
-    movieWriter = [[MovieWriter alloc] initWithFrameSize:frameSize movieURL:movieURL];
-
+    
 
     self.view.backgroundColor = [UIColor blueColor];
 
@@ -67,8 +60,9 @@
 
 
 
-    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:(AVCaptureSessionPreset1280x720) location:(AVCaptureDevicePositionBack) captureAsYUV:TRUE];
 
+    cameraEntry = [[CameraEntry alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 location:AVCaptureDevicePositionBack cameraEntryMode:CameraEntryModePhoto4x3 captureAsYUV:TRUE];
+    [cameraEntry addAudioInputsAndOutputs];
 
     glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
     [self.view addSubview:glView];
@@ -83,9 +77,7 @@
 
     filterController = [[XHFilterController alloc]
                         initWithInput:cameraEntry
-                        renderView:glView
-                        writer:movieWriter
-                        ];
+                        renderView:glView];
     [filterController startCapture];
 
     NSString* bundlePath = [XLHelpClass pathBundlePath];

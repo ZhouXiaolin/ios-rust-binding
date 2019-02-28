@@ -8,7 +8,7 @@
 
 #import "OpenGLView.h"
 #import "GLESUtils.h"
-#import "GPUImageContext.h"
+#import "XHImageContext.h"
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
@@ -68,7 +68,7 @@ NSString* const kFragmentString = SHADER_STRING
     if (self) {
         [self commonInit];
         
-        _context = [[GPUImageContext sharedImageProcessingContext] context];
+        _context = [[XHImageContext sharedImageProcessingContext] context];
         
 //        [EAGLContext setCurrentContext:_context];
         

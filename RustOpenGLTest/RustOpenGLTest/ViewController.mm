@@ -11,7 +11,7 @@
 #import "XLHelpClass.h"
 #import "XLFilterChooserView.h"
 #import <objc/runtime.h>
-#import "GPUImageContext.h"
+#import "XHImageContext.h"
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>

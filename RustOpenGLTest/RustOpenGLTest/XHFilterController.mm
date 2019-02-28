@@ -14,7 +14,7 @@
 #import "CameraEntry.h"
 #import "OpenGLView.h"
 #import "MovieWriter.h"
-#import "GPUImageContext.h"
+#import "XHImageContext.h"
 struct Context{
     XHFilterController* self;
 };
@@ -130,7 +130,7 @@ void print_test1(void* context){
 
 - (void) renderPictureWithLut:(NSString*)lut
 {
-    [GPUImageContext useImageProcessingContext];
+    [XHImageContext useImageProcessingContext];
     [self texImageTexture:lut];
     
     xhey_graph_forward(g);
@@ -188,7 +188,7 @@ void print_test1(void* context){
     
     lock = [[NSLock alloc] init];
     
-    currentContext = [[GPUImageContext sharedImageProcessingContext] context];
+    currentContext = [[XHImageContext sharedImageProcessingContext] context];
     ctxt = (Context*)malloc(sizeof(Context));
     ctxt->self = self;
     
@@ -415,6 +415,7 @@ void print_test1(void* context){
 
         int _width = height;
         int _height = width;
+//        [_movieWriter readAndPutWithWidth:_width height:height frameTime:frameTime block:nil];
         [_movieWriter readAndPut:_width width:height frameTime:frameTime];
     }
     

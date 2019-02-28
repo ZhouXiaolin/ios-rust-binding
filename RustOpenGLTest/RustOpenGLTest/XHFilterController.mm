@@ -415,8 +415,8 @@ void print_test1(void* context){
 
         int _width = height;
         int _height = width;
-//        [_movieWriter readAndPutWithWidth:_width height:height frameTime:frameTime block:nil];
-        [_movieWriter readAndPut:_width width:height frameTime:frameTime];
+        [_movieWriter readAndPutWithWidth:_width height:height frameTime:frameTime];
+//        [_movieWriter readAndPut:_width width:height frameTime:frameTime];
     }
     
     [EAGLContext setCurrentContext:nil];

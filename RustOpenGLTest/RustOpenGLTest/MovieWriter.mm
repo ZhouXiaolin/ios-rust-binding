@@ -10,16 +10,32 @@
 #import <AVFoundation/AVFoundation.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import "XHImageContext.h"
+
+#define VIDEO_TIMESCALE 600
+
 @interface MovieWriter()
 {
-    BOOL isRecording;
     
-    AVAssetWriter *videoWriter;
-    AVAssetWriterInputPixelBufferAdaptor *adaptor;
-    AVAssetWriterInput* writerInput;
+    AVAssetWriter *assetWriter;
+    AVAssetWriterInputPixelBufferAdaptor *assetWriterPixelBufferInput;
+    AVAssetWriterInput* assetWriterVideoInput;
+    AVAssetWriterInput* assetWriterAudioInput;
     NSString *pathToMovie;
     
-    CMTime startTime;
+    CMTime startTime, previousFrameTime, previousAudioTime;
+    CMTime offsetTime;
+    
+    
+    
+    BOOL audioEncodingIsFinished, videoEncodingIsFinished;
+    
+    XHImageContext* _movieWriterContext;
+    
+    BOOL _encodingLiveVideo;
+    BOOL alreadyFinishedRecording;
+    
+    
 }
 @end
 @implementation MovieWriter
@@ -33,15 +49,16 @@
     }
     
     startTime = kCMTimeInvalid;
-
-
+    
+    
     
     AVFileType fileType = AVFileTypeQuickTimeMovie;
     
+    _movieWriterContext = [XHImageContext sharedImageProcessingContext];
     
     
     NSError *error = nil;
-    videoWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:fileType error:&error];
+    assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:fileType error:&error];
     
     if(error) {
         NSLog(@"error creating AssetWriter: %@",[error description]);
@@ -54,89 +71,132 @@
     
     
     
-    writerInput = [AVAssetWriterInput
-                   assetWriterInputWithMediaType:AVMediaTypeVideo
-                   outputSettings:videoSettings];
+    assetWriterVideoInput = [AVAssetWriterInput
+                             assetWriterInputWithMediaType:AVMediaTypeVideo
+                             outputSettings:videoSettings];
     
     NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
     [attributes setObject:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
     [attributes setObject:[NSNumber numberWithUnsignedInt:frameSize.width] forKey:(NSString*)kCVPixelBufferWidthKey];
     [attributes setObject:[NSNumber numberWithUnsignedInt:frameSize.height] forKey:(NSString*)kCVPixelBufferHeightKey];
     
-    adaptor = [AVAssetWriterInputPixelBufferAdaptor
-               assetWriterInputPixelBufferAdaptorWithAssetWriterInput:writerInput
-               sourcePixelBufferAttributes:attributes];
+    assetWriterPixelBufferInput = [AVAssetWriterInputPixelBufferAdaptor
+                                   assetWriterInputPixelBufferAdaptorWithAssetWriterInput:assetWriterVideoInput
+                                   sourcePixelBufferAttributes:attributes];
     
-    [videoWriter addInput:writerInput];
+    [assetWriter addInput:assetWriterVideoInput];
     
     // fixes all errors
-    writerInput.expectsMediaDataInRealTime = YES;
+    assetWriterVideoInput.expectsMediaDataInRealTime = YES;
     
     
     return self;
 }
 
 - (void) start {
-    isRecording = YES;
-    
-    BOOL start = [videoWriter startWriting];
-    [videoWriter startSessionAtSourceTime:kCMTimeZero];
+    startTime = kCMTimeInvalid;
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        [assetWriter startWriting];
+    });
+    _isRecording = YES;
 }
-
-- (void) stop{
-    isRecording = FALSE;
-    
-    [writerInput markAsFinished];
-    [videoWriter finishWritingWithCompletionHandler:^{
-
+- (void) stop {
+    [self stop:^{
+        
     }];
 }
-
-- (void) readAndPut:(int)height width:(int)width frameTime:(CMTime)frameTime
+- (void) stop:(void (^)(void))handler
 {
-    if (isRecording == YES) {
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        _isRecording = FALSE;
+        _isReady = FALSE;
+        _frameCount = 0;
         
-        
-        int _width = height;
-        int _height = width;
-        
-        if (CMTIME_IS_INVALID(startTime)) {
-            startTime = frameTime;
+        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown) {
+                    if (handler) {
+                        runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+                    }
+            return;
         }
         
-        CVPixelBufferRef pxbuffer = NULL;
+        if (assetWriter.status == AVAssetWriterStatusWriting && !videoEncodingIsFinished) {
+            videoEncodingIsFinished = TRUE;
+            [assetWriterVideoInput markAsFinished];
+        }
         
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
-                                 [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
-                                 nil];
+        if (assetWriter.status == AVAssetWriterStatusWriting && !audioEncodingIsFinished) {
+            audioEncodingIsFinished = TRUE;
+            [assetWriterAudioInput markAsFinished];
+        }
         
-        CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, _width,
-                                              _height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef) options,
-                                              &pxbuffer);
+        if (handler) {
+            [assetWriter finishWritingWithCompletionHandler:handler];
+        }else{
+            [assetWriter finishWriting];
+        }
+    });
+}
+
+
+- (void) readAndPutWithWidth:(int)width height:(int)height frameTime:(CMTime)frameTime;
+{
+    if (!_isRecording) {
+        return;
+    }
+    
+    int _width = width;
+    int _height = height;
+    
+    if (CMTIME_IS_INVALID(startTime)) {
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+            if (assetWriter.status != AVAssetWriterStatusWriting) {
+                [assetWriter startWriting];
+            }
+            [assetWriter startSessionAtSourceTime:frameTime];
+            
+            startTime = frameTime;
+        });
         
-        CVPixelBufferLockBaseAddress(pxbuffer, 0);
-        void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    }
+    
+    CVPixelBufferRef pxbuffer = NULL;
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGImageCompatibilityKey,
+                             [NSNumber numberWithBool:YES], kCVPixelBufferCGBitmapContextCompatibilityKey,
+                             nil];
+    
+    CVReturn status = CVPixelBufferCreate(kCFAllocatorDefault, _width,
+                                          _height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef) options,
+                                          &pxbuffer);
+    
+    CVPixelBufferLockBaseAddress(pxbuffer, 0);
+    void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
+    
+    glReadPixels(0, 0, _width, _height, GL_BGRA, GL_UNSIGNED_BYTE, pxdata);
+    
+    
+    runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
         
-        glReadPixels(0, 0, _width, _height, GL_BGRA, GL_UNSIGNED_BYTE, pxdata);
         
-        
-        if ([[adaptor assetWriterInput] isReadyForMoreMediaData]) {
-            BOOL result = [adaptor appendPixelBuffer:pxbuffer withPresentationTime:CMTimeSubtract(frameTime, startTime)];
+        if ([[assetWriterPixelBufferInput assetWriterInput] isReadyForMoreMediaData]) {
+            //
+            BOOL result = [assetWriterPixelBufferInput appendPixelBuffer:pxbuffer withPresentationTime:frameTime];
             
             if (result == NO) //failes on 3GS, but works on iphone 4
             {
                 NSLog(@"failed to append buffer");
-                NSLog(@"The error is %@", [videoWriter error]);
+                NSLog(@"The error is %@", [assetWriter error]);
             }
         }
         
         
         CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
         CVPixelBufferRelease(pxbuffer);
-        
-        
-    }
+    });
+    
+    
 }
 
 @end
+

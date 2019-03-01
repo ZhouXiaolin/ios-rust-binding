@@ -127,7 +127,7 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
 
             let scaledVertices = FillMode::preserveAspectRatio.transformVertices(verticallyInvertedImageVertices,framebuffer.sizeForTargetOrientation(ImageOrientation::portrait),self.backingSize.get());
 
-            let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates());
+            let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates(1.0));
 
             let inputTexture = InputTextureProperties::new(storage,inputFramebuffer.texture);
 

@@ -132,8 +132,8 @@ impl<'a> Edge for XheyCamera<'a> {
 
         let size = self.size.get();
 
-        let storage_1 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
-        let storage_2 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
+        let storage_1 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates(0.98));
+        let storage_2 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates(0.98));
 
         let textureProperties = vec![
             InputTextureProperties::new(storage_1,self.luminance),

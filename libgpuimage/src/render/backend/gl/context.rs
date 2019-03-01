@@ -72,14 +72,14 @@ impl GlContext {
 fn generateTextureVBOs() -> Vec<GLuint> {
     let mut textureVBOs = Vec::with_capacity(8);
 
-    textureVBOs.push(generateVBO(&Rotation::noRotation.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::rotateCounterclockwise.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::rotateClockwise.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::rotate180.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::flipHorizontally.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::flipVertically.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipVertically.textureCoordinates()));
-    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates()));
+    textureVBOs.push(generateVBO(&Rotation::noRotation.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::rotateCounterclockwise.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwise.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::rotate180.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::flipHorizontally.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::flipVertically.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipVertically.textureCoordinates(1.0)));
+    textureVBOs.push(generateVBO(&Rotation::rotateClockwiseAndFlipHorizontally.textureCoordinates(1.0)));
 
     textureVBOs
 }

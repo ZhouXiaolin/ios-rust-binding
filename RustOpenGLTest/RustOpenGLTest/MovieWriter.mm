@@ -13,7 +13,6 @@
 #import "XHImageContext.h"
 
 #define VIDEO_TIMESCALE 600
-
 @interface MovieWriter()
 {
     
@@ -40,7 +39,6 @@
 @end
 @implementation MovieWriter
 
-
 - (instancetype)initWithFrameSize:(CGSize) frameSize movieURL:(NSURL*)movieURL
 {
     
@@ -48,21 +46,33 @@
         return nil;
     }
     
+    _frameCount = 0;
     startTime = kCMTimeInvalid;
+    videoEncodingIsFinished = NO;
+    audioEncodingIsFinished = NO;
     
-    
+    previousFrameTime = kCMTimeNegativeInfinity;
+    previousAudioTime = kCMTimeNegativeInfinity;
+    _movieWriterContext = [XHImageContext sharedImageProcessingContext];
+    _encodingLiveVideo = YES;
     
     AVFileType fileType = AVFileTypeQuickTimeMovie;
     
-    _movieWriterContext = [XHImageContext sharedImageProcessingContext];
     
     
     NSError *error = nil;
     assetWriter = [[AVAssetWriter alloc] initWithURL:movieURL fileType:fileType error:&error];
     
-    if(error) {
+    if(error != nil) {
         NSLog(@"error creating AssetWriter: %@",[error description]);
+        if (_errorBlock) {
+            _errorBlock(error);
+        }
     }
+    assetWriter.movieFragmentInterval = CMTimeMakeWithSeconds(1.0, VIDEO_TIMESCALE);
+    assetWriter.movieTimeScale = VIDEO_TIMESCALE;
+    
+    
     NSDictionary *videoSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                    AVVideoCodecH264, AVVideoCodecKey,
                                    [NSNumber numberWithInt:frameSize.width], AVVideoWidthKey,
@@ -74,6 +84,9 @@
     assetWriterVideoInput = [AVAssetWriterInput
                              assetWriterInputWithMediaType:AVMediaTypeVideo
                              outputSettings:videoSettings];
+    // fixes all errors
+    assetWriterVideoInput.expectsMediaDataInRealTime = _encodingLiveVideo;
+    assetWriterVideoInput.mediaTimeScale = VIDEO_TIMESCALE;
     
     NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
     [attributes setObject:[NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA] forKey:(NSString*)kCVPixelBufferPixelFormatTypeKey];
@@ -86,36 +99,113 @@
     
     [assetWriter addInput:assetWriterVideoInput];
     
-    // fixes all errors
-    assetWriterVideoInput.expectsMediaDataInRealTime = YES;
+    
     
     
     return self;
 }
 
+
+- (void) setMovieWriterTransform:(CGAffineTransform) transform
+{
+    assetWriterVideoInput.transform = transform;
+    
+}
+
 - (void) start {
+    
+    
+    _frameCount = 0;
     startTime = kCMTimeInvalid;
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
         [assetWriter startWriting];
     });
     _isRecording = YES;
 }
-- (void) stop {
+
+- (void) stop{
     [self stop:^{
         
     }];
 }
+
+- (void) processAudioBuffer:(CMSampleBufferRef)sampleBuffer
+{
+    
+#if 1
+    if (!_isRecording) {
+        return;
+    }
+    
+    // 先录制视频帧
+    if (CMTIME_IS_INVALID(startTime)) {
+        return;
+    }
+    
+    CFRetain(sampleBuffer);
+    CMTime currentSampleTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
+    
+    if (CMTIME_IS_INVALID(startTime)) {
+        
+        runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+            if (assetWriter.status != AVAssetWriterStatusWriting) {
+                [assetWriter startWriting];
+            }
+            [assetWriter startSessionAtSourceTime:currentSampleTime];
+            
+            startTime = currentSampleTime;
+        });
+    }
+    
+    
+    if (!assetWriterAudioInput.readyForMoreMediaData && _encodingLiveVideo) {
+        CFRelease(sampleBuffer);
+        return;
+    }
+    
+    void(^write)() = ^(){
+        while (!assetWriterAudioInput.readyForMoreMediaData && !_encodingLiveVideo && !audioEncodingIsFinished) {
+            NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
+            [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
+        }
+        
+        if (!assetWriterAudioInput.readyForMoreMediaData) {
+            NSLog(@"2: Had to drop an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
+            
+        }else if (assetWriter.status == AVAssetWriterStatusWriting){
+            if (![assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
+                NSLog(@"Problem appending audio buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
+                
+            }
+        }else{
+            
+        }
+        
+        CFRelease(sampleBuffer);
+        
+    };
+    
+    if (_encodingLiveVideo) {
+        runAsynchronouslyOnContextQueue(_movieWriterContext, write);
+    }else{
+        write();
+    }
+#endif
+}
+- (void)dealloc {
+    NSLog(@"->->->->->->->->->->->->->->->->->->->->->->->->->->->->->->");
+}
 - (void) stop:(void (^)(void))handler
 {
+    
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
         _isRecording = FALSE;
         _isReady = FALSE;
         _frameCount = 0;
-        
         if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown) {
-                    if (handler) {
-                        runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
-                    }
+            if (handler) {
+                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+            }
             return;
         }
         
@@ -135,10 +225,45 @@
             [assetWriter finishWriting];
         }
     });
+    
+}
+
+- (void) activateAudioTrack
+{
+    NSDictionary* audioOutputSettings = [NSDictionary dictionaryWithObjectsAndKeys:
+                                         [NSNumber numberWithInt:kAudioFormatMPEG4AAC_HE],AVFormatIDKey,
+                                         [NSNumber numberWithInt:2], AVNumberOfChannelsKey,
+                                         [NSNumber numberWithFloat:44100], AVSampleRateKey,
+                                         [NSNumber numberWithInt:64000], AVEncoderBitRateKey,
+                                         nil];
+    assetWriterAudioInput = [[AVAssetWriterInput alloc] initWithMediaType:AVMediaTypeAudio outputSettings:audioOutputSettings];
+    [assetWriter addInput:assetWriterAudioInput];
+    [assetWriterAudioInput setExpectsMediaDataInRealTime:_encodingLiveVideo];
+}
+
+- (void) cancelRecording {
+    if (assetWriter.status == AVAssetWriterStatusCompleted) {
+        return;
+    }
+    
+    _isRecording = NO;
+    runSynchronouslyOnContextQueue(_movieWriterContext, ^{
+        alreadyFinishedRecording = YES;
+        if (assetWriter.status == AVAssetWriterStatusWriting && !videoEncodingIsFinished) {
+            videoEncodingIsFinished = YES;
+            [assetWriterVideoInput markAsFinished];
+        }
+        
+        if (assetWriter.status == AVAssetWriterStatusWriting && !audioEncodingIsFinished) {
+            audioEncodingIsFinished = YES;
+            [assetWriterAudioInput markAsFinished];
+        }
+        [assetWriter cancelWriting];
+    });
 }
 
 
-- (void) readAndPutWithWidth:(int)width height:(int)height frameTime:(CMTime)frameTime;
+- (void) readAndPutWithWidth:(int)width height:(int)height frameTime:(CMTime)frameTime
 {
     if (!_isRecording) {
         return;
@@ -147,7 +272,9 @@
     int _width = width;
     int _height = height;
     
+    
     if (CMTIME_IS_INVALID(startTime)) {
+        
         runSynchronouslyOnContextQueue(_movieWriterContext, ^{
             if (assetWriter.status != AVAssetWriterStatusWriting) {
                 [assetWriter startWriting];
@@ -156,8 +283,19 @@
             
             startTime = frameTime;
         });
-        
     }
+    
+    CMTime currentTime = CMTimeSubtract(frameTime, startTime);
+    CGFloat cur_t = CMTimeGetSeconds(currentTime);
+    
+    _frameCount++;
+    
+    
+    if (self.progressBlock) {
+        self.progressBlock(cur_t);
+    }
+    
+
     
     CVPixelBufferRef pxbuffer = NULL;
     
@@ -170,11 +308,11 @@
                                           _height, kCVPixelFormatType_32BGRA, (__bridge CFDictionaryRef) options,
                                           &pxbuffer);
     
+    
     CVPixelBufferLockBaseAddress(pxbuffer, 0);
     void *pxdata = CVPixelBufferGetBaseAddress(pxbuffer);
     
     glReadPixels(0, 0, _width, _height, GL_BGRA, GL_UNSIGNED_BYTE, pxdata);
-    
     
     runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
         
@@ -194,8 +332,6 @@
         CVPixelBufferUnlockBaseAddress(pxbuffer, 0);
         CVPixelBufferRelease(pxbuffer);
     });
-    
-    
 }
 
 @end

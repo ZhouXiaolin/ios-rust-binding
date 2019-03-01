@@ -1,6 +1,6 @@
 ios:
-	cargo build --target aarch64-apple-ios
-	cp target/aarch64-apple-ios/debug/libgpuimage.a ~/Documents/RustGPUImage/RustOpenGLTest/libGPUImage
+	cargo build --target aarch64-apple-ios --release
+	cp target/aarch64-apple-ios/release/libgpuimage.a ~/Documents/RustGPUImage/RustOpenGLTest/libGPUImage
 	cp ~/Documents/RustGPUImage/libgpuimage/src/gpuimage.h ~/Documents/RustGPUImage/RustOpenGLTest/libGPUImage
 
 android:

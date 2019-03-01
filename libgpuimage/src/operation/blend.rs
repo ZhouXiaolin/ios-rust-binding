@@ -188,7 +188,7 @@ impl<'a> Renderable for XHeyBlendFilter<'a> {
 
         for watermark in self.watermarks.iter() {
 
-            let storage = InputTextureStorageFormat::textureCoordinate(watermark.rotation.textureCoordinates());
+            let storage = InputTextureStorageFormat::textureCoordinate(watermark.rotation.textureCoordinates(1.0));
             let textureProperties = vec![InputTextureProperties::new(storage,watermark.textureId)];
 
 

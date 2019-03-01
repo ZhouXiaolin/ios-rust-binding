@@ -53,17 +53,17 @@ impl Rotation {
         }
     }
 
-    pub fn textureCoordinates(&self) -> [f32;8] {
+    pub fn textureCoordinates(&self, scale: f32) -> [f32;8] {
 
         match self {
-            Rotation::noRotation => [0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0],
-            Rotation::rotateCounterclockwise => [0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0],
-            Rotation::rotateClockwise =>[1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 1.0],
-            Rotation::rotate180 => [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-            Rotation::flipHorizontally => [1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0],
-            Rotation::flipVertically => [0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0],
-            Rotation::rotateClockwiseAndFlipVertically => [0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0],
-            Rotation::rotateClockwiseAndFlipHorizontally => [1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+            Rotation::noRotation => [0.0 * scale, 0.0 * scale, 1.0 * scale, 0.0 * scale, 0.0 * scale, 1.0 * scale, 1.0 * scale, 1.0 * scale],
+            Rotation::rotateCounterclockwise => [0.0 * scale, 1.0 * scale, 0.0 * scale, 0.0 * scale, 1.0 * scale, 1.0 * scale, 1.0 * scale, 0.0 * scale],
+            Rotation::rotateClockwise =>[1.0 * scale, 0.0 * scale, 1.0 * scale, 1.0 * scale, 0.0 * scale, 0.0 * scale, 0.0 * scale, 1.0 * scale],
+            Rotation::rotate180 => [1.0 * scale, 1.0 * scale, 0.0 * scale, 1.0 * scale, 1.0 * scale, 0.0 * scale, 0.0 * scale, 0.0 * scale],
+            Rotation::flipHorizontally => [1.0 * scale, 0.0, 0.0, 0.0, 1.0 * scale, 1.0 * scale, 0.0, 1.0 * scale],
+            Rotation::flipVertically => [0.0, 1.0 * scale, 1.0 * scale, 1.0 * scale, 0.0, 0.0, 1.0 * scale, 0.0],
+            Rotation::rotateClockwiseAndFlipVertically => [0.0, 0.0, 0.0, 1.0 * scale, 1.0 * scale, 0.0, 1.0 * scale, 1.0 * scale],
+            Rotation::rotateClockwiseAndFlipHorizontally => [1.0 * scale, 1.0 * scale, 1.0 * scale, 0.0, 0.0, 1.0 * scale, 0.0, 0.0]
         }
     }
 

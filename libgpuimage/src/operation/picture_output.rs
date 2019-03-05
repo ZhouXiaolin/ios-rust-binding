@@ -142,15 +142,6 @@ impl<'a> Drawable for XheyPictureOutput<'a> {
         });
 
 
-
-
-//        renderFramebuffer.bindFramebufferForRendering();
-//
-//        clearFramebufferWithColor(Color::white());
-
-
-//        renderFramebuffer.unbindFramebufferForRendering();
-
         info!("picture output finish");
 
     }

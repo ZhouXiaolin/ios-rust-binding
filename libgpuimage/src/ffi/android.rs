@@ -8,9 +8,8 @@ use jni::sys::*;
 use std::os::raw::{c_void,c_int,c_uint,c_float};
 
 use gles_rust_binding::*;
-use super::render::{Framebuffer,GlContext};
-use crate::render::Matrix4x4;
-use super::structure::{Graph,Edge};
+use crate::render::{Framebuffer,GlContext,Matrix4x4};
+use crate::structure::{Graph,Edge,Computeable};
 
 use log::Level;
 use android_logger::Filter;

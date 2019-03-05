@@ -9,10 +9,9 @@ use crate::render::Matrix3x3;
 use crate::structure::Computeable;
 
 
-use super::structure::{Graph,Edge};
-use super::render::{Framebuffer,GlContext};
-
-use super::operation::*;
+use crate::structure::{Graph,Edge,Computeable};
+use crate::render::{Framebuffer,GlContext};
+use crate::operation::*;
 
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
 #[no_mangle]

@@ -6,6 +6,7 @@ use std::mem::transmute;
 use std::rc::Rc;
 use gles_rust_binding::*;
 use crate::render::Matrix3x3;
+use crate::structure::Computeable;
 
 
 use super::structure::{Graph,Edge};

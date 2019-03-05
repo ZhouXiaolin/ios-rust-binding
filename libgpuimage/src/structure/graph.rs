@@ -5,7 +5,6 @@ use std::sync::Arc;
 
 /// 使用Rc来保持Tensor引用
 /// Graph应当和Context分离
-///
 
 #[repr(C)]
 pub struct Graph<'a,T:Tensor>{
@@ -30,6 +29,55 @@ impl<'a,T:Tensor> Drop for Graph<'a,T> {
 
 }
 
+impl<'a, T:Tensor> Computeable for Graph<'a, T> {
+    /// 渲染过程 前向计算
+    fn forward(&self) {
+
+        let nodes = &self.nodes;
+        let edges = &self.edges;
+
+        for node in nodes {
+
+            let in_edge : &Box<&Edge<Item=Arc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
+            let mut xs = Vec::<Arc<T>>::with_capacity(in_edge.arity() as usize);
+            //  如果in_edge的arity为0，为input节点，不会进入这个循环
+            for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
+                let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
+                let mut fbo_vec = inner_node.f.borrow_mut();
+                let fbo = fbo_vec.pop().unwrap();
+                xs.insert(ti,fbo.clone());
+                fbo_vec.push(fbo);
+
+            }
+
+
+            if let Some(v) = in_edge.forward(&xs) {
+                for _ in &node.out_edges {
+                    // 从当前节点出发，有多少target,就需要lock多少次
+                    v.lock();
+                }
+
+                let mut f = node.f.borrow_mut();
+                if f.len() > 0 { f.pop(); }
+
+                f.push(v)
+            }
+
+            for x in xs {
+                // 这个节点的forward完毕后，unlock他的输入
+                x.unlock();
+            }
+
+        }
+
+
+
+    }
+
+    fn backward(&self){
+
+    }
+}
 
 
 
@@ -42,7 +90,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
         }
     }
 
-    /// 清空关系图 一般用于重新构建一个图
+    /// 清空关系图 一般用于重新构建一个图 有问题？
     pub fn reset(&mut self) {
         self.nodes = Vec::default();
         self.edges = Vec::default();
@@ -123,52 +171,6 @@ impl<'a,T:Tensor> Graph<'a,T> {
                 println!("N{} ---> N{}",ni,edge.head_node());
             }
         }
-
-    }
-
-
-
-    /// 渲染过程 前向计算
-    pub fn forward(&self) {
-
-        let nodes = &self.nodes;
-        let edges = &self.edges;
-
-        for node in nodes {
-
-            let in_edge : &Box<&Edge<Item=Arc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
-            let mut xs = Vec::<Arc<T>>::with_capacity(in_edge.arity() as usize);
-            //  如果in_edge的arity为0，为input节点，不会进入这个循环
-            for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
-                let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
-                let mut fbo_vec = inner_node.f.borrow_mut();
-                let fbo = fbo_vec.pop().unwrap();
-                xs.insert(ti,fbo.clone());
-                fbo_vec.push(fbo);
-
-            }
-
-
-            if let Some(v) = in_edge.forward(&xs) {
-                for _ in &node.out_edges {
-                    // 从当前节点出发，有多少target,就需要lock多少次
-                    v.lock();
-                }
-
-                let mut f = node.f.borrow_mut();
-                if f.len() > 0 { f.pop(); }
-
-                f.push(v)
-            }
-
-            for x in xs {
-                // 这个节点的forward完毕后，unlock他的输入
-                x.unlock();
-            }
-
-        }
-
-
 
     }
 

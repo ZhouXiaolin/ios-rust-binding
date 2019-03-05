@@ -73,6 +73,7 @@ void release_picture(long picture);
 
 long xhey_init_lookup_filter(long context);
 void release_lookup_filter(long lookup);
+void xhey_update_lookup_intensity(long lut, float v);
 
 long xhey_init_picture_output(long context, int width, int height, int orient);
 void xhey_update_picture_output_hook(long pic_output, hook,void*);
@@ -86,6 +87,7 @@ void camera_update_luminance(long filter, int luminance);
 void camera_update_chrominance(long filter, int chrominance);
 void camera_update_matrix(long filter, float* mat);
 void camera_update_size(long filter, int width, int height);
+void camera_update_rotation(long filter, int rotation);
 void release_camera(long filter);
 #if __cplusplus
 }

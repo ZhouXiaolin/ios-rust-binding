@@ -140,8 +140,8 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
     let box_graph = graph as *mut RenderGraph;
     let box_graph = box_graph.as_mut().unwrap();
 
-    let box_picture = camera as *mut XheyCamera;
-    let box_picture = box_picture.as_mut().unwrap();
+    let box_camera = camera as *mut XheyCamera;
+    let box_camera = box_camera.as_mut().unwrap();
 
     let box_basic = basic as *mut XHeyBasicFilter;
     let box_basic = box_basic.as_mut().unwrap();
@@ -149,10 +149,10 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
 
     let box_lut = lut as *mut XheyPicture;
     let box_lut = box_lut.as_mut().unwrap();
-//
+
     let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
     let box_lut_filter = box_lut_filter.as_mut().unwrap();
-//
+
     let box_unsharp_mark = unsharpask as *mut XHeyUnsharpMaskFilter;
     let box_unsharp_mark = box_unsharp_mark.as_mut().unwrap();
 
@@ -163,10 +163,10 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
     let box_normal_output = box_normal_output.as_mut().unwrap();
 
 
-    let pic = box_graph.add_input("picture", box_picture);
-    let basic = box_graph.add_function("basic",&[pic],box_basic);
+    let cam = box_graph.add_input("camera", box_camera);
+    let basic = box_graph.add_function("basic",&[cam],box_basic);
 
-    let normal_output = box_graph.add_function("normal output",&[pic], box_normal_output);
+    let normal_output = box_graph.add_function("normal output",&[cam], box_normal_output);
 
     let lut = box_graph.add_input("lut", box_lut);
     let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
@@ -308,6 +308,13 @@ pub unsafe extern "C" fn xhey_init_camera(context: c_long, width: i32, height: i
     let context = context.as_ref().unwrap();
     let filter = Box::new(XheyCamera::new(context,width,height,orient));
     Box::into_raw(filter) as c_long
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn camera_update_rotation(filter: c_long, rotation: i32){
+    let filter = filter as *mut XheyCamera;
+    let filter = filter.as_mut().unwrap();
+    filter.updateRotation(rotation);
 }
 
 #[no_mangle]
@@ -463,7 +470,12 @@ pub unsafe extern "C" fn xhey_init_lookup_filter(context:c_long) -> c_long {
     let filter = Box::new(XHeyLookupFilter::new(context));
     Box::into_raw(filter) as c_long
 }
-
+#[no_mangle]
+pub unsafe extern "C" fn xhey_update_lookup_intensity(lut_filter: c_long, v: c_float){
+    let filter = lut_filter as *mut XHeyLookupFilter;
+    let filter = filter.as_mut().unwrap();
+    filter.set_intensity(v);
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn release_lookup_filter(lookup_filter_ptr: c_long) {

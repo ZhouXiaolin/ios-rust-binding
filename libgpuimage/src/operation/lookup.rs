@@ -44,7 +44,7 @@ impl<'a> XHeyLookupFilter<'a> {
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
 
- uniform highp float intensity;
+ uniform lowp float intensity;
 
  void main()
  {
@@ -77,7 +77,7 @@ impl<'a> XHeyLookupFilter<'a> {
     "#;
         let shader = GLProgram::new(vertexString,fragmentString);
         let mut uniformSettings = ShaderUniformSettings::default();
-        uniformSettings.setValue("intensity",Uniform::Float(1.0));
+        uniformSettings.setValue("intensity",Uniform::Float(0.8));
 
 
         Self{

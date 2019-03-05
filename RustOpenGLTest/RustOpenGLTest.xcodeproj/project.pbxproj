@@ -27,7 +27,7 @@
 		9FC94115216E14AA00BED96C /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FC94114216E14AA00BED96C /* GLKit.framework */; };
 		9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */ = {isa = PBXBuildFile; fileRef = 9FC94116216F2F2700BED96C /* IMG_2333.JPG */; };
 		9FD66C5921A025E7005638E2 /* libgpuimage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9FD66C5721A025E7005638E2 /* libgpuimage.a */; };
-		9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */; };
+		9FFCFBD4214AB54600DBAB46 /* CameraEntry.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCFBD2214AB54600DBAB46 /* CameraEntry.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,7 +66,7 @@
 		9FC94116216F2F2700BED96C /* IMG_2333.JPG */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = IMG_2333.JPG; sourceTree = "<group>"; };
 		9FD66C5721A025E7005638E2 /* libgpuimage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libgpuimage.a; sourceTree = "<group>"; };
 		9FD66C5821A025E7005638E2 /* gpuimage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gpuimage.h; sourceTree = "<group>"; };
-		9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraEntry.m; sourceTree = "<group>"; };
+		9FFCFBD2214AB54600DBAB46 /* CameraEntry.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CameraEntry.mm; sourceTree = "<group>"; };
 		9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraEntry.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -118,7 +118,7 @@
 				9F187FE4214B64AC00D855F6 /* XLHelpClass.h */,
 				9F187FE5214B64AC00D855F6 /* XLHelpClass.mm */,
 				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
-				9FFCFBD2214AB54600DBAB46 /* CameraEntry.m */,
+				9FFCFBD2214AB54600DBAB46 /* CameraEntry.mm */,
 				9F07A24321F6FA7600DAE084 /* MovieWriter.h */,
 				9F07A24421F6FA7600DAE084 /* MovieWriter.mm */,
 				9F07A24921F6FD2B00DAE084 /* MovieOutput.h */,
@@ -232,7 +232,7 @@
 			files = (
 				9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */,
 				9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */,
-				9FFCFBD4214AB54600DBAB46 /* CameraEntry.m in Sources */,
+				9FFCFBD4214AB54600DBAB46 /* CameraEntry.mm in Sources */,
 				9F187FE6214B64AC00D855F6 /* XLHelpClass.mm in Sources */,
 				9F07A24521F6FA7700DAE084 /* MovieWriter.mm in Sources */,
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,

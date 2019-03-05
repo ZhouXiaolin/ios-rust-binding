@@ -17,7 +17,8 @@ pub struct XheyCamera<'a>{
     uniformSettings: ShaderUniformSettings,
     orientation: ImageOrientation,
     resultId: Cell<u32>,
-    context: &'a GlContext
+    context: &'a GlContext,
+    rotation: Option<Rotation>
 }
 
 impl<'a> XheyCamera<'a>{
@@ -71,7 +72,8 @@ varying highp vec2 textureCoordinate2;
             uniformSettings:ShaderUniformSettings::default(),
             orientation:ImageOrientation::from(orient),
             resultId:Cell::from(0),
-            context
+            context,
+            rotation: Some(Rotation::noRotation)
         }
     }
 
@@ -88,12 +90,14 @@ varying highp vec2 textureCoordinate2;
         self.resultId.get()
     }
 
-
     pub fn updateMatrix(&mut self, matrix: Matrix3x3){
         self.uniformSettings.setValue("colorConversionMatrix", Uniform::Matrix3x3(matrix));
     }
     pub fn updateSize(&mut self, width: i32, height: i32){
         self.size.set(GLSize::new(width,height));
+    }
+    pub fn updateRotation(&mut self, rotation: i32){
+        self.rotation = Some(Rotation::from(rotation));
     }
 }
 
@@ -132,8 +136,8 @@ impl<'a> Edge for XheyCamera<'a> {
 
         let size = self.size.get();
 
-        let storage_1 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates(0.98));
-        let storage_2 = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates(0.98));
+        let storage_1 = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates(0.98));
+        let storage_2 = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates(0.98));
 
         let textureProperties = vec![
             InputTextureProperties::new(storage_1,self.luminance),

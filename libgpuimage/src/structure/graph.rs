@@ -15,6 +15,12 @@ pub struct Graph<'a,T:Tensor>{
 }
 pub type VariableIndex = u32;
 
+/// 计算抽象 前向计算和反向计算
+pub trait Computeable {
+    fn forward(&self);
+    fn backward(&self);
+}
+
 
 impl<'a,T:Tensor> Drop for Graph<'a,T> {
     fn drop(&mut self){
@@ -23,6 +29,10 @@ impl<'a,T:Tensor> Drop for Graph<'a,T> {
     }
 
 }
+
+
+
+
 
 impl<'a,T:Tensor> Graph<'a,T> {
     pub fn new() -> Self {

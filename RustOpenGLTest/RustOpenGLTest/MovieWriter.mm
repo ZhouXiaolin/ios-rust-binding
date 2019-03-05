@@ -118,7 +118,7 @@
     _frameCount = 0;
     startTime = kCMTimeInvalid;
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-        [assetWriter startWriting];
+        [self->assetWriter startWriting];
     });
     _isRecording = YES;
 }
@@ -148,12 +148,12 @@
     if (CMTIME_IS_INVALID(startTime)) {
         
         runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-            if (assetWriter.status != AVAssetWriterStatusWriting) {
-                [assetWriter startWriting];
+            if (self->assetWriter.status != AVAssetWriterStatusWriting) {
+                [self->assetWriter startWriting];
             }
-            [assetWriter startSessionAtSourceTime:currentSampleTime];
+            [self->assetWriter startSessionAtSourceTime:currentSampleTime];
             
-            startTime = currentSampleTime;
+            self->startTime = currentSampleTime;
         });
     }
     
@@ -164,16 +164,16 @@
     }
     
     void(^write)() = ^(){
-        while (!assetWriterAudioInput.readyForMoreMediaData && !_encodingLiveVideo && !audioEncodingIsFinished) {
+        while (!self->assetWriterAudioInput.readyForMoreMediaData && !self->_encodingLiveVideo && !audioEncodingIsFinished) {
             NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.5];
             [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
         }
         
-        if (!assetWriterAudioInput.readyForMoreMediaData) {
+        if (!self->assetWriterAudioInput.readyForMoreMediaData) {
             NSLog(@"2: Had to drop an audio frame %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
             
-        }else if (assetWriter.status == AVAssetWriterStatusWriting){
-            if (![assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
+        }else if (self->assetWriter.status == AVAssetWriterStatusWriting){
+            if (![self->assetWriterAudioInput appendSampleBuffer:sampleBuffer]) {
                 NSLog(@"Problem appending audio buffer at time: %@", CFBridgingRelease(CMTimeCopyDescription(kCFAllocatorDefault, currentSampleTime)));
                 
             }
@@ -199,30 +199,30 @@
 {
     
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-        _isRecording = FALSE;
-        _isReady = FALSE;
-        _frameCount = 0;
-        if (assetWriter.status == AVAssetWriterStatusCompleted || assetWriter.status == AVAssetWriterStatusCancelled || assetWriter.status == AVAssetWriterStatusUnknown) {
+        self->_isRecording = FALSE;
+        self->_isReady = FALSE;
+        self->_frameCount = 0;
+        if (self->assetWriter.status == AVAssetWriterStatusCompleted || self->assetWriter.status == AVAssetWriterStatusCancelled || self->assetWriter.status == AVAssetWriterStatusUnknown) {
             if (handler) {
-                runAsynchronouslyOnContextQueue(_movieWriterContext, handler);
+                runAsynchronouslyOnContextQueue(self->_movieWriterContext, handler);
             }
             return;
         }
         
-        if (assetWriter.status == AVAssetWriterStatusWriting && !videoEncodingIsFinished) {
-            videoEncodingIsFinished = TRUE;
-            [assetWriterVideoInput markAsFinished];
+        if (self->assetWriter.status == AVAssetWriterStatusWriting && !self->videoEncodingIsFinished) {
+            self->videoEncodingIsFinished = TRUE;
+            [self->assetWriterVideoInput markAsFinished];
         }
         
-        if (assetWriter.status == AVAssetWriterStatusWriting && !audioEncodingIsFinished) {
-            audioEncodingIsFinished = TRUE;
-            [assetWriterAudioInput markAsFinished];
+        if (self->assetWriter.status == AVAssetWriterStatusWriting && !self->audioEncodingIsFinished) {
+            self->audioEncodingIsFinished = TRUE;
+            [self->assetWriterAudioInput markAsFinished];
         }
         
         if (handler) {
-            [assetWriter finishWritingWithCompletionHandler:handler];
+            [self->assetWriter finishWritingWithCompletionHandler:handler];
         }else{
-            [assetWriter finishWriting];
+            [self->assetWriter finishWriting];
         }
     });
     
@@ -248,17 +248,17 @@
     
     _isRecording = NO;
     runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-        alreadyFinishedRecording = YES;
-        if (assetWriter.status == AVAssetWriterStatusWriting && !videoEncodingIsFinished) {
-            videoEncodingIsFinished = YES;
-            [assetWriterVideoInput markAsFinished];
+        self->alreadyFinishedRecording = YES;
+        if (self->assetWriter.status == AVAssetWriterStatusWriting && !self->videoEncodingIsFinished) {
+            self->videoEncodingIsFinished = YES;
+            [self->assetWriterVideoInput markAsFinished];
         }
         
-        if (assetWriter.status == AVAssetWriterStatusWriting && !audioEncodingIsFinished) {
-            audioEncodingIsFinished = YES;
-            [assetWriterAudioInput markAsFinished];
+        if (self->assetWriter.status == AVAssetWriterStatusWriting && !self->audioEncodingIsFinished) {
+            self->audioEncodingIsFinished = YES;
+            [self->assetWriterAudioInput markAsFinished];
         }
-        [assetWriter cancelWriting];
+        [self->assetWriter cancelWriting];
     });
 }
 
@@ -276,12 +276,12 @@
     if (CMTIME_IS_INVALID(startTime)) {
         
         runSynchronouslyOnContextQueue(_movieWriterContext, ^{
-            if (assetWriter.status != AVAssetWriterStatusWriting) {
-                [assetWriter startWriting];
+            if (self->assetWriter.status != AVAssetWriterStatusWriting) {
+                [self->assetWriter startWriting];
             }
-            [assetWriter startSessionAtSourceTime:frameTime];
+            [self->assetWriter startSessionAtSourceTime:frameTime];
             
-            startTime = frameTime;
+            self->startTime = frameTime;
         });
     }
     
@@ -317,14 +317,14 @@
     runAsynchronouslyOnContextQueue(_movieWriterContext, ^{
         
         
-        if ([[assetWriterPixelBufferInput assetWriterInput] isReadyForMoreMediaData]) {
+        if ([[self->assetWriterPixelBufferInput assetWriterInput] isReadyForMoreMediaData]) {
             //
-            BOOL result = [assetWriterPixelBufferInput appendPixelBuffer:pxbuffer withPresentationTime:frameTime];
+            BOOL result = [self->assetWriterPixelBufferInput appendPixelBuffer:pxbuffer withPresentationTime:frameTime];
             
             if (result == NO) //failes on 3GS, but works on iphone 4
             {
                 NSLog(@"failed to append buffer");
-                NSLog(@"The error is %@", [assetWriter error]);
+                NSLog(@"The error is %@", [self->assetWriter error]);
             }
         }
         

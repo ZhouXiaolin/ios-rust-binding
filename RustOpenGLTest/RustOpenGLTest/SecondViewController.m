@@ -38,7 +38,7 @@
     int HEIGHT = self.view.bounds.size.height;
     
     
-    glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
+    glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [self.view addSubview:glView];
     
     filterController = [[XHFilterController alloc]

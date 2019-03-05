@@ -40,9 +40,5 @@ pub trait Drawable{
     fn render(&self, x:&Self::Item);
 }
 
-/// 计算
-/// 计算过程
-pub trait Computeable{
 
-}
 

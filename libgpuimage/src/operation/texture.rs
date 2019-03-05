@@ -17,7 +17,8 @@ pub struct XheyOESTexture<'a>{
     uniformSettings:ShaderUniformSettings,
     orientation: ImageOrientation,
     resultId: Cell<u32>,
-    context: &'a GlContext
+    context: &'a GlContext,
+    rotation: Option<Rotation>
 
 }
 
@@ -66,7 +67,8 @@ impl<'a> XheyOESTexture<'a> {
             uniformSettings:ShaderUniformSettings::default(),
             orientation: ImageOrientation::from(orient),
             resultId:Cell::from(0),
-            context
+            context,
+            rotation: Some(Rotation::noRotation)
         }
     }
 
@@ -118,7 +120,8 @@ impl<'a> Edge for XheyOESTexture<'a> {
 
         let size = self.size;
 
-        let storage = InputTextureStorageFormat::textureCoordinate(Rotation::noRotation.textureCoordinates());
+
+        let storage = InputTextureStorageFormat::textureCoordinate(self.rotation.unwrap().textureCoordinates(1.0));
 
         let textureProperties = vec![InputTextureProperties::new(storage,self.textureId)];
 

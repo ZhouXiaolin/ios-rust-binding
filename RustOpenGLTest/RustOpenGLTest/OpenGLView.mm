@@ -26,8 +26,8 @@ NSString* const kVertexString = SHADER_STRING
      gl_Position = position;
      textureCoordinate = inputTextureCoordinate.xy;
  }
-
-);
+ 
+ );
 
 NSString* const kFragmentString = SHADER_STRING
 (
@@ -40,8 +40,8 @@ NSString* const kFragmentString = SHADER_STRING
  {
      gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
  }
-
-);
+ 
+ );
 
 // 使用匿名 category 来声明私有成员
 @interface OpenGLView()
@@ -49,20 +49,107 @@ NSString* const kFragmentString = SHADER_STRING
     
     int backingWidth;
     int backingHeight;
+    
+    CGSize inputImageSize;
+    GLfloat imageVertices[8];
+    
+    GPUImageRotationMode inputRotation;
+    
 }
-
+@property (nonatomic, assign) CGFloat red;
+@property (nonatomic, assign) CGFloat green;
+@property (nonatomic, assign) CGFloat blue;
+@property (nonatomic, assign) CGFloat alpha;
+- (void)recalculateViewGeometry;
 
 @end
 
 @implementation OpenGLView
 
+
+- (void)setFillMode:(GPUImageFillModeType)newValue;
+{
+    _fillMode = newValue;
+    [self recalculateViewGeometry];
+}
+- (void)recalculateViewGeometry {
+    runSynchronouslyOnVideoProcessingQueue(^{
+        CGFloat heightScaling, widthScaling;
+        
+        CGSize currentViewSize = self.bounds.size;
+        
+        //    CGFloat imageAspectRatio = inputImageSize.width / inputImageSize.height;
+        //    CGFloat viewAspectRatio = currentViewSize.width / currentViewSize.height;
+        
+        CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, self.bounds);
+        
+        switch(_fillMode)
+        {
+            case kGPUImageFillModeStretch:
+            {
+                widthScaling = 1.0;
+                heightScaling = 1.0;
+            }; break;
+            case kGPUImageFillModePreserveAspectRatio:
+            {
+                widthScaling = insetRect.size.width / currentViewSize.width;
+                heightScaling = insetRect.size.height / currentViewSize.height;
+            }; break;
+            case kGPUImageFillModePreserveAspectRatioAndFill:
+            {
+                //            CGFloat widthHolder = insetRect.size.width / currentViewSize.width;
+                widthScaling = currentViewSize.height / insetRect.size.height;
+                heightScaling = currentViewSize.width / insetRect.size.width;
+            }; break;
+        }
+        
+        imageVertices[0] = -widthScaling;
+        imageVertices[1] = -heightScaling;
+        imageVertices[2] = widthScaling;
+        imageVertices[3] = -heightScaling;
+        imageVertices[4] = -widthScaling;
+        imageVertices[5] = heightScaling;
+        imageVertices[6] = widthScaling;
+        imageVertices[7] = heightScaling;
+    });
+}
+
+- (void)setInputImageSize:(CGSize)size {
+    inputImageSize = size;
+}
+- (CGRect)calculateRenderFrame{
+    CGFloat heightR = imageVertices[5] * self.frame.size.height;
+    CGFloat widthR = imageVertices[6] * self.frame.size.width;
+    
+    CGRect renderFrame = CGRectMake((self.frame.size.width - widthR)/2, (self.frame.size.height - heightR)/2, widthR, heightR);
+    return renderFrame;
+}
 + (Class)layerClass {
     // 只有 [CAEAGLLayer class] 类型的 layer 才支持在其上描绘 OpenGL 内容。
     return [CAEAGLLayer class];
 }
 
-
-- (id)initWithFrame:(CGRect)frame context:(EAGLContext*) context
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self commonInit];
+        
+        _context = [[XHImageContext sharedImageProcessingContext] context];
+        
+        inputRotation = kGPUImageRotateRightFlipHorizontal;
+        
+        [EAGLContext setCurrentContext:_context];
+        
+        
+        //        [self destoryBuffers];
+        
+        [self setupProgram];
+    }
+    
+    return self;
+}
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -70,16 +157,25 @@ NSString* const kFragmentString = SHADER_STRING
         
         _context = [[XHImageContext sharedImageProcessingContext] context];
         
-//        [EAGLContext setCurrentContext:_context];
+        inputRotation = kGPUImageRotateRightFlipHorizontal;
         
         
+        [EAGLContext setCurrentContext:_context];
         
-//        [self destoryBuffers];
+        
+        //        [self destoryBuffers];
         
         [self setupProgram];
     }
     
     return self;
+}
+
+- (void)setRenderBackingColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue alpha:(CGFloat)alpha {
+    self.red = red;
+    self.green = green;
+    self.blue = blue;
+    self.alpha = alpha;
 }
 
 - (void) commonInit{
@@ -112,10 +208,12 @@ NSString* const kFragmentString = SHADER_STRING
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
     
-   
+    
     // 将 _colorRenderBuffer 装配到 GL_COLOR_ATTACHMENT0 这个装配点上
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                               GL_RENDERBUFFER, _colorRenderBuffer);
+    
+    [self recalculateViewGeometry];
 }
 
 
@@ -130,7 +228,7 @@ NSString* const kFragmentString = SHADER_STRING
 {
     glDeleteRenderbuffers(1, &_colorRenderBuffer);
     _colorRenderBuffer = 0;
-
+    
     glDeleteFramebuffers(1, &_frameBuffer);
     _frameBuffer = 0;
 }
@@ -140,9 +238,12 @@ NSString* const kFragmentString = SHADER_STRING
     glViewport(0, 0, backingWidth, backingHeight);
 }
 
+- (void) setInputImageRotation:(GPUImageRotationMode) rotation;
+{
+    inputRotation = rotation;
+}
 
-
-- (void)renderTextureId:(GLuint) textureId
+- (void)renderTextureId:(GLuint) textureId;
 {
     
     if ([EAGLContext currentContext] != _context ) {
@@ -154,28 +255,28 @@ NSString* const kFragmentString = SHADER_STRING
         [self createDisplayFramebuffer];
     }
     
+    
+    
     [self activateDisplayFramebuffer];
+    
+    
+    
+    
+    
     
     glUseProgram(_programHandle);
     
-    glClearColor(1.0, 0.0, 0, 1.0);
+    
+    
+    glClearColor(self.red, self.green, self.blue, self.alpha);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    // Setup viewport
-    //
     
-    GLfloat vertices[] = {
-        -1.0,1.0,1.0,1.0,-1.0,-1.0,1.0,-1.0 };
-    GLfloat textureCoordinates[] = {
-        1.0,1.0, 1.0,0.0, 0.0,1.0, 0.0,0.0
-    };
-    
-    // Load the vertex data
     //
-    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, vertices );
+    glVertexAttribPointer(_positionSlot, 2, GL_FLOAT, GL_FALSE, 0, imageVertices );
     glEnableVertexAttribArray(_positionSlot);
     
-    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, textureCoordinates);
+    glVertexAttribPointer(_inputTextureCoordinateSlot, 2, GL_FLOAT, GL_FALSE, 0, [OpenGLView textureCoordinatesForRotation:inputRotation]);
     glEnableVertexAttribArray(_inputTextureCoordinateSlot);
     
     
@@ -194,9 +295,13 @@ NSString* const kFragmentString = SHADER_STRING
     
 }
 
-
-
 - (void) setupProgram {
+    
+    self.red = 1.0;
+    self.green = 1.0;
+    self.blue = 1.0;
+    self.alpha = 1.0;
+    
     // Create program, attach shaders, compile and link program
     //
     _programHandle = [GLESUtils loadProgramString:kVertexString withFragmentShaderString:kFragmentString];
@@ -213,9 +318,95 @@ NSString* const kFragmentString = SHADER_STRING
 }
 
 
+
+/*
+ // Only override drawRect: if you perform custom drawing.
+ // An empty implementation adversely affects performance during animation.
+ - (void)drawRect:(CGRect)rect
+ {
+ // Drawing code
+ }
+ */
++ (const GLfloat *)textureCoordinatesForRotation:(GPUImageRotationMode)rotationMode;
+{
+    //    static const GLfloat noRotationTextureCoordinates[] = {
+    //        0.0f, 0.0f,
+    //        1.0f, 0.0f,
+    //        0.0f, 1.0f,
+    //        1.0f, 1.0f,
+    //    };
+    
+    static const GLfloat noRotationTextureCoordinates[] = {
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+    };
+    
+    static const GLfloat rotateRightTextureCoordinates[] = {
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+    };
+    
+    static const GLfloat rotateLeftTextureCoordinates[] = {
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+    };
+    
+    static const GLfloat verticalFlipTextureCoordinates[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.0f, 1.0f,
+        1.0f, 1.0f,
+    };
+    
+    static const GLfloat horizontalFlipTextureCoordinates[] = {
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+    };
+    
+    static const GLfloat rotateRightVerticalFlipTextureCoordinates[] = {
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 0.0f,
+        0.0f, 1.0f,
+    };
+    
+    static const GLfloat rotateRightHorizontalFlipTextureCoordinates[] = {
+        0.0f, 1.0f,
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+        1.0f, 0.0f,
+    };
+    
+    static const GLfloat rotate180TextureCoordinates[] = {
+        1.0f, 0.0f,
+        0.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f,
+    };
+    
+    switch(rotationMode)
+    {
+        case kGPUImageNoRotation: return noRotationTextureCoordinates;
+        case kGPUImageRotateLeft: return rotateLeftTextureCoordinates;
+        case kGPUImageRotateRight: return rotateRightTextureCoordinates;
+        case kGPUImageFlipVertical: return verticalFlipTextureCoordinates;
+        case kGPUImageFlipHorizonal: return horizontalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipVertical: return rotateRightVerticalFlipTextureCoordinates;
+        case kGPUImageRotateRightFlipHorizontal: return rotateRightHorizontalFlipTextureCoordinates;
+        case kGPUImageRotate180: return rotate180TextureCoordinates;
+    }
+}
 - (void)dealloc{
-//    [self destoryBuffers];
-//    glDeleteTextures(1, &imageTexture);
+    //    [self destoryBuffers];
+    //    glDeleteTextures(1, &imageTexture);
 }
 
 @end

@@ -24,4 +24,5 @@ extern crate gles_rust_binding;
 // 使用新的Graph去渲染 创建Graph与释放Graph代价很低，只有在Forward(或者Backward)中才会产生Tensor结构
 // 考虑实现SubGraph SubGraph有没有必要？ SubGraph是为了实现在特定情况下的更复杂的结构
 // 考虑实现ImageGenerator 考虑加入Compute 这一步可以结合
+// 考虑实现分支 SubGraph 抽象
 // 考虑使用GFX抽象描述

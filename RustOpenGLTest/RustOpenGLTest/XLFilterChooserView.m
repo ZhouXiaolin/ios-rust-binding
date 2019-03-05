@@ -28,7 +28,7 @@ static float const cell_width = 80.0f;
         _ChooserBlock(currentIndex);
     }
     [_cells enumerateObjectsUsingBlock:^(XLFilterChooserViewCell * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if(_currentIndex == idx){
+        if(self->_currentIndex == idx){
             [obj setState:UIControlStateSelected value:1.0];
         }else{
             [obj setState:UIControlStateNormal value:0.0];
@@ -75,7 +75,7 @@ static float const cell_width = 80.0f;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clicked:)];
         [cell addGestureRecognizer:tap];
         [self addSubview:cell];
-        [_cells addObject:cell];
+        [self->_cells addObject:cell];
     }];
     
     XLFilterChooserViewCell *cell = _cells[_currentIndex];
@@ -106,7 +106,7 @@ static float const cell_width = 80.0f;
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clicked:)];
         [cell addGestureRecognizer:tap];
         [self addSubview:cell];
-        [_cells addObject:cell];
+        [self->_cells addObject:cell];
     }];
     
     XLFilterChooserViewCell *cell = _cells[_currentIndex];

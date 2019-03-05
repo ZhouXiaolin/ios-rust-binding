@@ -8,6 +8,7 @@
 
 #import "CameraEntry.h"
 #import "XLHelpClass.h"
+#import "XHImageContext.h"
 typedef void(^CompleteHandle)(UIImage*);
 
 
@@ -23,7 +24,7 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
     CGSize originalSize = CGSizeMake(CVPixelBufferGetWidth(cameraFrame), CVPixelBufferGetHeight(cameraFrame));
     
     CVPixelBufferLockBaseAddress(cameraFrame, 0);
-    GLubyte *sourceImageBytes =  CVPixelBufferGetBaseAddress(cameraFrame);
+    GLubyte *sourceImageBytes =  (GLubyte*)CVPixelBufferGetBaseAddress(cameraFrame);
     CGDataProviderRef dataProvider = CGDataProviderCreateWithData(NULL, sourceImageBytes, CVPixelBufferGetBytesPerRow(cameraFrame) * originalSize.height, NULL);
     CGColorSpaceRef genericRGBColorspace = CGColorSpaceCreateDeviceRGB();
     CGImageRef cgImageFromBytes = CGImageCreate((int)originalSize.width, (int)originalSize.height, 8, 32, CVPixelBufferGetBytesPerRow(cameraFrame), genericRGBColorspace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst, dataProvider, NULL, NO, kCGRenderingIntentDefault);
@@ -288,8 +289,8 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
 
 - (void) startCapture {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (![captureSession isRunning]) {
-            [captureSession startRunning];
+        if (![self->captureSession isRunning]) {
+            [self->captureSession startRunning];
         }
     });
 }
@@ -717,31 +718,34 @@ void GPUImageCreateResizedSampleBuffer(CVPixelBufferRef cameraFrame, CGSize fina
             }
             CFRetain(sampleBuffer);
             
-            if (self.delegate) {
-                [self.delegate processVideoBuffer:sampleBuffer];
-            }
-            
-            if (_cameraInput) {
-                [_cameraInput captureOutput:output didOutputSampleBuffer:sampleBuffer fromConnection:connection];
-            }
-            
-            
-            
-            CFRelease(sampleBuffer);
-            
-            if (self.logFPS) {
-                if ((CFAbsoluteTimeGetCurrent() - self.lastCheckTime) > 1.0)  {
-                    self.lastCheckTime = CFAbsoluteTimeGetCurrent();
-                    NSLog(@"FPS : %d",self.framesSinceLastCheck);
-                    self.framesSinceLastCheck = 0;
+            runAsynchronouslyOnVideoProcessingQueue(^{
+                if (self.delegate) {
+                    [self.delegate processVideoBuffer:sampleBuffer];
                 }
-                self.framesSinceLastCheck += 1;
-            }
-            
-            
-            dispatch_semaphore_signal(frameRenderingSemaphore);
+                
+                if (_cameraInput) {
+                    [_cameraInput captureOutput:output didOutputSampleBuffer:sampleBuffer fromConnection:connection];
+                }
+                
+                
+                
+                CFRelease(sampleBuffer);
+                
+                if (self.logFPS) {
+                    if ((CFAbsoluteTimeGetCurrent() - self.lastCheckTime) > 1.0)  {
+                        self.lastCheckTime = CFAbsoluteTimeGetCurrent();
+                        NSLog(@"FPS : %d",self.framesSinceLastCheck);
+                        self.framesSinceLastCheck = 0;
+                    }
+                    self.framesSinceLastCheck += 1;
+                }
+                
+                
+                dispatch_semaphore_signal(frameRenderingSemaphore);
+            });
         }
         
     }
 }
 @end
+

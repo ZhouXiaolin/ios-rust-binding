@@ -62,18 +62,13 @@
 
 
     cameraEntry = [[CameraEntry alloc] initWithSessionPreset:AVCaptureSessionPreset1280x720 location:AVCaptureDevicePositionBack cameraEntryMode:CameraEntryModePhoto4x3 captureAsYUV:TRUE];
+//    cameraEntry.isFrontMirrord = YES;
     [cameraEntry addAudioInputsAndOutputs];
 
-    glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds context:currentContext];
+    glView = [[OpenGLView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    
     [self.view addSubview:glView];
 
-//    filterController = [[XHFilterController alloc]
-//                        initWithPicture:[UIImage imageNamed:@"IMG_1592"] renderView:glView];
-//    [filterController renderPictureWithLut:nil];
-
-//    [GPUImageContext useImageProcessingContext];
-//    UIImage* image = [XLHelpClass readImageFromFBO:1000 height:1000];
-//    int i = 0;
 
     filterController = [[XHFilterController alloc]
                         initWithInput:cameraEntry
@@ -150,54 +145,19 @@
     if (isRecording == NO) {
         isRecording = YES;
         
-//        [filterController changeFilter:XHFilterControllerModeNormal];
-        
-        [filterController startRecordWithWaterInfo:nil destinationURL:nil];
+        [filterController switchCamera];
+//        [filterController startRecordWithWaterInfo:nil destinationURL:nil];
     }else{
         isRecording = NO;
         
-//        [filterController changeFilter:XHFilterControllerModeVideoBack];
+        [filterController switchCamera];
         
-        [filterController stopRecordWithCompletion:^(NSError * _Nonnull error) {
-        }];
+//        [filterController stopRecordWithCompletion:^(NSError * _Nonnull error) {
+//        }];
 
     }
     
-//    [GPUImageContext useImageProcessingContext];
-//
-//    long g = xhey_init_graph();
-//    long context = init_context();
-//
-//
-//    UIImage* image = [UIImage imageNamed:@"IMG_1592"];
-//    int width = CGImageGetWidth([image CGImage]);
-//    int height = CGImageGetHeight([image CGImage]);
-//
-//    int render_pic_texture_id = [XLHelpClass createTexture:image];
-//
-//    long render_pic = xhey_init_picture_textureId(render_pic_texture_id, width, height, 0);
-//
-//    long basic = xhey_init_basic_filter(context);
-//
-//    long output = xhey_init_picture_output(context, width, height, 0);
-//
-//    long lut = xhey_init_lookup_filter(context);
-//    long lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
-//    long pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
-//
-//    UIImage* water = [UIImage imageNamed:@"aaa"];
-//    int water_id = [XLHelpClass setupTexture:water];
-//    long water_mark = xhey_init_watermark(context);
-//    xhey_watermark_update(water_mark, water_id, -1, -1, 0.5, 0.5);
-//
-//    xhey_picture_graph(g, render_pic, basic, pic, lut, 0, water_mark, output);
-//
-//    xhey_graph_forward(g);
-//
-//    UIImage* _image = [XLHelpClass readImageFromFBO:width height:height];
-//
-//    UIImageWriteToSavedPhotosAlbum(_image, self, nil, nil);
-//
+
 }
 
 

@@ -15,6 +15,16 @@
 #import "OpenGLView.h"
 #import "MovieWriter.h"
 #import "XHImageContext.h"
+
+const int noRotation = 0;
+const int rotateCounterclockwise = 1;
+const int rotateClockwise = 2;
+const int rotate180 = 3;
+const int flipHorizontally = 4;
+const int flipVertically = 5;
+const int rotateClockwiseAndFlipVertically = 6;
+const int rotateClockwiseAndFlipHorizontally = 7;
+
 struct Context{
     XHFilterController* self;
 };
@@ -34,6 +44,7 @@ struct Context{
     
     long lut;
     long pic;
+    long unsharp_mask;
     
     long surface;
     long basic;
@@ -71,6 +82,10 @@ struct Context{
     XHFilterControllerMode _mode;
     
     GLuint image_texid;
+    
+    XHImageContext* imageContext;
+    
+    BOOL isSwitch;
 
 }
 @property (nonatomic, strong) CameraEntry* cameraEntry;
@@ -185,17 +200,78 @@ void print_test1(void* context){
     }
     
     isPhoto = false;
-    
+    isSwitch = FALSE;
     lock = [[NSLock alloc] init];
+    
+    imageContext = [XHImageContext sharedImageProcessingContext];
     
     currentContext = [[XHImageContext sharedImageProcessingContext] context];
     ctxt = (Context*)malloc(sizeof(Context));
-    ctxt->self = self;
+//    ctxt->self = self;
     
     self.cameraEntry = cameraEntry;
     _cameraEntry.delegate = self;
 //    [self.cameraEntry setVideoOutputDelegate:self];
     self.glView = glView;
+    
+    
+    
+    
+    [EAGLContext setCurrentContext:currentContext];
+    int _width = 100;
+    int height = 100;
+    glGenTextures(1, &y_textureId);
+    glBindTexture(GL_TEXTURE_2D, y_textureId);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    
+    glGenTextures(1, &uv_textureId);
+    glBindTexture(GL_TEXTURE_2D, uv_textureId);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    
+    g = xhey_init_graph();
+    
+    context = init_context();
+    cam = xhey_init_camera(context, _width, height, noRotation);
+    camera_update_luminance(cam, y_textureId);
+    camera_update_chrominance(cam, uv_textureId);
+    float mat[9] = {1.0f, 1.0f, 1.0f,
+        0.0f, -0.343f, 1.765f,
+        1.4f, -0.711f, 0.0f};
+    
+    camera_update_matrix(cam, mat);
+    basic = xhey_init_basic_filter(context);
+    
+    
+    
+    basic_normal = xhey_init_basic_filter(context);
+    
+    xhey_update_basic_hook(basic, print1, (void*)ctxt);
+    
+    lut = xhey_init_lookup_filter(context);
+    lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
+    
+    pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
+    unsharp_mask = xhey_init_unsharp_mask(context);
+    
+    output = xhey_init_picture_output(context, _width, height, 3);
+    normal_output = xhey_init_picture_output(context, _width, height, 3);
+    xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
+    xhey_camera_graph(g, cam, basic,0, pic, lut, unsharp_mask, 0, output,normal_output);
+    
     
     return self;
 }
@@ -275,18 +351,29 @@ void print_test1(void* context){
 //    [self clear];
 //    isFirst = FALSE;
     
-    textureId = 0;
     if (_cameraEntry.location == AVCaptureDevicePositionFront) {
         _cameraEntry.location = AVCaptureDevicePositionBack;
     }else{
         _cameraEntry.location = AVCaptureDevicePositionFront;
     }
+    
+//    isSwitch = TRUE;
+//
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//        isSwitch = FALSE;
+//    });
 }
 
 - (void)processAudioBuffer:(CMSampleBufferRef)audioBuffer {
     
 }
 - (void)processVideoBuffer:(CMSampleBufferRef)sampleBuffer{
+    
+    if (isSwitch) {
+        CVPixelBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+        return;
+    }
     
     CMTime frameTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     
@@ -296,130 +383,80 @@ void print_test1(void* context){
     int width = (int)round(CVPixelBufferGetWidth(cameraFrame));
     int height = (int)round(CVPixelBufferGetHeight(cameraFrame));
     
-//    int _width = aw_stride(width);
-    int _width = width;
+    int _width = aw_stride(width);
+//    int _width = width;
     void* y_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 0);
     void* uv_frame = (void*)CVPixelBufferGetBaseAddressOfPlane(cameraFrame, 1);
     
-    if (isFirst == FALSE) {
-        isFirst = TRUE;
+   
+    
+    [EAGLContext setCurrentContext:currentContext];
+    
+    glBindTexture(GL_TEXTURE_2D, y_textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    
+    glBindTexture(GL_TEXTURE_2D, uv_textureId);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    
+    camera_update_size(cam, _width, height);
+    xhey_update_output_size(output, _width, height);
+    
+    if (lutUpdate) {
+        lutUpdate = NO;
+        [self texImageTexture:lut_path];
+    }
         
-        [EAGLContext setCurrentContext:currentContext];
-        
-        glGenTextures(1, &y_textureId);
-        glBindTexture(GL_TEXTURE_2D, y_textureId);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        
-        glGenTextures(1, &uv_textureId);
-        glBindTexture(GL_TEXTURE_2D, uv_textureId);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        
-        g = xhey_init_graph();
-        
-        context = init_context();
-        cam = xhey_init_camera(context, _width, height, 0);
-        camera_update_luminance(cam, y_textureId);
-        camera_update_chrominance(cam, uv_textureId);
-        float mat[9] = {1.0f, 1.0f, 1.0f,
-            0.0f, -0.343f, 1.765f,
-            1.4f, -0.711f, 0.0f};
-        
-        camera_update_matrix(cam, mat);
-        basic = xhey_init_basic_filter(context);
-        basic_normal = xhey_init_basic_filter(context);
-        
-        xhey_update_basic_hook(basic, print1, (void*)ctxt);
-        lut = xhey_init_lookup_filter(context);
-        lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
-        pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
-        
-        output = xhey_init_picture_output(context, _width, height, 3);
-        normal_output = xhey_init_picture_output(context, _width, height, 3);
-        xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
-        xhey_camera_graph(g, cam, basic,0, pic, lut, 0, 0, output,normal_output);
-        
+    if ([_cameraEntry location] == AVCaptureDevicePositionFront) {
+        camera_update_rotation(cam, flipVertically);
     }else{
-        [EAGLContext setCurrentContext:currentContext];
-        
-        glBindTexture(GL_TEXTURE_2D, y_textureId);
-//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width, height, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        
-        glBindTexture(GL_TEXTURE_2D, uv_textureId);
-//        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, _width / 2  , height / 2 , GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
-        glBindTexture(GL_TEXTURE_2D, 0);
-        
-        
-        camera_update_size(cam, _width, height);
-        xhey_update_output_size(output, _width, height);
-        
-        if (lutUpdate) {
-            lutUpdate = NO;
-            [self texImageTexture:lut_path];
-        }
-        
+        camera_update_rotation(cam, noRotation);
     }
     
     
-    xhey_graph_forward(g);
+    xhey_graph_forward(self->g);
     
-    if (_mode == XHFilterControllerModeNormal) {
-        textureId = xhey_picture_output_get_texture_id(normal_output);
-    }else{
-        textureId = xhey_picture_output_get_texture_id(output);
-    }
+    self->textureId = xhey_picture_output_get_texture_id(self->output);
     
     
-    [_glView renderTextureId:textureId];
-
-    if (_movieWriter) {
-        [EAGLContext setCurrentContext:currentContext];
-
-        if (_movieWriter.isReady == FALSE) {
-            _movieWriter.isReady = TRUE;
-
-            watermark_graph = xhey_init_graph();
-            context_watermark_ptr = init_context();
-            watermark_picture_ptr = xhey_init_picture_textureId(textureId, width, height, 0);
-            watermark_basic_ptr = xhey_init_basic_filter(context_watermark_ptr);
-            watermark_watermark_ptr = xhey_init_watermark(context_watermark_ptr);
-
-            UIImage* image = [UIImage imageNamed:@"aaa"];
-            image_texid = [XLHelpClass createTexture:image];
-
-            xhey_watermark_update(watermark_watermark_ptr, image_texid, -1.0, 0.0, 0.5, 0.5,0);
-
-            watermark_output_ptr = xhey_init_picture_output(context_watermark_ptr, width, height, 0);
-
-            xhey_camera_watermark_graph(watermark_graph, watermark_picture_ptr, watermark_basic_ptr, watermark_watermark_ptr, watermark_output_ptr);
-
-
-        }
-        xhey_graph_forward(watermark_graph);
-
-        int _width = height;
-        int _height = width;
-        [_movieWriter readAndPutWithWidth:_width height:height frameTime:frameTime];
-    }
+    [self->_glView renderTextureId:self->textureId];
     
-    [EAGLContext setCurrentContext:nil];
+   
+
+//    if (_movieWriter) {
+//        [EAGLContext setCurrentContext:currentContext];
+//
+//        if (_movieWriter.isReady == FALSE) {
+//            _movieWriter.isReady = TRUE;
+//
+//            watermark_graph = xhey_init_graph();
+//            context_watermark_ptr = init_context();
+//            watermark_picture_ptr = xhey_init_picture_textureId(textureId, width, height, 0);
+//            watermark_basic_ptr = xhey_init_basic_filter(context_watermark_ptr);
+//            watermark_watermark_ptr = xhey_init_watermark(context_watermark_ptr);
+//
+//            UIImage* image = [UIImage imageNamed:@"aaa"];
+//            image_texid = [XLHelpClass createTexture:image];
+//
+//            xhey_watermark_update(watermark_watermark_ptr, image_texid, -1.0, 0.0, 0.5, 0.5,0);
+//
+//            watermark_output_ptr = xhey_init_picture_output(context_watermark_ptr, width, height, 0);
+//
+//            xhey_camera_watermark_graph(watermark_graph, watermark_picture_ptr, watermark_basic_ptr, watermark_watermark_ptr, watermark_output_ptr);
+//
+//
+//        }
+//        xhey_graph_forward(watermark_graph);
+//
+//        int _width = height;
+//        int _height = width;
+//        [_movieWriter readAndPutWithWidth:_width height:height frameTime:frameTime];
+//    }
+    
+//    [EAGLContext setCurrentContext:nil];
     
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     

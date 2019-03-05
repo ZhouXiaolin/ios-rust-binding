@@ -109,7 +109,7 @@ pub unsafe extern "C" fn xhey_init_watermark(context:&GlContext) -> *mut XHeyBle
 #[no_mangle]
 pub unsafe extern "C" fn xhey_watermark_update(filter: *mut XHeyBlendFilter, texId: c_uint, x: c_float, y: c_float, w: c_float, h: c_float){
     let filter = filter.as_mut().unwrap();
-    filter.appendWaterMark(texId,x,y,w,h);
+    filter.appendWaterMark(texId,x,y,w,h,0);
 }
 
 #[no_mangle]
@@ -358,7 +358,7 @@ pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_initWatermark(env
 pub unsafe extern "C" fn Java_com_xhey_xcamera_camera_GPUImage_appendWatermark(env: JNIEnv, _: JClass, watermark: jlong, texId: jint, x: jfloat, y: jfloat, w: jfloat, h: jfloat)  {
     let filter = watermark as *mut XHeyBlendFilter;
     let filter = filter.as_mut().unwrap();
-    filter.appendWaterMark(texId as u32,x,y,w,h);
+    filter.appendWaterMark(texId as u32,x,y,w,h,0);
 }
 
 #[no_mangle]

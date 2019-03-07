@@ -2,27 +2,24 @@ use gles_rust_binding::*;
 use super::*;
 use std::cell::{RefCell,Cell};
 use std::rc::Rc;
+use std::collections::HashMap;
 use std::sync::Arc;
 #[repr(C)]
 #[derive(Debug)]
-pub struct XHeyCombineFilter<'a>{
-    shader : GLProgram,
+pub struct XheyLumMaskToneCurveFilter<'a>{
+    shader: GLProgram,
     maximumInputs : u32,
-    inputFramebuffers:RefCell<Vec<Framebuffer>>,
+    inputFramebuffers: RefCell<Vec<Framebuffer>>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
-    uniformSettings:ShaderUniformSettings,
+    uniformSettings: ShaderUniformSettings,
     context: &'a GlContext
-
 }
 
-
-impl<'a> XHeyCombineFilter<'a> {
-
+impl<'a> XheyLumMaskToneCurveFilter<'a>{
     pub fn new(context: &'a GlContext) -> Self {
-
         let vertexString = r#"
- attribute vec4 position;
+attribute vec4 position;
  attribute vec2 inputTextureCoordinate;
  attribute vec2 inputTextureCoordinate2;
  varying vec2 textureCoordinate;
@@ -35,56 +32,65 @@ impl<'a> XHeyCombineFilter<'a> {
      textureCoordinate2 = inputTextureCoordinate2.xy;
 
  }
-    "#;
-
+        "#;
         let fragmentString = r#"
- precision mediump float;
+varying highp vec2 textureCoordinate;
+varying highp vec2 textureCoordinate2;
 
- varying highp vec2 textureCoordinate;
- varying highp vec2 textureCoordinate2;
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
 
- uniform float value;
+const highp vec3 luminanceWeighting = vec3(0.2880859375, 0.7119140625, 0.0);
+ uniform highp float saturation;
  void main()
  {
-     vec4 color1 = texture2D(inputImageTexture, textureCoordinate);
-     vec4 color2 = texture2D(inputImageTexture2, textureCoordinate2);
+     highp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     highp float luminance = dot(textureColor.rgb, luminanceWeighting);
+     highp vec3 greyScaleColor = vec3(luminance);
 
-     if(textureCoordinate.x > value) {
-        gl_FragColor = color1;
-     }else{
-        gl_FragColor = color2;
-     }
+     luminance = 1.0 - luminance*luminance;
+
+     highp float redCurveValue = texture2D(inputImageTexture2, vec2(textureColor.r, 0.0)).r;
+     highp float greenCurveValue = texture2D(inputImageTexture2, vec2(textureColor.g, 0.0)).g;
+     highp float blueCurveValue = texture2D(inputImageTexture2, vec2(textureColor.b, 0.0)).b;
+
+     highp vec4 curveColor = vec4(redCurveValue, greenCurveValue, blueCurveValue, textureColor.a);
+     highp vec4 color = vec4(mix(greyScaleColor, curveColor.rgb, saturation), 1.0);
+
+     highp vec3 result = mix(textureColor.rgb, color.rgb, luminance);
+     gl_FragColor = vec4(result, 1.0);
+
  }
-    "#;
+        "#;
+
+
         let shader = GLProgram::new(vertexString,fragmentString);
 
-        XHeyCombineFilter{
+        let mut uniformSettings = ShaderUniformSettings::default();
+        uniformSettings.setValue("saturation",Uniform::Float(1.0));
+
+        Self{
             maximumInputs:2,
             shader,
             inputFramebuffers: RefCell::default(),
-            head_node:Cell::default(),
-            tail:RefCell::default(),
-            uniformSettings:ShaderUniformSettings::default(),
+            head_node: Cell::default(),
+            tail: RefCell::default(),
+            uniformSettings,
             context
-
         }
+
     }
+
 
 
     fn sizeOfInitialStageBasedOnFramebuffer(&self, inputFramebuffer: &Framebuffer) -> GLSize {
         inputFramebuffer.sizeForTargetOrientation(ImageOrientation::portrait)
     }
 
-    pub fn set_value(&mut self, v : f32){
-        self.uniformSettings.setValue("value",Uniform::Float(v));
-    }
 }
 
 
-
-impl<'a> Edge for XHeyCombineFilter<'a> {
+impl<'a> Edge for XheyLumMaskToneCurveFilter<'a> {
     type Item = Rc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
@@ -117,19 +123,15 @@ impl<'a> Edge for XHeyCombineFilter<'a> {
     }
 
     fn name(&self) -> &str {
-        "combine"
+        "tone curve"
     }
-
 }
 
-
-
-impl<'a> Renderable for XHeyCombineFilter<'a> {
+impl<'a> Renderable for XheyLumMaskToneCurveFilter<'a> {
     type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
-
-        let inputFramebuffer = inputFramebuffers.first().unwrap();
+        let inputFramebuffer: &Framebuffer = inputFramebuffers.first().unwrap();
 
         let size = self.sizeOfInitialStageBasedOnFramebuffer(inputFramebuffer);
 
@@ -137,24 +139,25 @@ impl<'a> Renderable for XHeyCombineFilter<'a> {
         let textureProperties = {
             let mut inputTextureProperties = vec![];
             for (index, inputFramebuffer) in inputFramebuffers.iter().enumerate() {
+                let inputFramebuffer: &Framebuffer = inputFramebuffer;
+
                 inputTextureProperties.push(inputFramebuffer.texturePropertiesForTargetOrientation(ImageOrientation::portrait));
             }
             inputTextureProperties
         };
 
-
-        let pso = RenderPipelineState {
-            framebuffer:renderFramebuffer,
-            color: Color::black()
+        let pso = RenderPipelineState{
+            framebuffer:renderFramebuffer.clone(),
+            color:Color::black()
         };
 
-        pso.run(||{
-            let standardImageVertices:[f32;8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+        pso.run(|| {
+
+            let standardImageVertices: [f32; 8] = [-1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0];
+
             let vertex = InputTextureStorageFormat::textureCoordinate(standardImageVertices);
 
-
-            renderQuadWithShader(&self.shader,&self.uniformSettings,&textureProperties,vertex);
-
+            renderQuadWithShader(&self.shader, &self.uniformSettings, &textureProperties, vertex);
         })
 
 

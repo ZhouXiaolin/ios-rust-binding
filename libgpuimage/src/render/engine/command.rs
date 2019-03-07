@@ -148,7 +148,7 @@ pub struct PassDesc{
 use crate::structure::Tensor;
 use std::sync::Arc;
 pub struct Pass<T:Tensor>{
-    pub color_attachment: Arc<T>
+    pub color_attachment: Rc<T>
 }
 
 

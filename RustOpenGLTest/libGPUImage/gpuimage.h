@@ -39,7 +39,7 @@ long xhey_graph_add_input(long graph, long filter,InputKind kind);
 long xhey_graph_add_function(long graph, long filter, long* arg,OutputKind kind);
 
 
-void xhey_camera_graph(long graph, long camera, long basic, long basic_normal,long lut, long lut_filter, long unsharpask, long water_mask, long output, long normal_output);
+void xhey_camera_graph(long graph, long camera, long basic, long basic_normal,long lut, long lut_filter, long tone_curve, long tone_curve_filter,long unsharpask, long water_mask, long output, long normal_output);
 void xhey_picture_graph(long graph, long picture, long basic, long lut, long lut_filter, long unsharpask, long water_mask, long output);
 void xhey_camera_watermark_graph(long graph, long picture, long  basic, long water_mark, long  water_output);
 void xhey_normal_camera_graph(long graph, long camera, long basic, long output);
@@ -81,6 +81,8 @@ void release_output(long filter);
 int xhey_picture_output_get_texture_id(long filter);
 void xhey_update_output_size(long pic_output, int width, int height);
 void xhey_update_output_rotation(long pic_output, int rotation);
+
+long xhey_init_tone_curve(long context);
 
 long xhey_init_camera(long context, int width, int height, int orient);
 void camera_update_luminance(long filter, int luminance);

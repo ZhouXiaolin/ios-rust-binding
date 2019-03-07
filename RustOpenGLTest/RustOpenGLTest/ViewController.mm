@@ -21,6 +21,7 @@
 #import "MovieWriter.h"
 #import "XHFilterController.h"
 #import "SecondViewController.h"
+#import "ToneCurveData.h"
 @interface ViewController ()
 {
     MovieWriter* movieWriter;
@@ -39,6 +40,10 @@
     BOOL isRecording;
     
     
+    ToneCurveData* acvTexture;
+    
+    
+    
     
 }
 @end
@@ -47,6 +52,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     
     
     
@@ -145,12 +151,18 @@
     if (isRecording == NO) {
         isRecording = YES;
         
-        [filterController switchCamera];
+        [filterController changeFilter:XHFilterControllerModeNormal];
+        
+        
+//        [filterController switchCamera];
 //        [filterController startRecordWithWaterInfo:nil destinationURL:nil];
     }else{
         isRecording = NO;
         
-        [filterController switchCamera];
+        
+        [filterController changeFilter:XHFilterControllerModeVideoFront];
+
+//        [filterController switchCamera];
         
 //        [filterController stopRecordWithCompletion:^(NSError * _Nonnull error) {
 //        }];

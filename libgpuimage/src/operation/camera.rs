@@ -102,7 +102,7 @@ varying highp vec2 textureCoordinate2;
 }
 
 impl<'a> Edge for XheyCamera<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
 
 
 

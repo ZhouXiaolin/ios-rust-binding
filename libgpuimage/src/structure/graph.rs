@@ -9,7 +9,7 @@ use std::sync::Arc;
 #[repr(C)]
 pub struct Graph<'a,T:Tensor>{
     nodes: Vec<Node<T>>,
-    edges: Vec<Box<&'a dyn Edge<Item=Arc<T>>>>,
+    edges: Vec<Box<&'a dyn Edge<Item=Rc<T>>>>,
 
 }
 pub type VariableIndex = u32;
@@ -38,8 +38,8 @@ impl<'a, T:Tensor> Computeable for Graph<'a, T> {
 
         for node in nodes {
 
-            let in_edge : &Box<&Edge<Item=Arc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
-            let mut xs = Vec::<Arc<T>>::with_capacity(in_edge.arity() as usize);
+            let in_edge : &Box<&Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).expect("Error, cannot get in_edge from edges");
+            let mut xs = Vec::<Rc<T>>::with_capacity(in_edge.arity() as usize);
             //  如果in_edge的arity为0，为input节点，不会进入这个循环
             for (ti,tail_node_index) in in_edge.tail_nodes().iter().enumerate() {
                 let inner_node : &Node<_> = nodes.get(tail_node_index.clone() as usize).expect("Error, cannot get inner node from nodes");
@@ -97,7 +97,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
     }
 
     /// 这个函数用来添加输入
-    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge<Item=Arc<T>>) -> VariableIndex {
+    pub fn add_input(&mut self, name:&str, op: &'a dyn Edge<Item=Rc<T>>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -114,7 +114,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
     }
 
     /// 这个函数用来添加关系 arguments是输入节点，function是操作节点 执行的操作就是前向计算
-    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge<Item=Arc<T>>) -> VariableIndex {
+    pub fn add_function(&mut self, name:&str, arguments: &[u32], function: &'a dyn Edge<Item=Rc<T>>) -> VariableIndex {
         let new_node_index = self.nodes.len() as u32;
         let new_edge_index = self.edges.len() as u32;
 
@@ -150,7 +150,7 @@ impl<'a,T:Tensor> Graph<'a,T> {
         for node in nodes.iter() {
 
             let mut var_names = Vec::<String>::new();
-            let in_edge : &Box<&dyn Edge<Item=Arc<T>>> = edges.get(node.in_edge as usize).unwrap();
+            let in_edge : &Box<&dyn Edge<Item=Rc<T>>> = edges.get(node.in_edge as usize).unwrap();
 
             let tail_nodes = in_edge.tail_nodes();
 

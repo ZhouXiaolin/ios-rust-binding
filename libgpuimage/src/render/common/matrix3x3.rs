@@ -8,7 +8,7 @@ pub struct Matrix3x3 {
 }
 
 impl Matrix3x3{
-    pub fn new(rowMajorValues:[f32;9]) -> Self {
+    pub fn new(rowMajorValues:&[f32;9]) -> Self {
         Matrix3x3{
             m11:rowMajorValues[0], m12:rowMajorValues[1], m13:rowMajorValues[2],
             m21:rowMajorValues[3], m22:rowMajorValues[4], m23:rowMajorValues[5],
@@ -17,12 +17,12 @@ impl Matrix3x3{
     }
 
     pub fn identity() -> Self {
-        Self::new([1.0,0.0,0.0,
+        Self::new(&[1.0,0.0,0.0,
                                 0.0,1.0,0.0,
                                 0.0,0.0,1.0])
     }
     pub fn centerOnly() -> Self {
-        Self::new([0.0,0.0,0.0,
+        Self::new(&[0.0,0.0,0.0,
                                 0.0,1.0,0.0,
                                 0.0,0.0,0.0])
     }

@@ -11,7 +11,8 @@ mod picture_output;
 mod unsharp_mask;
 mod blend;
 mod camera;
-mod test;
+mod tone_curve;
+mod lum_mask_tone_curve;
 
 #[cfg(target_os = "android")]
 mod texture;
@@ -26,6 +27,8 @@ pub use self::surface_view::*;
 pub use self::unsharp_mask::*;
 pub use self::blend::*;
 pub use self::camera::*;
+pub use self::tone_curve::*;
+pub use self::lum_mask_tone_curve::*;
 
 #[cfg(target_os = "android")]
 pub use self::texture::*;

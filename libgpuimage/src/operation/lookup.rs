@@ -111,7 +111,7 @@ impl<'a> XHeyLookupFilter<'a> {
 
 
 impl<'a> Edge for XHeyLookupFilter<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }
@@ -153,7 +153,7 @@ impl<'a> Edge for XHeyLookupFilter<'a> {
 
 
 impl<'a> Renderable for XHeyLookupFilter<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
 

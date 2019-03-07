@@ -5,12 +5,8 @@ use std::ffi::{CStr};
 use std::mem::transmute;
 use std::rc::Rc;
 use gles_rust_binding::*;
-use crate::render::Matrix3x3;
-use crate::structure::Computeable;
-
-
 use crate::structure::{Graph,Edge,Computeable};
-use crate::render::{Framebuffer,GlContext};
+use crate::render::{Framebuffer,GlContext,Matrix3x3};
 use crate::operation::*;
 
 type RenderGraph<'a> = Graph<'a,Framebuffer>;
@@ -135,7 +131,7 @@ pub unsafe extern "C" fn xhey_normal_camera_graph(graph: c_long, camera: c_long,
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, basic: c_long,normal_basic: c_long,lut: c_long, lut_filter: c_long, unsharpask: c_long, water_mask: c_long, output: c_long, normal_output: c_long) {
+pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, basic: c_long,normal_basic: c_long,lut: c_long, lut_filter: c_long, tone_curve:c_long, tone_curve_filter:c_long,unsharpask: c_long, water_mask: c_long, output: c_long, normal_output: c_long) {
 
     let box_graph = graph as *mut RenderGraph;
     let box_graph = box_graph.as_mut().unwrap();
@@ -147,11 +143,18 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
     let box_basic = box_basic.as_mut().unwrap();
 
 
-    let box_lut = lut as *mut XheyPicture;
-    let box_lut = box_lut.as_mut().unwrap();
+//    let box_lut = lut as *mut XheyPicture;
+//    let box_lut = box_lut.as_mut().unwrap();
+//
+//    let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
+//    let box_lut_filter = box_lut_filter.as_mut().unwrap();
 
-    let box_lut_filter = lut_filter as *mut XHeyLookupFilter;
-    let box_lut_filter = box_lut_filter.as_mut().unwrap();
+    let box_tone_curve = tone_curve as *mut XheyPicture;
+    let box_tone_curve = box_tone_curve.as_mut().unwrap();
+
+    let box_tone_curve_filter = tone_curve_filter as *mut XheyToneCurveFilter;
+    let box_tone_curve_filter = box_tone_curve_filter.as_mut().unwrap();
+
 
     let box_unsharp_mark = unsharpask as *mut XHeyUnsharpMaskFilter;
     let box_unsharp_mark = box_unsharp_mark.as_mut().unwrap();
@@ -168,9 +171,13 @@ pub unsafe extern "C" fn xhey_camera_graph<'a>(graph: c_long, camera: c_long, ba
 
     let normal_output = box_graph.add_function("normal output",&[cam], box_normal_output);
 
-    let lut = box_graph.add_input("lut", box_lut);
-    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
-    let unsharp_mark = box_graph.add_function("unsharp mask",&[lut_filter],box_unsharp_mark);
+//    let lut = box_graph.add_input("lut", box_lut);
+//    let lut_filter = box_graph.add_function("lut filter",&[basic, lut], box_lut_filter);
+
+    let tone_curve = box_graph.add_input("tone curve",box_tone_curve);
+    let tone_curve_filter = box_graph.add_function("tone curve filter",&[basic,tone_curve], box_tone_curve_filter);
+
+    let unsharp_mark = box_graph.add_function("unsharp mask",&[tone_curve_filter],box_unsharp_mark);
     let output = box_graph.add_function("output",&[unsharp_mark], box_output);
 }
 
@@ -295,6 +302,13 @@ pub unsafe extern "C" fn xhey_init_alpha_blend(context:c_long) -> c_long {
     Box::into_raw(filter) as c_long
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn xhey_init_tone_curve(context:c_long) -> c_long {
+    let context = context as *mut GlContext;
+    let context = context.as_ref().unwrap();
+    let filter = Box::new(XheyToneCurveFilter::new(context));
+    Box::into_raw(filter) as c_long
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn release_alpha_blend_filter(filter_ptr: c_long) {
@@ -342,7 +356,8 @@ pub unsafe extern "C" fn camera_update_chrominance(camera:c_long, chrominance: i
 pub unsafe extern "C" fn camera_update_matrix(camera: c_long, matrix: *mut [f32;9]){
     let filter = camera as *mut XheyCamera;
     let filter = filter.as_mut().unwrap();
-    let mat = Matrix3x3::new(matrix.as_ref().unwrap().clone());
+
+    let mat = Matrix3x3::new(matrix.as_ref().unwrap());
     filter.updateMatrix(mat)
 }
 

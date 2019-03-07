@@ -17,17 +17,17 @@ use gles_rust_binding::*;
 
 #[derive(Debug, Default)]
 pub struct FramebufferCacheValue{
-    value:RefCell<Vec<Arc<Framebuffer>>>
+    value:RefCell<Vec<Rc<Framebuffer>>>
 }
 
 
 impl FramebufferCacheValue {
-    fn new(f : Arc<Framebuffer>) -> Self {
+    fn new(f : Rc<Framebuffer>) -> Self {
         FramebufferCacheValue {
             value: RefCell::new(vec![f])
         }
     }
-    fn pop(&self) -> Arc<Framebuffer> {
+    fn pop(&self) -> Rc<Framebuffer> {
         let mut values = self.value.borrow_mut();
         if values.len() > 0 {
             values.pop().unwrap()
@@ -56,13 +56,13 @@ unsafe impl Sync for FramebufferCache{}
 
 impl FramebufferCache {
 
-    pub fn requestFramebufferWithDefault(&self, orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Arc<Framebuffer> {
+    pub fn requestFramebufferWithDefault(&self, orientation: ImageOrientation, size: GLSize, textureOnly:bool) -> Rc<Framebuffer> {
         let default = GPUTextureOptions::default();
         self.requestFramebufferWithProperties(orientation,size,textureOnly,default)
     }
 
 
-    pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> Arc<Framebuffer> {
+    pub fn requestFramebufferWithProperties(&self,orientation:ImageOrientation, size:GLSize, textureOnly:bool, textureOptions: GPUTextureOptions) -> Rc<Framebuffer> {
 
 
         let hash = hashStringForFramebuffer(size,textureOnly,textureOptions);
@@ -78,14 +78,14 @@ impl FramebufferCache {
                     }
                 }
 
-                let f = Arc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
+                let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
                 value_vec.push(f.clone());
 
                 return f;
             }
         }
 
-        let f = Arc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
+        let f = Rc::new(Framebuffer::new(orientation,size,textureOnly,textureOptions,None));
 
         cache.insert(hash,FramebufferCacheValue::new(f.clone()));
         return f;

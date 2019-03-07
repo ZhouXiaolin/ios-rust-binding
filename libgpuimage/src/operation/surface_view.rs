@@ -36,7 +36,7 @@ impl<'a> XheySurfaceView<'a> {
 
 
 impl<'a> Edge for XheySurfaceView<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

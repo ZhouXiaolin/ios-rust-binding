@@ -12,8 +12,25 @@
 #import <UIKit/UIKit.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import "ToneCurveData.h"
 @implementation XLHelpClass
-+ (GLuint) setupTexture: (UIImage*)image
++ (GLuint) createTextureWithToneCurve:(NSString*)name
+{
+    ToneCurveData* toneCurve = [[ToneCurveData alloc] initWithName:name];
+    int width = toneCurve.width;
+    int height = toneCurve.height;
+    GLubyte *imageData = toneCurve.textureData;
+    GLuint imageTexture = 0;
+    glGenTextures(1, &imageTexture);
+    glBindTexture(GL_TEXTURE_2D, imageTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, imageData);
+    return imageTexture;
+}
++ (GLuint) createTextureWithImage: (UIImage*)image
 {
     CGImage* newImageSource = [image CGImage];
     int width = (int)CGImageGetWidth(newImageSource);

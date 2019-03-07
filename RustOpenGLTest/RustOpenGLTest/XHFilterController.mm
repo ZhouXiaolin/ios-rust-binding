@@ -16,6 +16,7 @@
 #import "MovieWriter.h"
 #import "XHImageContext.h"
 
+
 const int noRotation = 0;
 const int rotateCounterclockwise = 1;
 const int rotateClockwise = 2;
@@ -53,6 +54,8 @@ struct Context{
     long normal_output;
     
     long context;
+    long tone_curve_pic;
+    long tone_curve_filter;
     
     long context_watermark_ptr;
     long watermark_graph;
@@ -65,7 +68,7 @@ struct Context{
     GLuint uv_textureId;
     GLuint textureId;
     GLuint lookup_textureId;
-    
+    GLuint tone_curve_textureId;
     BOOL isFirst;
     
     BOOL update;
@@ -134,7 +137,7 @@ void print_test1(void* context){
     output = xhey_init_picture_output(context, 500, 500, 0);
     
     lut = xhey_init_lookup_filter(context);
-    lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
+    lookup_textureId = [XLHelpClass createTextureWithImage:[UIImage imageNamed:@"b_street_food"]];
     pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
     
     xhey_picture_graph(g, render_pic, basic, pic, lut, 0, 0, output);
@@ -227,7 +230,6 @@ void print_test1(void* context){
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, _width, height, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, y_frame);
     glBindTexture(GL_TEXTURE_2D, 0);
     
     
@@ -238,7 +240,6 @@ void print_test1(void* context){
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, _width / 2 , height / 2 , 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, uv_frame);
     glBindTexture(GL_TEXTURE_2D, 0);
     
     
@@ -262,15 +263,21 @@ void print_test1(void* context){
     xhey_update_basic_hook(basic, print1, (void*)ctxt);
     
     lut = xhey_init_lookup_filter(context);
-    lookup_textureId = [XLHelpClass setupTexture:[UIImage imageNamed:@"b_street_food"]];
+    lookup_textureId = [XLHelpClass createTextureWithImage:[UIImage imageNamed:@"b_street_food"]];
     
     pic = xhey_init_picture_textureId(lookup_textureId, 512, 512, 0);
+    
+    tone_curve_textureId = [XLHelpClass createTextureWithToneCurve:@"cross_pro"];
+    tone_curve_pic = xhey_init_picture_textureId(tone_curve_textureId, 256, 1, 0);
+    tone_curve_filter = xhey_init_tone_curve(context);
+    
+    
     unsharp_mask = xhey_init_unsharp_mask(context);
     
     output = xhey_init_picture_output(context, _width, height, 3);
     normal_output = xhey_init_picture_output(context, _width, height, 3);
     xhey_update_picture_output_hook(output, print_test1,(void*)ctxt);
-    xhey_camera_graph(g, cam, basic,0, pic, lut, unsharp_mask, 0, output,normal_output);
+    xhey_camera_graph(g, cam, basic,0, pic, lut, tone_curve_pic,tone_curve_filter,unsharp_mask, 0, output,normal_output);
     
     
     return self;
@@ -319,6 +326,7 @@ void print_test1(void* context){
     [self clearWriterGraph];
     
 }
+
 
 
 - (void) texImageTexture:(NSString*)path{
@@ -419,7 +427,14 @@ void print_test1(void* context){
     
     xhey_graph_forward(self->g);
     
-    self->textureId = xhey_picture_output_get_texture_id(self->output);
+    
+    
+    if (_mode == XHFilterControllerModeNormal) {
+        self->textureId = xhey_picture_output_get_texture_id(self->normal_output);
+    }else{
+        self->textureId = xhey_picture_output_get_texture_id(self->output);
+
+    }
     
     
     [self->_glView renderTextureId:self->textureId];

@@ -14,6 +14,15 @@
 		9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */; };
 		9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */; };
 		9F1DF5C321C39A9000993C6B /* foodie.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9F1DF5C221C39A9000993C6B /* foodie.bundle */; };
+		9F668773222FB33300153523 /* ToneCurveFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F66876F222FB33200153523 /* ToneCurveFile.m */; };
+		9F668774222FB33300153523 /* ToneCurveData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F668772222FB33300153523 /* ToneCurveData.m */; };
+		9F66877B222FB7FA00153523 /* light11.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F668776222FB7FA00153523 /* light11.acv */; };
+		9F66877C222FB7FA00153523 /* color3.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F668777222FB7FA00153523 /* color3.acv */; };
+		9F66877D222FB7FA00153523 /* color22.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F668778222FB7FA00153523 /* color22.acv */; };
+		9F66877E222FB7FA00153523 /* color5.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F668779222FB7FA00153523 /* color5.acv */; };
+		9F66877F222FB7FA00153523 /* light8.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F66877A222FB7FA00153523 /* light8.acv */; };
+		9F668781222FDA0F00153523 /* test_rgb.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F668780222FDA0E00153523 /* test_rgb.acv */; };
+		9F6687AE222FF1D000153523 /* cross_pro.acv in Resources */ = {isa = PBXBuildFile; fileRef = 9F6687AD222FF1D000153523 /* cross_pro.acv */; };
 		9F817385214759C100030F46 /* GLESUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F817383214759C100030F46 /* GLESUtils.m */; };
 		9F817386214759C100030F46 /* OpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F817384214759C100030F46 /* OpenGLView.mm */; };
 		9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9F8D48DF213EC7F30026B7EF /* ViewController.mm */; };
@@ -44,6 +53,17 @@
 		9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFilterChooserViewCell.h; sourceTree = "<group>"; };
 		9F1DF5BF21C395E300993C6B /* XLFilterChooserView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XLFilterChooserView.h; sourceTree = "<group>"; };
 		9F1DF5C221C39A9000993C6B /* foodie.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = foodie.bundle; sourceTree = "<group>"; };
+		9F66876F222FB33200153523 /* ToneCurveFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToneCurveFile.m; sourceTree = "<group>"; };
+		9F668770222FB33300153523 /* ToneCurveFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneCurveFile.h; sourceTree = "<group>"; };
+		9F668771222FB33300153523 /* ToneCurveData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToneCurveData.h; sourceTree = "<group>"; };
+		9F668772222FB33300153523 /* ToneCurveData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ToneCurveData.m; sourceTree = "<group>"; };
+		9F668776222FB7FA00153523 /* light11.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = light11.acv; sourceTree = "<group>"; };
+		9F668777222FB7FA00153523 /* color3.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = color3.acv; sourceTree = "<group>"; };
+		9F668778222FB7FA00153523 /* color22.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = color22.acv; sourceTree = "<group>"; };
+		9F668779222FB7FA00153523 /* color5.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = color5.acv; sourceTree = "<group>"; };
+		9F66877A222FB7FA00153523 /* light8.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = light8.acv; sourceTree = "<group>"; };
+		9F668780222FDA0E00153523 /* test_rgb.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = test_rgb.acv; sourceTree = "<group>"; };
+		9F6687AD222FF1D000153523 /* cross_pro.acv */ = {isa = PBXFileReference; lastKnownFileType = file; path = cross_pro.acv; sourceTree = "<group>"; };
 		9F817381214759C000030F46 /* GLESUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLESUtils.h; sourceTree = "<group>"; };
 		9F817382214759C000030F46 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		9F817383214759C100030F46 /* GLESUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLESUtils.m; sourceTree = "<group>"; };
@@ -83,6 +103,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9F668775222FB7FA00153523 /* acv */ = {
+			isa = PBXGroup;
+			children = (
+				9F668776222FB7FA00153523 /* light11.acv */,
+				9F668777222FB7FA00153523 /* color3.acv */,
+				9F668778222FB7FA00153523 /* color22.acv */,
+				9F668779222FB7FA00153523 /* color5.acv */,
+				9F668780222FDA0E00153523 /* test_rgb.acv */,
+				9F66877A222FB7FA00153523 /* light8.acv */,
+			);
+			path = acv;
+			sourceTree = "<group>";
+		};
 		9F8D48CF213EC7F30026B7EF = {
 			isa = PBXGroup;
 			children = (
@@ -103,10 +136,12 @@
 		9F8D48DA213EC7F30026B7EF /* RustOpenGLTest */ = {
 			isa = PBXGroup;
 			children = (
+				9F668775222FB7FA00153523 /* acv */,
 				9FD66C5621A025E7005638E2 /* libGPUImage */,
 				9F1DF5C221C39A9000993C6B /* foodie.bundle */,
 				9F8D48DE213EC7F30026B7EF /* ViewController.h */,
 				9F8D48DF213EC7F30026B7EF /* ViewController.mm */,
+				9F6687AD222FF1D000153523 /* cross_pro.acv */,
 				9FB5EF3622181C28003B062E /* SecondViewController.h */,
 				9FB5EF3722181C28003B062E /* SecondViewController.m */,
 				9F8D4BCF213FBA7E0026B7EF /* AppDelegate.h */,
@@ -115,6 +150,10 @@
 				9F1DF5BD21C395E300993C6B /* XLFilterChooserView.m */,
 				9F1DF5BE21C395E300993C6B /* XLFilterChooserViewCell.h */,
 				9F1DF5BC21C395E300993C6B /* XLFilterChooserViewCell.m */,
+				9F668770222FB33300153523 /* ToneCurveFile.h */,
+				9F66876F222FB33200153523 /* ToneCurveFile.m */,
+				9F668771222FB33300153523 /* ToneCurveData.h */,
+				9F668772222FB33300153523 /* ToneCurveData.m */,
 				9F187FE4214B64AC00D855F6 /* XLHelpClass.h */,
 				9F187FE5214B64AC00D855F6 /* XLHelpClass.mm */,
 				9FFCFBD3214AB54600DBAB46 /* CameraEntry.h */,
@@ -215,10 +254,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F66877E222FB7FA00153523 /* color5.acv in Resources */,
 				9FB2F4042148E65E00806A1E /* IMG_1592.JPG in Resources */,
 				9F8D48E8213EC7F40026B7EF /* LaunchScreen.storyboard in Resources */,
+				9F6687AE222FF1D000153523 /* cross_pro.acv in Resources */,
+				9F66877C222FB7FA00153523 /* color3.acv in Resources */,
 				9F1DF5C321C39A9000993C6B /* foodie.bundle in Resources */,
+				9F668781222FDA0F00153523 /* test_rgb.acv in Resources */,
+				9F66877B222FB7FA00153523 /* light11.acv in Resources */,
+				9F66877F222FB7FA00153523 /* light8.acv in Resources */,
 				9FC94117216F2F2700BED96C /* IMG_2333.JPG in Resources */,
+				9F66877D222FB7FA00153523 /* color22.acv in Resources */,
 				9F8D48E5213EC7F40026B7EF /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -230,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9F668773222FB33300153523 /* ToneCurveFile.m in Sources */,
 				9F1DF5C121C395E300993C6B /* XLFilterChooserView.m in Sources */,
 				9F8D4BD1213FBA7F0026B7EF /* AppDelegate.m in Sources */,
 				9FFCFBD4214AB54600DBAB46 /* CameraEntry.mm in Sources */,
@@ -238,6 +285,7 @@
 				9F8D48E0213EC7F30026B7EF /* ViewController.mm in Sources */,
 				9FB5EF2B2216A21E003B062E /* XHImageContext.mm in Sources */,
 				9F07A24B21F6FD2B00DAE084 /* MovieOutput.m in Sources */,
+				9F668774222FB33300153523 /* ToneCurveData.m in Sources */,
 				9F1DF5C021C395E300993C6B /* XLFilterChooserViewCell.m in Sources */,
 				9F07A24821F6FA8600DAE084 /* XHFilterController.mm in Sources */,
 				9FB5EF3822181C28003B062E /* SecondViewController.m in Sources */,

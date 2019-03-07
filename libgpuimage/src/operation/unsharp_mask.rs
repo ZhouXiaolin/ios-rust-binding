@@ -125,7 +125,7 @@ void main()
 
 
 impl<'a> Edge for XHeyUnsharpMaskFilter<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);
     }
@@ -165,7 +165,7 @@ impl<'a> Edge for XHeyUnsharpMaskFilter<'a> {
 
 
 impl<'a> Renderable for XHeyUnsharpMaskFilter<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
     fn render(&self, inputFramebuffers:&Vec<Self::Item>) -> Self::Item {
 
         let inputFramebuffer : &Framebuffer = inputFramebuffers.first().unwrap();

@@ -65,7 +65,7 @@ impl<'a> XheyPictureOutput<'a> {
 
 
 impl<'a> Edge for XheyPictureOutput<'a> {
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

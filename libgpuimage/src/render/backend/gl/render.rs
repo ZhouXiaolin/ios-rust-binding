@@ -2,6 +2,7 @@ use gles_rust_binding::*;
 use super::{Color, InputTextureProperties, InputTextureStorageFormat,Framebuffer};
 use super::ShaderUniformSettings;
 use std::ptr;
+use std::rc::Rc;
 use std::sync::Arc;
 use super::PrimitiveType;
 impl Into<GLenum> for PrimitiveType {
@@ -108,21 +109,21 @@ impl Encoder {
 }
 
 pub struct RenderPipelineState{
-    pub framebuffer:Arc<Framebuffer>,
+    pub framebuffer:Rc<Framebuffer>,
     pub color: Color
 }
 
 impl RenderPipelineState {
 
 
-    pub fn run<T>(self, operation:T) -> Arc<Framebuffer> where T:FnOnce() -> () {
+    pub fn run<T>(self, operation:T) -> Rc<Framebuffer> where T:FnOnce() -> () {
         self.framebuffer.bindFramebufferForRendering();
         clearFramebufferWithColor(self.color);
         operation();
         self.framebuffer.unbindFramebufferForRendering();
         self.framebuffer
     }
-    pub fn run_and_then<T>(self, operation: T) -> Arc<Framebuffer> where T:FnOnce() -> () {
+    pub fn run_and_then<T>(self, operation: T) -> Rc<Framebuffer> where T:FnOnce() -> () {
         self.framebuffer.bindFramebufferForRendering();
         clearFramebufferWithColor(self.color);
         operation();

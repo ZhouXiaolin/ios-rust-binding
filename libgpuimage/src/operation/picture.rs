@@ -5,10 +5,13 @@ use std::os::raw::c_void;
 use std::rc::Rc;
 use std::sync::Arc;
 use std::cell::{RefCell,Cell};
+use crate::render::common::Rotation::rotate180;
+
+
 #[repr(C)]
 #[derive(Debug)]
 pub struct XheyPicture{
-    framebuffer: Arc<Framebuffer>,
+    framebuffer: Rc<Framebuffer>,
     head_node: Cell<u32>,
     tail: RefCell<Vec<u32>>,
     size: GLSize,
@@ -47,7 +50,7 @@ impl XheyPicture {
     pub fn new_texture(textureId: GLuint, width: i32, height: i32, rotation: i32) -> Self {
 
         let size = GLSize::new(width,height);
-        let framebuffer = Arc::new(Framebuffer::new_texture(ImageOrientation::portrait,size,textureId));
+        let framebuffer = Rc::new(Framebuffer::new_texture(ImageOrientation::from(rotation),size,textureId));
         XheyPicture{
             framebuffer,
             head_node:Cell::default(),
@@ -63,11 +66,9 @@ impl XheyPicture {
 
     pub fn new(data: *const c_void, width: i32, height: i32) -> Self {
 
-
-
         let size = GLSize::new(width,height);
 
-        let framebuffer = Arc::new(Framebuffer::new_default(ImageOrientation::portrait,size,true));
+        let framebuffer = Rc::new(Framebuffer::new_default(ImageOrientation::portrait,size,true));
 
         unsafe {
             glBindTexture(GL_TEXTURE_2D,framebuffer.texture);
@@ -105,7 +106,7 @@ impl XheyPicture {
 
 
 impl Edge for XheyPicture{
-    type Item = Arc<Framebuffer>;
+    type Item = Rc<Framebuffer>;
 
     fn add_head_node(&self, edge: u32){
         self.head_node.set(edge);

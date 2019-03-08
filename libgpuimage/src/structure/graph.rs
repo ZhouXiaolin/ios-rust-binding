@@ -5,6 +5,16 @@ use std::sync::Arc;
 
 /// 使用Rc来保持Tensor引用
 /// Graph应当和Context分离
+/// Graph应当支持子图组合
+/// SubGraph也遵循Edge
+///
+///
+/// SubGraph和Operation有一样的Trait 所以SubGraph也应该遵循Edge协议
+/// Branch的渲染是forward计算中分支选择
+/// Graph -- Graph Operation
+///
+
+
 
 #[repr(C)]
 pub struct Graph<'a,T:Tensor>{
@@ -56,6 +66,7 @@ impl<'a, T:Tensor> Computeable for Graph<'a, T> {
                     // 从当前节点出发，有多少target,就需要lock多少次
                     v.lock();
                 }
+
 
                 let mut f = node.f.borrow_mut();
                 if f.len() > 0 { f.pop(); }

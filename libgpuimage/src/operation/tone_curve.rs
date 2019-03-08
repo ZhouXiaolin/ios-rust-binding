@@ -62,6 +62,7 @@ varying highp vec2 textureCoordinate2;
         let shader = GLProgram::new(vertexString,fragmentString);
 
         let mut uniformSettings = ShaderUniformSettings::default();
+        uniformSettings.setValue("saturation",Uniform::Float(1.0));
 
         Self{
             maximumInputs:2,

@@ -7,12 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
 @interface ToneCurveData : NSObject
 @property (readonly) int width;
 @property (readonly) int height;
-@property (readonly) GLubyte *textureData;
+@property (readonly) uint8_t *textureData;
 - (id)initWithACVData:(NSData *)data;
 - (id)initWithName:(NSString*)curveFilename;
 - (id)initWithACVURL:(NSURL*)curveFileURL;

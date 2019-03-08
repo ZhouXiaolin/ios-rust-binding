@@ -78,6 +78,7 @@ impl Encoder {
     fn drawPrimitive(&self, mode: PrimitiveType, start: i32, count: i32){
         unsafe {
             glDrawArrays(mode.into(),start,count);
+            glFinish();
         }
     }
 
